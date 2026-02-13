@@ -25,6 +25,7 @@ import RUBISymbolicIntegration:
     ext_iseven, ext_isodd,
     ext_den, ext_num,
     ext_coeff,
+    eq_expr,
     Gamma,
     LogGamma,
     appell_f1,
@@ -92,17 +93,8 @@ function ext_coeff(u::SymType, x::SymType, n)
     end
 end
 
-
-# MatchPy additions
-function as_symbol_or_literal(x::SymType)
-    x == exp(SymNumber(1)) && return ℯ
-    unwrap_const(x)
-end
 eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
-
-# Rule modifications
-# Rule 1678L "3_1_3_18" has mistake. ~u should be (?) 1/(~d + ~e* x^2)
 
 USE_GAMMA = false
 

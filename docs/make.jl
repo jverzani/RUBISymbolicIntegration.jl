@@ -1,7 +1,7 @@
-using RUBISymbolicIntegraion
+using RUBISymbolicIntegration
 using Documenter
 
-DocMeta.setdocmeta!(RUBISymbolicIntegraion, :DocTestSetup, :(using RUBISymbolicIntegraion); recursive = true)
+DocMeta.setdocmeta!(RUBISymbolicIntegration, :DocTestSetup, :(using RUBISymbolicIntegration); recursive = true)
 
 # Add titles of sections and overrides page titles
 const titles = Dict(
@@ -59,12 +59,12 @@ function list_pages()
 end
 
 makedocs(;
-    modules = [RUBISymbolicIntegraion],
+    modules = [RUBISymbolicIntegration],
     authors = "john verzani <jverzani@gmail.com>",
-    repo = "https://github.com/jverzani/RUBISymbolicIntegraion.jl/blob/{commit}{path}#{line}",
-    sitename = "RUBISymbolicIntegraion.jl",
-    format = Documenter.HTML(; canonical = "https://jverzani.github.io/RUBISymbolicIntegraion.jl"),
+    repo = "https://github.com/jverzani/RUBISymbolicIntegration.jl/blob/{commit}{path}#{line}",
+    sitename = "RUBISymbolicIntegration.jl",
+    format = Documenter.HTML(; canonical = "https://jverzani.github.io/RUBISymbolicIntegration.jl"),
     pages = list_pages(),
 )
 
-deploydocs(; repo = "github.com/jverzani/RUBISymbolicIntegraion.jl")
+deploydocs(; repo = "github.com/jverzani/RUBISymbolicIntegration.jl")

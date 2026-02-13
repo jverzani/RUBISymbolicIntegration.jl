@@ -12,3 +12,6 @@ This is part of [SymbolicIntegration.jl](https://github.com/JuliaSymbolics/Symbo
 [RUBI](https://rulebasedintegration.org/) is a rule-based approach to integrating indefinite integrals:
 
 > By systematically applying its extensive, coherent collection of symbolic integration rules, Rubi is able to find the optimal antiderivative of large classes of mathematical expressions. Also Rubi can show the rules and intermediate steps it uses to integrate an expression, making the system a great tool for both learning and doing mathematics.
+
+
+The main function is `integrate(f, dx)` where `f` is the expression to integrate and `dx` the variable to integrate with respect to.

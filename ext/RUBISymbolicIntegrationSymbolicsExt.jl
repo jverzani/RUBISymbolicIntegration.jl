@@ -24,6 +24,7 @@ import RUBISymbolicIntegration:
     ext_iseven, ext_isodd,
     ext_den, ext_num,
     ext_coeff,
+    eq_expr,
     Gamma,
     LogGamma,
     appell_f1,
@@ -123,11 +124,6 @@ function ext_coeff(u::BasicSymbolic, x::BasicSymbolic, n)
 end
 
 
-# MatchPy additions
-function as_symbol_or_literal(x::SymType)
-    x == exp(SymNumber(1)) && return ℯ
-    unwrap_const(x)
-end
 eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
 function poly_coefficients(p, x::SymType′)

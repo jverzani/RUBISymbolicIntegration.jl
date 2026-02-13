@@ -1,4 +1,6 @@
-### make more generic
+### make more generic than from SymbolicIntegration
+
+## These methods should be specialized in extesion packages
 XXX() = throw("Create a method")
 
 ∫(f, dx) = make_integral(f, dx)
@@ -13,6 +15,7 @@ is_symbolic(x) = false
 is_symbol(x) = false
 _iszero(x) = iszero(x)
 ext_coeff(u::Number, x::Number, n) = 0
+eq_expr() = false
 unwrap_const(x::Number) = x
 unwrap(x::Number) = x
 Gamma() = XXX()
@@ -38,6 +41,7 @@ Unintegrable() = XXX()
 USE_GAMMA = false
 
 ### ------- TermInterface only below here ------
+
 _is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
 _is_operation(fn)   = _is_operation((fn, Symbol(fn)))
 eq_op(op1, op2) = op1 == op2 || Symbol(op1) == Symbol(op2)
@@ -223,7 +227,6 @@ function ext_expand(expr, x)
          f(σ[:a]) &&
          f(σ[:b]) &&
          f(σ[:m])) || continue
-        #@show :case1
         return expand_linear_product((σ[:a]+σ[:b]*x)^σ[:m],σ[:u], σ[:a], σ[:b], x)
     end
     #case1 = case1 = @rule (~u::p)*((~a::f) + (~!b::f)*x)^(~m::f) => ~
@@ -235,7 +238,6 @@ function ext_expand(expr, x)
          f(σ[:a]) &&
          f(σ[:b]) &&
          f(σ[:m])) || continue
-        #@show :case11
         return expand_linear_product((σ[:a]+σ[:b]*x)^(-σ[:m]),σ[:u], σ[:a], σ[:b], x)
     end
     #case1_1 =  @rule (~u::(p->poly(p,x)))/(((~a::f) + (~!b::f)*x)^(~m::f)) => ~ # TODO needed because of neim problem
@@ -248,7 +250,6 @@ function ext_expand(expr, x)
          ext_isinteger(σ[:m]) &&
          f(σ[:c]) &&
          f(σ[:d])) || continue
-        #@show :case2
         return ((σ[:b]*(σ[:a]+σ[:b]*x)^(σ[:m]-1))⨸σ[:d] + ((σ[:a]*σ[:d]-σ[:b]*σ[:c])*(σ[:a]+σ[:b]*x)^(σ[:m]-1))⨸(σ[:d]*(σ[:c]+σ[:d]*x)))
     end
     #case2 = @rule (~!a::f + ~!b::f*x)^(~!m::ext_isinteger)/(~!c::f + ~!d::f*x) => (~b*(~a+~b*x)^(~m-1))⨸~d + ((~a*~d-~b*~c)*(~a+~b*x)^(~m-1))⨸(~d*(~c+~d*x))
@@ -258,7 +259,6 @@ function ext_expand(expr, x)
         (f(σ[:a]) &&
          f(σ[:b])
          ) || continue
-        #@show :case4
         return (1⨸σ[:b] - σ[:a]⨸(σ[:b]*(σ[:a] + σ[:b]*x)))
     end
     #case4 = @rule x/(~a::f + ~b::f*x) => 1⨸~b - ~a⨸(~b*(~a + ~b*x))
@@ -269,7 +269,6 @@ function ext_expand(expr, x)
          f(σ[:e]) &&
          f(σ[:a])
          ) || continue
-        #@show :case5
         return ((σ[:d]+σ[:e]*x)/(x*σ[:a]) - (σ[:d]+σ[:e]*x)*x/(σ[:a]*(σ[:a] + x^2)))
     end
     #case5 = @rule (~d::f + ~!e::f*x)/(x*(~a::f + x^2)) => (~d+~e*x)/(x*~a) - (~d+~e*x)*x/(~a*(~a + x^2))
@@ -278,7 +277,6 @@ function ext_expand(expr, x)
     for σ ∈ _eachmatch(case6, expr) # t stands for tmp
         (p(σ[:u]) &&
          p(σ[:v])) || continue
-        #@show :case6
         (exponent_of(σ[:u],x)>=exponent_of(σ[:v],x)) &&
          return polynomial_divide(σ[:u],σ[:v],x)
     end
@@ -292,18 +290,18 @@ function ext_expand(u, v, x)
 end
 
 function ext_expand_trig(u, x)
-    @show :ext_expand_trig, u
+    #@show :ext_expand_trig, u
     _expand(u)
 end
 
 function ext_expand_integrand(u, x)
-    @show :ext_expand_integrand, u
+    #@show :ext_expand_integrand, u
     _expand(u)
 end
 
 # ExpandToSum[u,x] returns u expanded into a sum of monomials of x.*
 function expand_to_sum(u, x)
-    @show :ext_expand_to_sum, u
+    #@show :ext_expand_to_sum, u
     _expand(u)
 end
 
@@ -590,10 +588,9 @@ function int_and_subst(fu, du, from, to, rule_from_identifier)
     else
         #@show fu, du, from => to
         #@show out
-        #isequal(out, make_integral(fu, du)) && (@show :hi, error(""))
+
 
         #placeholder symbolic function
-        @show fu, du
         return _substitute_after_int(fu, du, from, to)
     end
 
