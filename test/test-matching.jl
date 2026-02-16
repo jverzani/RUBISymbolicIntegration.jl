@@ -6,7 +6,7 @@ S = RUBISymbolicIntegration
 
 __isnumber(x::Number) = true
 __isnumber(x::Symbol) = false
-__isnumber(x::Expr) = all(__isnumber, arguments(x))
+__isnumber(x::Expr) = all(__isnumber, S.TermInterface.arguments(x))
 RUBISymbolicIntegration.unwrap_const(x::Number) = x
 RUBISymbolicIntegration.unwrap_const(x::Symbol) = x
 RUBISymbolicIntegration.unwrap_const(x::Expr) = __isnumber(x) ?  eval(x) : x
