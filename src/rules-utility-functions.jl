@@ -17,6 +17,8 @@ _iszero(x) = iszero(x)
 ext_coeff(u::Number, x::Number, n) = 0
 eq_expr() = false
 unwrap_const() = XXX()
+unwrap_const(x::Number) = x # bad form here! _unwrap_const???
+
 # to work with expresssions, define these
 #__isnumber(x::Number) = true
 #__isnumber(x::Symbol) = false
