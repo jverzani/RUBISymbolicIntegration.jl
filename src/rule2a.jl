@@ -141,7 +141,6 @@ function check_expr_r(data, rule::Expr, σs)
         (opᵣ, opₛ) ∈ ((:/,:^),
                       (:/,:*),
                       )
-
         return different_powers(data, rule, σs)
     end
 
@@ -328,7 +327,7 @@ function different_powers(data, rule, σs)
     elseif opᵣ === :sqrt
         if (opₛ === :sqrt)
             tocheck = arg_data # normal checks
-        elseif (opₛ === :^) && (unwrap_const(arg_data[2]) == 1//2) #1//2)
+        elseif (opₛ === :^) && (unwrap_const(arg_data[2]) ∈ (1//2, :(1//2))) #1//2)
             tocheck = (b,)
         else
             return MatchDict[]
@@ -339,7 +338,7 @@ function different_powers(data, rule, σs)
     elseif opᵣ === :exp
         if (opₛ === :exp)
             tocheck = arg_data # normal checks
-        elseif (opₛ === :^) && (unwrap_const(b) == ℯ)
+        elseif (opₛ === :^) && (unwrap_const(b) ∈ (ℯ,:ℯ))
             m = arg_data[2]
             tocheck = (m,)
         else

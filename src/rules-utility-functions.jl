@@ -16,7 +16,13 @@ is_symbol(x) = false
 _iszero(x) = iszero(x)
 ext_coeff(u::Number, x::Number, n) = 0
 eq_expr() = false
-unwrap_const(x::Number) = x
+unwrap_const() = XXX()
+# to work with expresssions, define these
+#__isnumber(x::Number) = true
+#__isnumber(x::Symbol) = false
+#__isnumber(x::Expr) = all(__isnumber, arguments(x))
+#RUBISymbolicIntegration.unwrap_const(x::Symbol) = x
+#RUBISymbolicIntegration.unwrap_const(x::Expr) = __isnumber(x) ?  eval(x) : x
 unwrap(x::Number) = x
 Gamma() = XXX()
 LogGamma() = XXX()
