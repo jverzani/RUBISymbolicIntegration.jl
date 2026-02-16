@@ -1,0 +1,43 @@
+name = "RUBISymbolicIntegration"
+uuid = "442f6feb-61f5-5b3d-b533-e46f4d561939"
+version = "0.1.0"
+authors = ["john verzani <jverzani@gmail.com>"]
+
+[workspace]
+projects = ["test", "docs"]
+
+[deps]
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
+
+[weakdeps]
+SimpleExpressions = "deba94f7-f32a-40ad-b45e-be020a5ded2f"
+SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
+Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
+
+[extensions]
+RUBISymbolicIntegrationSimpleExpressionsExt = "SimpleExpressions"
+RUBISymbolicIntegrationSymEngineExt = "SymEngine"
+RUBISymbolicIntegrationSymbolicsExt = "Symbolics"
+
+[compat]
+BenchmarkTools = "1.4"
+Combinatorics = "0.7,1,1.1.0"
+Random = "1.11.0"
+SimpleExpressions = "1.1"
+SpecialFunctions = "2.6.1"
+SymEngine = "0.13.2"
+Symbolics = "7"
+TermInterface = "2.0.0"
+Test = "<0.0.1, 1"
+julia = "1.10"
+
+[extras]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test", "Random", "BenchmarkTools", "SymEngine"]

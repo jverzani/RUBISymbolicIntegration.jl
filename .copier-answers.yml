@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+Authors: john verzani <jverzani@gmail.com>
+JuliaMinVersion: '1.10'
+License: MIT
+LicenseCopyrightHolders: john verzani
+PackageName: RUBISymbolicIntegraion
+PackageOwner: jverzani
+PackageUUID: 442f6feb-61f5-5b3d-b533-e46f4d561939
+StrategyConfirmIncluded: false
+StrategyLevel: 1
+StrategyReviewExcluded: false
+_src_path: /Users/jverzani/.julia/packages/BestieTemplate/GuTb8
