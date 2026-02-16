@@ -10,7 +10,6 @@ export integrate
 using Combinatorics: permutations, combinations
 include("utils.jl")
 include("rule2a.jl")
-#include("replace.jl")
 
 # rules
 # using hacked version; could regenerate with hacked

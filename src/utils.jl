@@ -1,3 +1,4 @@
+# utils for rule2a
 # A substitution is a collection of pairs 𝑋 -> 𝐺
 const MatchDict = Base.ImmutableDict{Symbol, Any}
 FAIL_DICT = MatchDict(:_fail,0)
@@ -48,27 +49,18 @@ function union_merge(θ, σ′)
     (merge_match(σ, σ′) for σ ∈ θ if iscompatible(σ, σ′))
 end
 
+## utils
+_isone(x) = isequal(x, 1)
 
 
 ## Expression related methods
-"""
-    as_symbol_or_literal(x)
-
-Take `x` and return a symbol or literal (if possible) otherwise return `x`.
-
-Used to compare a possibly symbolic value with a symbol or a number
-
-This is also `SymbolicUtils.unwrap_const`.
-"""
-as_symbol_or_literal(x::Union{Real, Symbol, Expr}) = x
-as_symbol_or_literal(x) = x
-ϟ = as_symbol_or_literal #\koppa[tab]
 
 # need to compare x and p when p is from an expression
 # trick -- SymEngine.Basic <: Number
 eq_expr(a, p::Number) = isequal(a,p)
 eq_expr(a::Number, p::Symbol) = false
 eq_expr(a, p::Symbol) = isequal(Symbol(a),p)
+
 
 # create a term for a pattern (pterm) or a subject (sterm)
 # the latter might involve a symbolic type
@@ -91,13 +83,25 @@ function sterm(T, op, args)
     _isexpr ? pterm(op, args) : op(args...)
 end
 
-_isone(x) = isequal(x, 1)
+# invert an expr to regularize a/b --> a*b^{-1}
+function _invert_expr(pat)
+    if isa(pat, Integer)
+        return pterm(:^, (pat, -1.0))
+    elseif is_operation(:(//))(pat)
+        u,v = arguments(pat)
+        u′ = isa(u, Number) ? -u : pterm(*, (u,-1))
+        return pterm(:(//), (u′, v))
+    else
+        return pterm(:^, (pat, -1))
+    end
+end
+
 
 _groupby(pred, t) = (t = filter(pred,t), f=filter(!pred, t))
 
 
 # ----- predicates
-_is_rational(x) = isa(ϟ(x), Rational)
+_is_rational(x) = isa(unwrap_const(x), Rational)
 
 
 # can override, say with :Symbol
@@ -284,7 +288,7 @@ function _rewrite(σ::MatchDict, rhs::Expr)
     if is_𝑋(rhs)
         var = varname(rhs)
         if haskey(σ, var)
-            return as_symbol_or_literal(σ[var]) # unwrap_const
+            return σ[var]
         else
             @show σ
             error("No match found for variable $(var)") #it should never happen

@@ -1,8 +1,9 @@
 ```@meta
-CurrentModule = RUBISymbolicIntegraion
+CurrentModule = RUBISymbolicIntegration
 ```
 
-# RUBISymbolicIntegraion
+# RUBISymbolicIntegration
 
-Documentation for [RUBISymbolicIntegraion](https://github.com/jverzani/RUBISymbolicIntegraion.jl).
+Documentation for [RUBISymbolicIntegration](https://github.com/jverzani/RUBISymbolicIntegration.jl).
 
+This is basically the rules-based part of [SymbolicIntegration](https://github.com/JuliaSymbolics/SymbolicIntegration.jl).

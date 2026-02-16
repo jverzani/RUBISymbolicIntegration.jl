@@ -5,39 +5,12 @@
 contains_int(expr) = "define me" #contains_op(∫, expr)
 make_integral() = "Define me"
 
-# check problem against rule = RULES[j]
-function apply_single_rule(rule, problem, j)
-    σs = _eachmatch(first(rule), problem)
-    for σ ∈ σs
-        ex = _rewrite(σ, last(rule))
-        out = try
-            eval(ex)
-        catch err
-            println("----- error rule $j ----")
-            @show ex
-            @show err
-            nothing
-        end
-        if !isnothing(out) && !isequal(out, problem)
-            #@show :rule_match, j, problem
-            return (out, true)
-        end
-    end
-    return (problem, false)
+
+function integrate(f, dx) # apply_rules
+    problem = make_integral(f, dx)
+    return repeated_prewalk(problem)
 end
 
-function apply_rules(problem)
-    for (j, rule) in enumerate(RULES)
-        out, success = apply_single_rule(rule, problem, j)
-
-        if success
-            return (out, true)
-            !isnan(out) && return (out, true)
-        end
-    end
-
-    return (problem, false)
-end
 
 function repeated_prewalk(expr, n=50)
     !iscall(expr) && return expr # termination condition
@@ -74,7 +47,37 @@ function repeated_prewalk(expr, n=50)
 end
 
 
-function integrate(f, dx) # apply_rules
-    problem = make_integral(f, dx)
-    return repeated_prewalk(problem)
+function apply_rules(problem)
+    for (j, rule) in enumerate(RULES)
+        out, success = apply_single_rule(rule, problem, j)
+
+        if success
+            return (out, true)
+            !isnan(out) && return (out, true)
+        end
+    end
+
+    return (problem, false)
+end
+
+
+# check problem against rule = RULES[j]
+function apply_single_rule(rule, problem, j)
+    σs = _eachmatch(first(rule), problem)
+    for σ ∈ σs
+        ex = _rewrite(σ, last(rule))
+        out = try
+            eval(ex)
+        catch err
+            println("----- error rule $j ----")
+            @show ex
+            @show err
+            nothing
+        end
+        if !isnothing(out) && !isequal(out, problem)
+            #@show :rule_match, j, problem
+            return (out, true)
+        end
+    end
+    return (problem, false)
 end

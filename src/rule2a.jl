@@ -2,12 +2,18 @@
 # Licensed under MIT with Copyright (c) 2022 Harald Hofstätter, Mattia Micheletta Merlin, Chris Rackauckas, and other contributors
 
 #=
-Had issues with
+Had issues with:
+
+# Rule modifications
+# Rule 1678L "3_1_3_18" has mistake. ~u should be (?) 1/(~d + ~e* x^2)
+
 julia> IDENTIFIERS[1497]
 "1_1_3_7_38" (== --> eq
+
 julia> IDENTIFIERS[1499]
 "1_1_3_7_40" (>= --> ge()
-IDENTIFIERS[1487]
+
+julia> IDENTIFIERS[1487]
 ("1_1_3_7_27", < -> lt, unwrap_const for use of Colon
 
 =#
@@ -76,8 +82,9 @@ end
 
 # main function
 function check_expr_r(data, rule::Expr, σs)
+
     if !iscall(rule)
-        @show :what_is, rule
+        #@show :what_is, rule
     end
     opᵣ = operation(rule)
 
@@ -134,7 +141,6 @@ function check_expr_r(data, rule::Expr, σs)
         (opᵣ, opₛ) ∈ ((:/,:^),
                       (:/,:*),
                       )
-
         return different_powers(data, rule, σs)
     end
 
@@ -242,24 +248,10 @@ end
 function has_rational(data, rule, σs)
     # rational is a special case, in the integration rules is present only in between numbers, like 1//2
     as = arguments(rule)
-    data = as_symbol_or_literal(data)
+    data = unwrap_const(data)
     data.num == first(as) && data.den == last(as) && return σs
     # r.num == rule.args[2] && r.den == rule.args[3] && return matches::MatchDict
     return MatchDict[]
-end
-
-
-# invert an expr to regularize a/b --> a*b^{-1}
-function _invert_expr(pat)
-    if isa(pat, Integer)
-        return pterm(:^, (pat, -1.0))
-    elseif is_operation(:(//))(pat)
-        u,v = arguments(pat)
-        u′ = isa(u, Number) ? -u : pterm(*, (u,-1))
-        return pterm(:(//), (u′, v))
-    else
-        return pterm(:^, (pat, -1))
-    end
 end
 
 
@@ -335,7 +327,7 @@ function different_powers(data, rule, σs)
     elseif opᵣ === :sqrt
         if (opₛ === :sqrt)
             tocheck = arg_data # normal checks
-        elseif (opₛ === :^) && (ϟ(arg_data[2]) == :(1//2)) #1//2)
+        elseif (opₛ === :^) && (unwrap_const(arg_data[2]) ∈ (1//2, :(1//2))) #1//2)
             tocheck = (b,)
         else
             return MatchDict[]
@@ -346,7 +338,7 @@ function different_powers(data, rule, σs)
     elseif opᵣ === :exp
         if (opₛ === :exp)
             tocheck = arg_data # normal checks
-        elseif (opₛ === :^) && (ϟ(b) == :ℯ)
+        elseif (opₛ === :^) && (unwrap_const(b) ∈ (ℯ,:ℯ))
             m = arg_data[2]
             tocheck = (m,)
         else
