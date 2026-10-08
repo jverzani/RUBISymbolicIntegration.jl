@@ -55,7 +55,7 @@ t = Base.ImmutableDict{Symbol, Any}(:p => 1, :b2 => 1, :n => 1, :a2 => 1, :p => 
 =#
 
 using TermInterface
-TermInterface.arguments(x::Tuple) = x
+TermInterface.arguments(x::Tuple) = x # # type piracy!!! XXX <<---000
 using Combinatorics
 
 ## ---- note -----
@@ -329,15 +329,6 @@ function _resolve_predicate(pred)
 end
 
 function _evalguard(pred, data)
-    # XXXXXXXXX
-    out = try
-        Base.invokelatest(eval(pred), data) #ϟ(data))
-    catch err
-        false
-    end
-    return out
-
-
     pred_fn = _resolve_predicate(pred)
     if pred_fn isa Function
         return try
@@ -1029,6 +1020,7 @@ function has_any_segment(𝑜𝑝ₛ, arg_data,
             v = first(seg)
             is_plus(v) && isempty(arg_data) && return MatchDict[]
             var = varname(v)
+            @show arg_data
             val = tuple(arg_data...)
             for σ ∈ σs
                 if haskey(σ, var)
@@ -1058,7 +1050,7 @@ function has_any_segment(𝑜𝑝ₛ, arg_data,
                 end
             end
             ok && push!(σ′s, σ′)
-        end# XXX?
+        end#
         return σ′s
     elseif 0 < m ≤ n
         σ′′s = MatchDict[]
@@ -1152,6 +1144,7 @@ function has_any_segment(𝑜𝑝ₛ, arg_data,
                         var = varname(pat)
                         #value = view(arg_data,j:(j+a-1))
                         value = arg_data[j:(j+a-1)]
+                        @show value
                         σ′ = match_dict(var => value)
                         σ′s = _merge_single(σ′s, σ′)
                         σ′s == NO_MATCH && (nomatch = true)
