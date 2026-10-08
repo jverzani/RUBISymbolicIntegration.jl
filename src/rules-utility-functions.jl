@@ -1,4 +1,51 @@
 ### make more generic than from SymbolicIntegration
+function _eachmatch(pat, sub)
+    check_expr_r(sub,pat)
+end
+
+
+function _rewrite(σ::MatchDict, rhs::Expr)
+    if !iscall(rhs)
+        if isexpr(rhs)
+            args = [_rewrite(σ, a) for a ∈ children(rhs)]
+            return Expr(head(rhs), args...)
+        else
+            return rhs
+        end
+    end
+
+    if iscall(rhs) && is_𝑋(operation(rhs))
+        args = [_rewrite(σ, a) for a ∈  arguments(rhs)]
+        op = Symbol(σ[varname(operation(rhs))])
+        return  pterm(op, args; elide=false)
+    end
+
+    if is_𝑋(rhs)
+        var = varname(rhs)
+        if haskey(σ, var)
+            return σ[var]
+        else
+            @show σ
+            error("No match found for variable $(var)") #it should never happen
+        end
+    end
+
+    # otherwise call recursively on arguments and then reconstruct expression
+    args = [_rewrite(σ, a) for a ∈  arguments(rhs)]
+    op = operation(rhs)
+    if op == :^
+        a,b = args
+        return :(^($a, $b))
+    end
+    return pterm(op, args; elide=false)
+end
+
+_rewrite(matches::MatchDict, rhs::Symbol) = rhs::Symbol
+_rewrite(matches::MatchDict, rhs::Real) = rhs::Real
+_rewrite(matches::MatchDict, rhs::String) = rhs::String
+_rewrite(matches::MatchDict, rhs::LineNumberNode) = nothing::Nothing
+_rewrite(matches::MatchDict, rhs::QuoteNode) = rhs::QuoteNode
+
 
 ## These methods should be specialized in extesion packages
 XXX() = throw("Create a method")
@@ -50,8 +97,8 @@ USE_GAMMA = false
 
 ### ------- TermInterface only below here ------
 
-_is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
-_is_operation(fn)   = _is_operation((fn, Symbol(fn)))
+#_is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
+#_is_operation(fn)   = _is_operation((fn, Symbol(fn)))
 eq_op(op1, op2) = op1 == op2 || Symbol(op1) == Symbol(op2)
 
 ## --------- From SymbolicIntegration

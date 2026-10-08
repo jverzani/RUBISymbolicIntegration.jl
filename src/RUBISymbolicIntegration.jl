@@ -8,7 +8,7 @@ export integrate
 
 # matching
 using Combinatorics: permutations, combinations
-include("utils.jl")
+#include("utils.jl")
 include("rule2a.jl")
 
 # rules

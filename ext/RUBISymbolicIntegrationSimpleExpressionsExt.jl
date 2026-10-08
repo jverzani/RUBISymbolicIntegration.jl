@@ -66,7 +66,7 @@ _substitute(x::SymType, args::Pair...;kwargs...) = begin
     end
     x
 end
-_simplify(x::SymType, args...; kwargs...) = SimpleExpressions.combine(x)
+_simplify(x::SymType, args...; kwargs...) = SimpleExpressions.simplify(x)
 _expand(x::SymType) = x
 _derivative(f,dx::SymType) = begin
     diff(f, dx)
@@ -97,7 +97,7 @@ ext_den(u::SymType) = ext_numden(u)[2]
 ext_num(u::SymType) = ext_numden(u)[1]
 ext_coeff(u::SymType, x::Number, n) = 0
 function ext_coeff(u::SymType, x::SymType, n)
-    u = S.coefficients(u,x)
+    u = S.polynomial_coefficients(u,x)
     isnothing(u) && return zero(x)
     1 + n <= length(u) ? u[1 + n] : 0
 end

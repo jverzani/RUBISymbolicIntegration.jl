@@ -1,5 +1,5 @@
-using Test
 using SymEngine
+using Test
 import RUBISymbolicIntegration:
     integrate,⨸,contains_int,
     Expinti,
