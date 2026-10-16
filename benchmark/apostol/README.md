@@ -127,7 +127,12 @@ Then add it to the loop in `run_all.jl` and to `METHODS` in `build.jl`.
 out" section is written by hand in `template.html`; check it against the new
 results and edit it before publishing.
 
-The page was published as a claude.ai artifact:
+The package README has a badge with the number of apostol problems verified
+(the best of this package's rows, currently `rubi_se`) that links to the page
+through htmlpreview.github.io, from `main`. It is a static badge: update the
+number in the badge URL after a run that changes it.
+
+The page was also published as a claude.ai artifact:
 https://claude.ai/artifact/5xFfniAuWyEt1REQHVKDTg. To update it, ask Claude
 Code to republish `results/apostol_comparison.html` to that URL.
 

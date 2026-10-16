@@ -6,6 +6,7 @@
 [![Coverage](https://codecov.io/gh/jverzani/RUBISymbolicIntegration.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/jverzani/RUBISymbolicIntegration.jl)
 [![Docs workflow Status](https://github.com/jverzani/RUBISymbolicIntegration.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/jverzani/RUBISymbolicIntegration.jl/actions/workflows/Docs.yml?query=branch%3Amain)
 [![BestieTemplate](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JuliaBesties/BestieTemplate.jl/main/docs/src/assets/badge.json)](https://github.com/JuliaBesties/BestieTemplate.jl)
+[![Apostol: 127/175](https://img.shields.io/badge/apostol-127%2F175%20verified-2f8a4c)](https://htmlpreview.github.io/?https://github.com/jverzani/RUBISymbolicIntegration.jl/blob/main/benchmark/apostol/results/apostol_comparison.html)
 
 This is part of [SymbolicIntegration.jl](https://github.com/JuliaSymbolics/SymbolicIntegration.jl/) repackaged to allow SymEngine and other symbolic representations to utilize the rules-based integration approach.
 
