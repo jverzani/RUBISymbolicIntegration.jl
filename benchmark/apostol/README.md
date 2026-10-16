@@ -144,10 +144,13 @@ Solved (verified) out of 175. Times are on one machine and only comparable withi
 |---|---|---|---|---|---|---|
 | 2026-10-16 | 1.12.7 | first run | 86 (77), 37 errors | 163 (162) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | CPM: `isequal` in `different_powers`; Symbolics extension: special functions keep their arguments | 112 (103), 4 errors | 162 (161) | 124 (117) | 97 (97) |
+| 2026-10-16 | 1.13.0 | sign of rule `4_1_10_1_1`, (c+dx)^m cos(e+fx) (RUBISymbolicIntegration `067a185`, CPM `dba8415`) | 112 (106), 4 errors, none wrong | 162 (161) | 124 (117) | 97 (97) |
 
-Notes on the second run:
+Notes:
 
-- RischIntegrate's one change is problem 165 (∫ eᵗ log(1 + t) dt): an `expinti`
-  answer on Julia 1.12, `NotElementary` on Julia 1.13, with the same code.
-- Problems 23–25 are wrong in both rule engines (a sign error in the
-  `2 cos x` term), most likely a shared Rubi rule.
+- RischIntegrate's one change between the first two runs is problem 165
+  (∫ eᵗ log(1 + t) dt): an `expinti` answer on Julia 1.12, `NotElementary` on
+  Julia 1.13, with the same code.
+- SymbolicIntegration's rule-based method is wrong on problems 23–25 because
+  of the same rule `4_1_10_1_1` (it adds the remaining integral where it should
+  subtract it). SymbolicIntegration.jl 3.8.1 still has it.
