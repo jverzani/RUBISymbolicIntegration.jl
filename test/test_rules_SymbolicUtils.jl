@@ -9,6 +9,6 @@ const I = im
 include("rules_test_common.jl")
 include("problems_apostol.jl")
 
-test_problems("apostol (SymbolicUtils)", apostol; min_passed = 112)
+test_problems("apostol (SymbolicUtils)", apostol; min_passed = 113)
 
 end
