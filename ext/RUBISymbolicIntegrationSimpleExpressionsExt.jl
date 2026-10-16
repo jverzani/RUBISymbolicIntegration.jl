@@ -27,7 +27,6 @@ import RUBISymbolicIntegration:
     Gamma,
     LogGamma,
     appell_f1,
-    hypergeometric2f1,
     Expinti,
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
@@ -120,8 +119,8 @@ LogGamma(x::SymType) = SymbolicExpression(SF.loggamma, (x,))
 appell_f1(a, b, c, d, e, z::SymType) =
     SymFunction("appell_f1")(a, b, c, d, e, z)
 
-hypergeometric2f1(a,b,c,d::SymType) =
-    SymFunction("hypergeometric2f1")(a,b,c,d)
+# ₂F₁(a, b; c; z) is HypergeometricFunctions.jl's `_₂F₁(a, b, c, z)`, defined
+# for a symbolic argument by SimpleExpressions' own extension
 
 
 Expinti(x::SymType) = SymbolicExpression(SF.expinti, (x,))

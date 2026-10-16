@@ -28,7 +28,6 @@ import RUBISymbolicIntegration:
     Gamma,
     LogGamma,
     appell_f1,
-    hypergeometric2f1,
     Expint, Expinti,
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
@@ -104,8 +103,10 @@ LogGamma(x::SymType, args...; kwargs...) =
 appell_f1(a, b, c, d, e, z::SymType) =
     SymFunction("appell_f1")(a, b, c, d, e, z)
 
-hypergeometric2f1(a,b,c,d::SymType) =
-    SymFunction("hypergeometric2f1")(a,b,c,d)
+# ₂F₁(a, b; c; z), HypergeometricFunctions.jl's `_₂F₁(a, b, c, z)`. Unevaluated.
+# (This belongs in a SymEngine extension for HypergeometricFunctions.)
+import HypergeometricFunctions
+HypergeometricFunctions._₂F₁(a, b, c, z::SymType) = SymFunction("_₂F₁")(a, b, c, z)
 
 
 # SymbolicUtils.expinti

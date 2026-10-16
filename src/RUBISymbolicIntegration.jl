@@ -3,6 +3,7 @@ module RUBISymbolicIntegration
 using TermInterface
 using SpecialFunctions
 using PolyLog: PolyLog, reli # Liₙ(z) is `reli(n, z)` in the rules
+using HypergeometricFunctions: HypergeometricFunctions, _₂F₁ # ₂F₁(a, b; c; z) is `_₂F₁(a, b, c, z)`
 export integrate
 
 # matching

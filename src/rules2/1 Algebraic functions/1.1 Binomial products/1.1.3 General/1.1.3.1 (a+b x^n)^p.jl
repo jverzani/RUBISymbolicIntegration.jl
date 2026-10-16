@@ -414,7 +414,7 @@ ext_den((~n))*int_and_subst((~x)^(ext_den((~n)) - 1)*((~a) + (~b)*(~x)^(ext_den(
         ext_isinteger((~p)) ||
         gt((~a), 0)
     ) ?
-(~a)^(~p)*(~x)*hypergeometric2f1(-(~p), 1⨸(~n), 1⨸(~n) + 1, -(~b)*(~x)^(~n)⨸(~a)) : nothing))
+(~a)^(~p)*(~x)*_₂F₁(-(~p), 1⨸(~n), 1⨸(~n) + 1, -(~b)*(~x)^(~n)⨸(~a)) : nothing))
 
 #(* Int[(a_+b_.*x_^n_)^p_,x_Symbol] := x*(a+b*x^n)^(p+1)/a*Hypergeometric2F1[1,1/n+p+1,1/n+1,-b*x^n/a] /; FreeQ[{a,b,n,p},x] && Not[IGtQ[p,0]] && Not[IntegerQ[1/n]] &&  Not[ILtQ[Simplify[1/n+p],0]] && Not[IntegerQ[p] || GtQ[a,0]] *)
 ("1_1_3_1_58",

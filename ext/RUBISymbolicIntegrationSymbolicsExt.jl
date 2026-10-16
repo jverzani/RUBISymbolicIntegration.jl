@@ -27,7 +27,6 @@ import RUBISymbolicIntegration:
     Gamma,
     LogGamma,
     appell_f1,
-    hypergeometric2f1,
     Expint, Expinti,
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
@@ -226,7 +225,6 @@ Erfi(x::SymType′) = SF.erfi(x)
 Sinint(x::SymType′) = SF.sinint(x)
 Cosint(x::SymType′) = SF.cosint(x)
 
-Symbolics.@register_symbolic hypergeometric2f1(a, b, c, z)
 Symbolics.@register_symbolic appell_f1(a, b1, b2, c, x, y)
 # one arity per function: registering a second redefines a method, which
 # precompilation does not allow. These are the incomplete integrals.
@@ -239,6 +237,9 @@ Symbolics.@register_symbolic coshintegral(z)
 Symbolics.@register_symbolic sinhintegral(z)
 Symbolics.@register_symbolic CannotIntegrate(u, x)
 Symbolics.@register_symbolic Unintegrable(u, x)
+
+# ₂F₁(a, b; c; z) is HypergeometricFunctions.jl's `_₂F₁(a, b, c, z)`, which
+# Symbolics registers, with its derivative, in its own extension
 
 # Liₙ(z), PolyLog.jl's `reli(n, z)`, registered so that a term folds to a
 # number on substitution (`substitute(ex, d; fold=Val(true))`) and can be

@@ -86,11 +86,12 @@ for F ∈ (:Gamma, :LogGamma, :Expinti, :Erf, :Erfi,
     @eval $F(x::ExprLike, args...) = Expr(:call, $(QuoteNode(F)), x, args...)
 end
 Expint(n, z::ExprLike) = Expr(:call, :Expint, n, z)
-hypergeometric2f1(a, b, c, z::ExprLike) = Expr(:call, :hypergeometric2f1, a, b, c, z)
 appell_f1(a, b, c, d, e, z::ExprLike) = Expr(:call, :appell_f1, a, b, c, d, e, z)
 
 # The polylogarithm Liₙ(z) (Mathematica's PolyLog[n, z]) is PolyLog.jl's
-# `reli(n, z)`, which evaluates numbers. A symbolic package adds a method
-# for its type (SimpleExpressions has a PolyLog extension; the SymEngine and
-# Symbolics extensions here add one). There is no method for an `Expr`, as
+# `reli(n, z)`, and the hypergeometric function ₂F₁(a, b; c; z)
+# (Hypergeometric2F1[a, b, c, z]) is HypergeometricFunctions.jl's
+# `_₂F₁(a, b, c, z)`; both evaluate numbers. A symbolic package adds methods
+# for its type (SimpleExpressions has extensions for both; the SymEngine and
+# Symbolics extensions here add them). There are no methods for an `Expr`, as
 # that would be type piracy.

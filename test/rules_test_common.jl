@@ -6,7 +6,7 @@ using Test
 using RUBISymbolicIntegration
 import RUBISymbolicIntegration: integrate, make_integral, contains_int, ⨸,
     Expinti, Gamma, Elliptic_e, Elliptic_f, Elliptic_pi, Erf, Erfi,
-    Sinint, Cosint, hypergeometric2f1, reli, CannotIntegrate, Unintegrable
+    Sinint, Cosint, _₂F₁, reli, CannotIntegrate, Unintegrable
 
 # Integrate a problem `(integrand, antiderivative, variable, steps)`.
 # `:success` means no unevaluated integral is left; the antiderivative is
