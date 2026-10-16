@@ -84,7 +84,7 @@ What is recorded:
   (every other variable given a fixed value) matches the integrand to 1e-4. Real
   values are tried first, then complex ones if the real evaluation fails.
 - **Not checked**: solved, but the answer has a function the term type can not
-  evaluate numerically (an unevaluated `hypergeometric2f1`, say). Such an
+  evaluate numerically (an unevaluated `appell_f1`, say). Such an
   answer may be wrong.
 - **Differs**: solved, but the derivative does not match: a wrong answer.
 - **Times**: each method starts cold in a new process. Integration time is the
@@ -156,6 +156,7 @@ Solved (verified) out of 175. Times are on one machine and only comparable withi
 | 2026-10-16 | 1.13.0 | sign of rule `4_1_10_1_1`, (c+dx)^m cos(e+fx) (RUBISymbolicIntegration `067a185`, CPM `dba8415`) | 112 (106), 4 errors, none wrong | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | added `rubi_se`: 127 (110), none wrong, 17 not checked; 393 s wall, mostly compiling | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | `rubi_se`: SimpleExpressions extension builds `Expinti`, `Gamma`, `LogGamma` with SpecialFunctions: 127 (119), 8 not checked (`hypergeometric2f1`) | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
+| 2026-10-16 | 1.13.0 | ₂F₁ is HypergeometricFunctions.jl's `_₂F₁` (SimpleExpressions extension for it): `rubi_se` 127 (127) | 112 (108) | 162 (161) | 124 (117) | 97 (97) |
 
 Notes:
 
