@@ -251,6 +251,7 @@ function map_matched_head(ex, is_match, f)
     end
 end
 
+
 ### ---- match, eachmatch, replace
 
 function _match(pat::Union{Symbol, Expr}, sub)
@@ -327,6 +328,7 @@ end
 
 # return Expression
 function _replace_arguments(ex, u, v)
+    @show :replace_arguments, ex, u,v
     iscall(ex) || return (ex == u ? v : ex)
 
     σ = _match(u, ex, M) # sigma is nothing, (), or a substitution

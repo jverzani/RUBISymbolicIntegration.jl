@@ -54,8 +54,13 @@ t = Base.ImmutableDict{Symbol, Any}(:p => 1, :b2 => 1, :n => 1, :a2 => 1, :p => 
 
 =#
 
+# on loan from SimpleExpressions
+# with *one* change to avoid: returns a tuple with segment and plus variables
+#=
+    #args = tuple(arguments(data)...)
+    args = data ### XXXXXXXXXXX return data not its arguments
+=#
 using TermInterface
-TermInterface.arguments(x::Tuple) = x # # type piracy!!! XXX <<---000
 using Combinatorics
 
 ## ---- note -----
@@ -581,6 +586,12 @@ end
 
 
 # TODO ~a*(~b*~c) currently will not match a*b*c . a fix is possible
+#_eachmatch(pat, sub) = check_expr_r(sub, pat)
+#function match(pat, sub)
+#    σs = check_expr_r(sub, pat)
+#    isempty(σs) && return nothing
+#    first(σs)
+#end
 
 # for when the rule contains a symbol, like ℯ, or a literal number
 function check_expr_r(data, rule::Real, σs::𝑀)::𝑀
@@ -770,7 +781,7 @@ function has_defslot(i, data, rule, σs)
 end
 
 function only_argument_is_segment(data, rule, σs, op=nothing)
-    # @show :only_argument_is_segment, data, rule
+    #@show :only_argument_is_segment, data, rule
     !iscall(data) && return MatchDict[]
     opₛ, opᵣ = Symbol(operation(data)), operation(rule)
     opₛ == opᵣ || return MatchDict[]
@@ -778,7 +789,8 @@ function only_argument_is_segment(data, rule, σs, op=nothing)
     # a segment binds to the tuple of arguments, as in has_any_segment
     seg = only(arguments(rule))
     var = varname(seg)
-    args = tuple(arguments(data)...)
+    #args = tuple(arguments(data)...)
+    args = data ### XXXXXXXXXXX return data not its arguments
     is_plus(seg) && isempty(args) && return MatchDict[]
     _merge_single_expr(σs, var, args)
 end

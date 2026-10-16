@@ -122,8 +122,8 @@ end
 # this custom exponentiation function should be used whenever there are
 # fractional powers, because (-1)^(1/2) errors
 # it's a infix operator with the same precedence of ^
-⟰(x, y) = lt(x, 0) ? Complex(x) ^ y : x ^ y
-⟰(x, y::Integer) = x ^ y
+⟰(x, y) = lt(x, 0) ? (x + 0im) ^ y : x ^ y
+⟰(x, y::Integer) = (@show x, y; sign(y) == -1 ? 1/x^abs(y) :  x ^ y)
 
 # if expr contains variable var return true
 #function contains_var(expr, var)
@@ -146,6 +146,26 @@ function contains_op(op, expr)
     end
     return false
 end
+
+
+# does any piece of expresion match predicate
+function anyQ(ex, pred)
+    pred(ex) && return true
+    iscall(ex) && return any(Base.Fix2(anyQ, pred), arguments(ex))
+    return false
+end
+
+# does a match b syntactically?
+function syntactic_match(a, b)
+    𝑎, 𝑏 = isexpr(a), isexpr(b)
+    𝑎 == 𝑏 || return false
+    !𝑎 && return a == b
+    operation(a) ==  operation(b) || return false
+    as, bs = arguments(a), arguments(b)
+    length(as) == length(bs) || return false
+    all(splat(==), zip(as, bs))
+end
+syntactic_match(a) = Base.Fix1(syntactic_match, a)
 
 function complexfree(expr)
     isa(expr, Complex) && !eq(imag(expr),0) && return true
@@ -1183,5 +1203,6 @@ P_le_neg1_x_0(x::Any)       = le(-1, x, 0)::Bool
 ## Extras
 function f11372(pq, x)
     pat = :((~u)*$(Symbol(x))^(~m::ext_isinteger) )
-    return !isnothing(_match(pat, pq))
+    return !isempty(check_expr_r(pq, pat))
+    #return !isnothing(_match(pat, pq))
 end
