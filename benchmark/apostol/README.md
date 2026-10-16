@@ -164,6 +164,7 @@ Solved (verified) out of 175. Times are on one machine and only comparable withi
 | 2026-10-16 | 1.13.0 | added `rubi_se`: 127 (110), none wrong, 17 not checked; 393 s wall, mostly compiling | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | `rubi_se`: SimpleExpressions extension builds `Expinti`, `Gamma`, `LogGamma` with SpecialFunctions: 127 (119), 8 not checked (`hypergeometric2f1`) | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | ₂F₁ is HypergeometricFunctions.jl's `_₂F₁` (SimpleExpressions extension for it): `rubi_se` 127 (127) | 112 (108) | 162 (161) | 124 (117) | 97 (97) |
+| 2026-10-16 | 1.13.0 | CPM matches a quotient against a quotient, and `1/sqrt(u)` against `u^(-1//2)`; SimpleExpressions `_simplify` expands (problems 64, 105) (`2e70b7f`, CPM `05a6c95`): `rubi_se` 129 (129) | 113 (109) | 162 (161) | 124 (117) | 97 (97) |
 
 Notes:
 
