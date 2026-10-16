@@ -4,12 +4,12 @@ file_rules = [
 ("7_3_2_1",
 :(∫(((~!a) + (~!b)*atanh((~!c)*(~x)))/(~x),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~x)) ?
-(~a)*log((~x)) - (~b)⨸2*PolyLog_reli(2, -(~c)*(~x)) + (~b)⨸2*PolyLog_reli(2, (~c)*(~x)) : nothing))
+(~a)*log((~x)) - (~b)⨸2*reli(2, -(~c)*(~x)) + (~b)⨸2*reli(2, (~c)*(~x)) : nothing))
 
 ("7_3_2_2",
 :(∫(((~!a) + (~!b)*acoth((~!c)*(~x)))/(~x),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~x)) ?
-(~a)*log((~x)) + (~b)⨸2*PolyLog_reli(2, -1⨸((~c)*(~x))) - (~b)⨸2*PolyLog_reli(2, 1⨸((~c)*(~x))) : nothing))
+(~a)*log((~x)) + (~b)⨸2*reli(2, -1⨸((~c)*(~x))) - (~b)⨸2*reli(2, 1⨸((~c)*(~x))) : nothing))
 
 ("7_3_2_3",
 :(∫(((~!a) + (~!b)*atanh((~!c)*(~x)))^(~p)/(~x),(~x)) ) => :(
@@ -63,15 +63,15 @@ file_rules = [
 :(∫((~x)^(~!m)*((~!a) + (~!b)*atanh((~!c)*(~x)^(~n)))^(~!p),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~m), (~n), (~x)) &&
     igt((~p), 1) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*atanh((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "7_3_2_9") : nothing))
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*atanh((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "7_3_2_9") : nothing))
 
 ("7_3_2_10",
 :(∫((~x)^(~!m)*((~!a) + (~!b)*acoth((~!c)*(~x)^(~n)))^(~!p),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~m), (~n), (~x)) &&
     igt((~p), 1) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*acoth((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "7_3_2_10") : nothing))
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*acoth((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "7_3_2_10") : nothing))
 
 ("7_3_2_11",
 :(∫((~x)^(~!m)*((~!a) + (~!b)*atanh((~!c)*(~x)^(~n)))^(~p),(~x)) ) => :(

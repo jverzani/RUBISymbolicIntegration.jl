@@ -2,6 +2,8 @@ using Test
 using Random
 using RUBISymbolicIntegration
 S = RUBISymbolicIntegration
+# quoted guards, such as `(in->!iscall(in))`, are evaluated in `Main`
+const iscall = S.TermInterface.iscall
 # Lifted from SymbolicIntegration.jl test
 
 __isnumber(x::Number) = true
@@ -60,8 +62,8 @@ end
 
 @testset "Segment" begin
     r = :(sin(+(~~a))) => :(~~a)
-    # eq fails, isequal passes
-    @test isequal(rule2(r, :(sin(1+x+y+z))), :(1 + x + y + z))
+    # a segment binds to the tuple of arguments
+    @test isequal(rule2(r, :(sin(1+x+y+z))), (1, :x, :y, :z))
 end
 
 @testset "Neim Problem" begin

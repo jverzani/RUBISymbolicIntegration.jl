@@ -1,10 +1,9 @@
 ## This is basically the frontend.jl file from SymbolicIntegration
 
+# The functions a symbolic type must provide are in `interface.jl`
 
-# contains_op(∫, expr) is the same as checking if the integral has been completely solved
-
-contains_int(expr) = "define me" #contains_op(∫, expr)
-make_integral() = "Define me"
+# does the expression have an unevaluated integral?
+contains_int(expr) = contains_op(:∫, expr)
 
 
 function integrate(f, dx) # apply_rules
@@ -20,8 +19,6 @@ function repeated_prewalk(expr, n=50)
     if Symbol(operation(expr)) == :∫
         (new_expr,success) = apply_rules(expr)
         if success
-            #@show :rp, success, contains_int(new_expr), new_expr
-
             # cannot directly return new_expr because even if a rule
             # is applied the result could still contain integrals
             !contains_int(new_expr) && return new_expr #_simplify(new_expr)
@@ -63,32 +60,34 @@ function apply_rules(problem)
 end
 
 
+# a rule signals an undefined result (e.g. ⨸ by 0) with NaN. Not every
+# symbolic type is a `Number`, so check only numeric values
+_isnan(x) = (u = unwrap_const(x); isa(u, Number) && isnan(u))
+
 # check problem against rule = RULES[j]
-function apply_single_rule(rule, problem, j)
+#
+# Every match is tried, not just the first: a rule's right-hand side returns
+# `nothing` when its conditions on the match fail, and another match may
+# satisfy them.
+function apply_single_rule(rule::Rule, problem, j)
     seen = Any[problem]
-    σs = _eachmatch(first(rule), problem)
+    σs = _eachmatch(rule.lhs, problem)
     for σ ∈ σs
-        ex = _rewrite(σ, last(rule))
         out = try
-            eval(ex)
+            rule.f(σ)
         catch err
-            println("----- error rule $j ----")
-            @show problem
-            @show rule[1]
-            @show σ
-            @show rule[2]
-            @show ex
-            @show err
+            if VERBOSE
+                println("----- error rule $j ($(IDENTIFIERS[j])) ----")
+                @show problem rule σ err
+            end
             nothing
         end
         out === nothing && continue
-        #@show out ∈ seen, out, seen
-        anyQ(out, isnan) && continue
-        #@show out ∈ seen, σ, out
-        out ∈ seen && break # oddly using continue doesn't work apostol[151]
+        anyQ(out, _isnan) && continue
+        # `isequal`, as `==` need not return a Bool for a symbolic type
+        any(isequal(out), seen) && break # oddly using continue doesn't work apostol[151]
         push!(seen, out)
         if !isequal(out, problem)
-            #@show :rule_match, j, problem
             return (out, true)
         end
     end

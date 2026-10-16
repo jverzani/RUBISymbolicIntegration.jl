@@ -1,104 +1,11 @@
-### make more generic than from SymbolicIntegration
-function _eachmatch(pat, sub)
-    check_expr_r(sub,pat)
-end
-
-
-function _rewrite(σ::MatchDict, rhs::Expr)
-    if !iscall(rhs)
-        if isexpr(rhs)
-            args = [_rewrite(σ, a) for a ∈ children(rhs)]
-            return Expr(head(rhs), args...)
-        else
-            return rhs
-        end
-    end
-
-    if iscall(rhs) && is_𝑋(operation(rhs))
-        args = [_rewrite(σ, a) for a ∈  arguments(rhs)]
-        op = Symbol(σ[varname(operation(rhs))])
-        return  pterm(op, args; elide=false)
-    end
-
-    if is_𝑋(rhs)
-        var = varname(rhs)
-        if haskey(σ, var)
-            return σ[var]
-        else
-            @show σ
-            error("No match found for variable $(var)") #it should never happen
-        end
-    end
-
-    # otherwise call recursively on arguments and then reconstruct expression
-    args = [_rewrite(σ, a) for a ∈  arguments(rhs)]
-    op = operation(rhs)
-    if op == :^
-        a,b = args
-        return :(^($a, $b))
-    end
-    return pterm(op, args; elide=false)
-end
-
-_rewrite(matches::MatchDict, rhs::Symbol) = rhs::Symbol
-_rewrite(matches::MatchDict, rhs::Real) = rhs::Real
-_rewrite(matches::MatchDict, rhs::String) = rhs::String
-_rewrite(matches::MatchDict, rhs::LineNumberNode) = nothing::Nothing
-_rewrite(matches::MatchDict, rhs::QuoteNode) = rhs::QuoteNode
-
-
-## These methods should be specialized in extesion packages
-XXX() = throw("Create a method")
-
-∫(f, dx) = make_integral(f, dx)
-_substitute() = XXX()
-_simplify(x, args...;kwargs...) = x
-_simpler(args...; kwargs...) = _simplify(args...; kwargs...)
-_expand() = XXX()
-_expand(x::Number) = x
-_derivative() = XXX()
-is_constant(x::Number) = true
-is_symbolic(x) = false
-is_symbol(x) = false
-_iszero(x) = iszero(x)
+# The functions an extension specializes are in `interface.jl`
 ext_coeff(u::Number, x::Number, n) = 0
-eq_expr() = false
-unwrap_const() = XXX()
-unwrap_const(x::Number) = x # bad form here! _unwrap_const???
-unwrap_const(x::Symbol) = x
-# to work with expresssions, define these
-#__isnumber(x::Number) = true
-#__isnumber(x::Symbol) = false
-#__isnumber(x::Expr) = all(__isnumber, arguments(x))
-#RUBISymbolicIntegration.unwrap_const(x::Symbol) = x
-#RUBISymbolicIntegration.unwrap_const(x::Expr) = __isnumber(x) ?  eval(x) : x
-unwrap(x::Number) = x
-Gamma() = XXX()
-LogGamma() = XXX()
-appell_f1() = XXX()
-hypergeometric2f1() = XXX()
-Expinti() = XXX()
-Erf() = XXX()
-Erfi() = XXX()
-Elliptic_e() = XXX()
-Elliptic_f() = XXX()
-Elliptic_pi() = XXX()
-Sinint() = XXX()
-Cosint() = XXX()
-FresnelIntegrals_fresnels() = XXX()
-FresnelIntegrals_fresnelsc() = XXX()
-PolyLog_reli() = XXX()
-coshintegral() = XXX()
-sinhintegral() = XXX()
-CannotIntegrate() = XXX()
-Unintegrable() = XXX()
 
 USE_GAMMA = false
 
 ### ------- TermInterface only below here ------
 
-#_is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
-#_is_operation(fn)   = _is_operation((fn, Symbol(fn)))
+_is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
 eq_op(op1, op2) = op1 == op2 || Symbol(op1) == Symbol(op2)
 
 ## --------- From SymbolicIntegration
@@ -1202,7 +1109,7 @@ P_le_neg1_x_0(x::Any)       = le(-1, x, 0)::Bool
 
 ## Extras
 function f11372(pq, x)
-    pat = :((~u)*$(Symbol(x))^(~m::ext_isinteger) )
-    return !isempty(check_expr_r(pq, pat))
+    pat = :((~u)*$(Symbol(x))^(~m::$ext_isinteger) )
+    return !isempty(_eachmatch(pat, pq))
     #return !isnothing(_match(pat, pq))
 end

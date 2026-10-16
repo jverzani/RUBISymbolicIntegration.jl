@@ -12,9 +12,10 @@ to julia Syntax.
 
 ## How to use it
 ``` bash
-julia src/translator_of_rules.jl "src/rules/4 Trig functions/4.1 Sine/4.1.8 trig^m (a+b cos^p+c sin^q)^n.m"
+julia src/translator_of_rules.jl "src/rules2/4 Trig functions/4.1 Sine/4.1.8 trig^m (a+b cos^p+c sin^q)^n.m"
 ```
-and will produce the julia file at the path `src/rules/4 Trig functions/4.1 Sine/4.1.8 trig^m (a+b cos^p+c sin^q)^n.jl`
+and will produce the julia file at the path `src/rules2/4 Trig functions/4.1 Sine/4.1.8 trig^m (a+b cos^p+c sin^q)^n.jl`,
+ready to be added to `all_rules_paths` in `general.jl`
 
 ## How it works internally (useful to know if you have to debug it)
 It processes line per line, so the integration rule must be all on only one
@@ -27,7 +28,7 @@ for each line it first check if there is the With syntax, a syntax in Mathematic
 that enables to define variables in a local scope. If yes it can do two things:
 In the new method translates the block using the let syntax, like this:
 ```julia
-@rule ∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x)) =>
+:(∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x))) => :(
     !contains_var((~a), (~b), (~c), (~x)) &&
     (
         !eq((~b)^2 - 4*(~a)*(~c), 0) ||
@@ -43,7 +44,7 @@ let
 
     ext_isodd(r) ?
     1⨸(2*(~c)*r)*∫((~x)^((~m) - 3), (~x)) - 1⨸(2*(~c)*r) : nothing
-end : nothing)
+end : nothing))
 ```
 The old method was to finds the defined variables and substitute them with their
 definition. Also there could be conditions inside the With block (OddQ in the example),
@@ -79,15 +80,15 @@ Mathematica you can reference the slot variables without any prefix, and in
 julia you need ~.
 
 ### Pretty indentation
-Then they are all put together following the julia rules syntax
-@rule integrand => conditions ? result : nothing
+Then they are all put together as a pair of quoted expressions
+:(integrand) => :(conditions ? result : nothing)
 ```
-@rule ∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x)) => !contains_var((~a), (~b), (~c), (~x)) && (!eq((~b)^2 - 4*(~a)*(~c), 0) || (ge((~m), 3) && lt((~m), 4))) && neg((~b)^2 - 4*(~a)*(~c)) && ext_isodd(rt(2*(~q) - (~b)/(~c), 2)) ? 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2))*∫((~x)^((~m) - 3), (~x)) - 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2)) : nothing
+:(∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x)) => !contains_var((~a), (~b), (~c), (~x)) && (!eq((~b)^2 - 4*(~a)*(~c), 0) || (ge((~m), 3) && lt((~m), 4))) && neg((~b)^2 - 4*(~a)*(~c)) && ext_isodd(rt(2*(~q) - (~b)/(~c), 2)) ? 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2))*∫((~x)^((~m) - 3), (~x)) - 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2)) : nothing)
 ```
 Usually the conditions are a lot of && and ||, so a pretty indentation is
 applied automatically that rewrites the rule like this:
 ```
-@rule ∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x)) =>
+:(∫((~x)^(~!m)/((~a) + (~!b) + (~!c)*(~x)^4),(~x))) => :(
     !contains_var((~a), (~b), (~c), (~x)) &&
     (
         !eq((~b)^2 - 4*(~a)*(~c), 0) ||
@@ -98,17 +99,28 @@ applied automatically that rewrites the rule like this:
     ) &&
     neg((~b)^2 - 4*(~a)*(~c)) &&
     ext_isodd(rt(2*(~q) - (~b)/(~c), 2)) ?
-1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2))*∫((~x)^((~m) - 3), (~x)) - 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2)) : nothing
+1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2))*∫((~x)^((~m) - 3), (~x)) - 1⨸(2*(~c)*rt(2*(~q) - (~b)⨸(~c), 2)) : nothing)
 ```
 
 ### end
 finally the rule is placed in a tuple (index, rule), and all the
-tuples are put into a array, ready to be included by load_rules
+tuples are put into a array, ready to be included by load_rules.
+`load_rules` turns each pair into a `CommutativePatternMatching.@rule`, so
+the right-hand side is ordinary Julia code: a function of the match, which
+returns `nothing` when the conditions fail.
+
+The rules use the names of this package's functions (`_simplify`,
+`_substitute`, `_derivative`, `Expinti`, ...), which an extension
+specializes for a symbolic type (see `interface.jl`).
+
+Segment wildcards (`~~x`) are not produced, as the Mathematica rules have
+none; the hand-written rules which use them (`0_1_0`, `0_1_12`) get the
+matched arguments as a tuple.
 """
 
 using Printf
 
-include("string_manipulation_helpers.jl")
+include("string_manipulator_helpers.jl")
 
 function translate_file(input_filename, output_filename)
     !isfile(input_filename) && error("Input file '$input_filename' not found!")
@@ -165,35 +177,35 @@ function translate_line(line, index)
             julia_rule =
             """
             (\"$index\",
-            @rule $(translate_integrand(integrand)) =>
+            :($(translate_integrand(integrand))) => :(
             $(translate_conditions(conds, vardefs)) ?
             let
                 $julia_vardefs
             $(translate_conditions(wconds, vardefs)) ?
                 $(translate_result(result, index, vardefs)) : nothing
-            end : nothing)
+            end : nothing))
             """
         elseif conds!==nothing && wconds===nothing
             julia_rule =
             """
             (\"$index\",
-            @rule $(translate_integrand(integrand)) =>
+            :($(translate_integrand(integrand))) => :(
             $(translate_conditions(conds, vardefs)) ?
             let
                 $julia_vardefs
                 $(translate_result(result, index, vardefs))
-            end : nothing)
+            end : nothing))
             """
         elseif conds===nothing && wconds!==nothing
             julia_rule =
             """
             (\"$index\",
-            @rule $(translate_integrand(integrand)) =>
+            :($(translate_integrand(integrand))) => :(
             let
                 $julia_vardefs
             $(translate_conditions(wconds, vardefs)) ?
                 $(translate_result(result, index, vardefs)) : nothing
-            end)
+            end))
             """
         end
     else
@@ -217,16 +229,16 @@ function translate_line(line, index)
             julia_rule =
             """
             (\"$index\",
-            @rule $julia_integrand =>
-            $julia_result)
+            :($julia_integrand) => :(
+            $julia_result))
             """
         else
             julia_rule =
             """
             (\"$index\",
-            @rule $julia_integrand =>
+            :($julia_integrand) => :(
             $julia_conditions ?
-            $julia_result : nothing)
+            $julia_result : nothing))
             """
         end
     end
@@ -283,7 +295,7 @@ function translate_integrand(integrand)
         ("Abs", "abs"),
 
         #("PolyLog", "PolyLog.reli", 2),
-        ("PolyLog", "PolyLog_reli", 2),
+        ("PolyLog", "reli", 2),
         #("Gamma", "SymbolicUtils.gamma"),
         ("Gamma", "Gamma"),
 
@@ -359,13 +371,13 @@ function result_substitutions(result, vardefs)
         ("Erfi", "Erfi"),
         ("Erf", "Erf"),
         ("SinIntegral", "Sinint"),
-        ("CosIntegral", "Ccosint"),
+        ("CosIntegral", "Cosint"),
         # taken from other julia packages
         ("EllipticE", "Elliptic_e", (1,2)),
         ("EllipticF", "Elliptic_f", 2),
         ("EllipticPi", "Elliptic_pi", (2,3)),
         ("Hypergeometric2F1", "hypergeometric2f1", 4),
-        ("PolyLog", "PolyLog_reli", 2),
+        ("PolyLog", "reli", 2),
         ("FresnelC", "FresnelIntegrals_fresnelc", 1),
         ("FresnelS", "FresnelIntegrals_fresnels", 1),
         # (not) defined in this package
@@ -411,9 +423,9 @@ function result_substitutions(result, vardefs)
 
         ("Dist", "dist"),
 
-        ("FullSimplify", "simplify", 1),
+        ("FullSimplify", "_simplify", 1),
         ("SimplifyIntegrand", "ext_simplify", 2), # TODO is this enough?
-        ("Simplify", "simplify", 1),
+        ("Simplify", "_simplify", 1),
         ("Simp", "simp", (1,2)),
 
         ("IntHide", "∫"),
@@ -437,15 +449,15 @@ function result_substitutions(result, vardefs)
         # common functions
         (r"RemoveContent\[(.*?),\s*x\]", s"\1"), (r"Log\[(.*?)\]", s"log(\1)"),
 
-        (r"LogIntegral\[(.*?)\]", s"SymbolicUtils.expinti(log(\1))"), # TODO use it from SpecialFunctions.jl once pr is merged
+        (r"LogIntegral\[(.*?)\]", s"Expinti(log(\1))"),
 
         (r"PolynomialRemainder\[(.*?),(.*?)\]", s"poly_remainder(\1,\2)"),
         (r"PolynomialQuotient\[(.*?),(.*?)\]", s"poly_quotient(\1,\2)"),
         (r"PolynomialDivide\[(.*?),(.*?),(.*?)\]", s"polynomial_divide(\1,\2,\3)"),
 
         (r"Sum\[(.*?),\s*\{(.*?),(.*?),(.*?)\}\]", s"sum([\1 for \2 in (\3):(\4)])"), # from Sum[f(x), {x, a, b}] to sum([f(x) for x in a:b])
-        (r"ReplaceAll\[(.*?),(.*?)->(.*?)\]", s"substitute(\1, Dict(\2 => \3))"), # from ReplaceAll[f(x), x->a] to substitute(f(x), Dict(x => a))
-        (r"SubstFor\[(.*?),(.*?),(.*?)\]", s"substitute(\1, Dict(\2 => \3))"),
+        (r"ReplaceAll\[(.*?),(.*?)->(.*?)\]", s"_substitute(\1, Dict(\2 => \3))"), # from ReplaceAll[f(x), x->a] to _substitute(f(x), Dict(x => a))
+        (r"SubstFor\[(.*?),(.*?),(.*?)\]", s"_substitute(\1, Dict(\2 => \3))"),
 
         (r"HypergeometricPFQ\[\s*\{(.+?)\}\s*,\s*\{(.+?)\}\s*,(.+?)\]", s"hypergeometricpFq([\1], [\2], \3)"), # from HypergeometricPFQ[{a, b}, {c, d}, z] to hypergeometricpFq([a, b], [c, d], z)
 
@@ -514,7 +526,7 @@ function translate_conditions(conditions, vardefs)
     conditions = strip(conditions)
     # since a lot of times Not has inside other functions, better to use find_closing_bracket
     simple_substitutions = [
-        ("D", "Symbolics.derivative"),
+        ("D", "_derivative"),
 
         ("Log", "log"),
         ("Sqrt", "sqrt"),
@@ -540,9 +552,9 @@ function translate_conditions(conditions, vardefs)
         ("NiceSqrtQ", "nice_sqrt", 1),
         ("Coefficient", "ext_coeff", (2,3)),
         ("Coeff", "ext_coeff", (2,3)),
-        ("LeafCount", "SymbolicUtils.node_count"),
+        ("LeafCount", "node_count"),
         ("Expon", s"exponent_of", 2),
-        ("FullSimplify", "simplify", 1),
+        ("FullSimplify", "_simplify", 1),
 
 
         ("BinomialDegree", "binomial_degree", (2,3)),
@@ -625,8 +637,8 @@ function translate_conditions(conditions, vardefs)
         (r"SumSimplerQ\[(.*?),(.*?)\]", s"sumsimpler(\1,\2)"),
         (r"SimplerQ\[(.*?),(.*?)\]", s"simpler(\1,\2)"),
         (r"SimplerSqrtQ\[(.*?),(.*?)\]", s"simpler(rt(\1,2),rt(\2,2))"),
-        (r"Simplify\[(.*?)\]", s"simplify(\1)"), # TODO is this enough?
-        (r"Simp\[(.*?)\]", s"simplify(\1)"), # TODO is this enough?
+        (r"Simplify\[(.*?)\]", s"_simplify(\1)"), # TODO is this enough?
+        (r"Simp\[(.*?)\]", s"_simplify(\1)"), # TODO is this enough?
         (r"AtomQ\[(.*?)\]", s"atom(\1)"),
 
         (r"PolynomialRemainder\[(.*?),(.*?)\]", s"poly_remainder(\1,\2)"),

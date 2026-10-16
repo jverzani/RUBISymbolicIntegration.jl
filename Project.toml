@@ -7,9 +7,13 @@ authors = ["john verzani <jverzani@gmail.com>"]
 projects = ["test", "docs"]
 
 [deps]
-Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+CommutativePatternMatching = "a5619ad1-7b8c-4723-92a4-4e9a75a52c0f"
+PolyLog = "85e3b03c-9856-11eb-0374-4dc1f8670e7f"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
+
+[sources]
+CommutativePatternMatching = {path = "../CommutativePatternMatching"}
 
 [weakdeps]
 SimpleExpressions = "deba94f7-f32a-40ad-b45e-be020a5ded2f"
@@ -23,7 +27,8 @@ RUBISymbolicIntegrationSymbolicsExt = "Symbolics"
 
 [compat]
 BenchmarkTools = "1.4"
-Combinatorics = "0.7,1,1.1.0"
+CommutativePatternMatching = "1"
+PolyLog = "2"
 Random = "1.11.0"
 SimpleExpressions = "1.1"
 SpecialFunctions = "2.6.1"

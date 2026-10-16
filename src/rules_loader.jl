@@ -1,3 +1,10 @@
+# Each rule file defines `file_rules`, a vector of `(identifier, lhs => rhs)`
+# with `lhs` and `rhs` quoted expressions. A rule is made from each pair with
+# `@rule`, evaluated in this module, so guards and the right-hand side resolve
+# to the functions defined here. The right-hand side becomes a function of
+# the match, so no `eval` is needed when a rule is applied.
+make_rule(r::Pair) = Core.eval(@__MODULE__, :(@rule $(r.first) => $(r.second)))
+
 # Utility function to load all rules in rules_paths
 # to the global `RULES` and `IDENTIFIERS` array
 # If called with no arguments loads all rules from the default paths
@@ -27,10 +34,9 @@ function load_rules(rules_paths)
         end
 
         # add rules
-        @show file
         include(file)
         local_file_rules = Base.invokelatest(() -> file_rules) # Use Base.invokelatest to handle world age issues in Julia 1.12+
-        append!(RULES, [x[2] for x in local_file_rules])
+        append!(RULES, [make_rule(x[2]) for x in local_file_rules])
         append!(IDENTIFIERS, [x[1] for x in local_file_rules])
     end
     print("\e[1A\e[2K\e[1A\e[2K")
@@ -78,18 +84,18 @@ function reload_rules(path; verbose = true)
             # if r[1] is already in the identifiers
             if IDENTIFIERS[idx]==r[1]
                 # replace rule
-                RULES[idx] = r[2]
+                RULES[idx] = make_rule(r[2])
                 verbose && printstyled("replaced rule $(r[1]) at index $idx\n";color = :yellow)
             # else add it at idx
             else
                 insert!(IDENTIFIERS, idx, r[1])
-                insert!(RULES, idx, r[2])
+                insert!(RULES, idx, make_rule(r[2]))
                 verbose && printstyled("Inserted rule $(r[1]) at index $idx\n";color=:green)
             end
         # else add it at the end
         else
             push!(IDENTIFIERS, r[1])
-            push!(RULES, r[2])
+            push!(RULES, make_rule(r[2]))
             verbose && printstyled("Appended rule $(r[1]) at the end of RULES (index $(length(RULES)))\n";color = :magenta)
         end
     end

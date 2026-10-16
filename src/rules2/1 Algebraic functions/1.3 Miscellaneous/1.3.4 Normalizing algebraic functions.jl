@@ -79,13 +79,13 @@ ext_den((~p))*(~e)*((~b)*(~c) - (~a)*(~d))* int_and_subst( (~x)^(ext_den((~p))*(
 ("1_3_4_12",
 @rule ∫((~x)^(~!m)*((~!e)*((~!a) + (~!b)*(~x)^(~!n))/((~c) + (~!d)*(~x)^(~!n)))^(~p),(~x)) =>
     !contains_var((~a), (~b), (~c), (~d), (~e), (~m), (~n), (~p), (~x)) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~e)*((~a) + (~b)*(~x))⨸((~c) + (~d)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "1_3_4_12") : nothing)
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~e)*((~a) + (~b)*(~x))⨸((~c) + (~d)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "1_3_4_12") : nothing)
 
 ("1_3_4_13",
 @rule ∫(((~f)*(~x))^(~m)*((~!e)*((~!a) + (~!b)*(~x)^(~!n))/((~c) + (~!d)*(~x)^(~!n)))^(~p),(~x)) =>
     !contains_var((~a), (~b), (~c), (~d), (~e), (~f), (~m), (~n), (~p), (~x)) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
 simp(((~c)*(~x))^(~m)⨸(~x)^(~m))*∫((~x)^(~m)*((~e)*((~a) + (~b)*(~x)^(~n))⨸((~c) + (~d)*(~x)^(~n)))^(~p), (~x)) : nothing)
 
 ("1_3_4_14",

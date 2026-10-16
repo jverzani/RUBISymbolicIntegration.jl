@@ -24,7 +24,6 @@ import RUBISymbolicIntegration:
     ext_iseven, ext_isodd,
     ext_den, ext_num,
     ext_coeff,
-    eq_expr,
     Gamma,
     LogGamma,
     appell_f1,
@@ -33,8 +32,7 @@ import RUBISymbolicIntegration:
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
     Sinint, Cosint,
-    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelsc,
-    PolyLog_reli,
+    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelc,
     coshintegral, sinhintegral,
     CannotIntegrate, Unintegrable
 
@@ -103,7 +101,6 @@ function ext_coeff(u::SymType, x::SymType, n)
 end
 
 
-eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
 
 # Rule modifications
@@ -118,8 +115,8 @@ LogGamma(x::SymType, args...; kwargs...) =
     SymFunction("Gamma")(x, args...; kwargs...)
 
 # HyperGeometric Functions (?)
-appell_f1(args...; kwargs...) =
-    SymFunction("appell_f1")(args...; kwargs...) # ?signature
+appell_f1(a, b, c, d, e, z::SymType) =
+    SymFunction("appell_f1")(a, b, c, d, e, z)
 
 hypergeometric2f1(a,b,c,d::SymType) =
     SymFunction("hypergeometric2f1")(a,b,c,d)
@@ -150,13 +147,12 @@ Cosint(x::SymType, args...; kwargs...) =
 
 FresnelIntegrals_fresnels(x::SymType, args...; kwargs...) =
     SymFunction("Fresnels")(x, args...; kwargs...)
-FresnelIntegrals_fresnelsc(x::SymType, args...; kwargs...) =
-    SymFunction("Fresnelsc")(x, args...; kwargs...)
+FresnelIntegrals_fresnelc(x::SymType, args...; kwargs...) =
+    SymFunction("Fresnelc")(x, args...; kwargs...)
 
 
-# PolyLog.reli
-PolyLog_reli(a, x::SymType, args...;kwargs...) =
-    SymFunction("PolyLog_reli")(a, x, args...; kwargs...)
+# Liₙ(z) is `PolyLog.reli(n, z)`, defined for a symbolic argument by
+# SimpleExpressions' own PolyLog extension
 
 coshintegral(x::SymType, args...;kwargs...) =
     SymFunction("coshintegral")(x, args...; kwargs...)

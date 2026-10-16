@@ -24,17 +24,15 @@ import RUBISymbolicIntegration:
     ext_iseven, ext_isodd,
     ext_den, ext_num,
     ext_coeff,
-    eq_expr,
     Gamma,
     LogGamma,
     appell_f1,
     hypergeometric2f1,
-    Expinti,
+    Expint, Expinti,
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
     Sinint, Cosint,
-    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelsc,
-    PolyLog_reli,
+    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelc,
     coshintegral, sinhintegral,
     CannotIntegrate, Unintegrable,
     poly_coefficients, poly_degree,
@@ -61,7 +59,7 @@ make_integral(f::Symbolics.Num, dx::Symbolics.Num) = ∫(f.val, dx.val)
 make_integral(f::BasicSymbolic, dx::BasicSymbolic) = ∫(f, dx)
 
 
-function contains_var(expr, var)
+function contains_var(expr, var::SymType′)
     expr = unwrap(expr)
     var = unwrap(var)
     expr === var && return true
@@ -124,7 +122,6 @@ function ext_coeff(u::BasicSymbolic, x::BasicSymbolic, n)
 end
 
 
-eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
 function poly_coefficients(p, x::SymType′)
     deg = poly_degree(p, x)
@@ -214,63 +211,43 @@ sinhintegral(x::Any) = println("hyperbolic sine integral Shi(z) function (https:
 coshintegral(x::Any) = println("hyperbolic cosine integral Chi(z) function (https://en.wikipedia.org/wiki/Trigonometric_integral#Hyperbolic_cosine_integral) is not implemented yet")
 @register_symbolic coshintegral(x)
 =#
-# Special Functions
-Gamma(x::SymType′, args...; kwargs...) =
-    last(@syms x Gamma(x))(x)
+# Special functions. Where SpecialFunctions.jl has the function, the term is
+# built with it, so it evaluates and (mostly) differentiates; the others are
+# registered, so the term keeps its arguments but stays unevaluated.
+import SpecialFunctions as SF
 
-LogGamma(x::SymType′, args...; kwargs...) =
-    last(@syms x LogGamma(x))(x)
+Gamma(x::SymType′) = SF.gamma(x)
+Symbolics.@register_symbolic Gamma(a, x)          # upper incomplete Γ(a, x)
+LogGamma(x::SymType′) = SF.loggamma(x)
+Expinti(x::SymType′) = SF.expinti(x)
+Expint(n, x::SymType′) = SF.expint(n, x)
+Erf(x::SymType′) = SF.erf(x)
+Erfi(x::SymType′) = SF.erfi(x)
+Sinint(x::SymType′) = SF.sinint(x)
+Cosint(x::SymType′) = SF.cosint(x)
 
-# HyperGeometric Functions (?)
-appell_f1(args...; kwargs...) =
-    last(@syms x appell_f1(x))(x)
+Symbolics.@register_symbolic hypergeometric2f1(a, b, c, z)
+Symbolics.@register_symbolic appell_f1(a, b1, b2, c, x, y)
+# one arity per function: registering a second redefines a method, which
+# precompilation does not allow. These are the incomplete integrals.
+Symbolics.@register_symbolic Elliptic_e(phi, m)
+Symbolics.@register_symbolic Elliptic_f(phi, m)
+Symbolics.@register_symbolic Elliptic_pi(n, phi, m)
+Symbolics.@register_symbolic FresnelIntegrals_fresnels(z)
+Symbolics.@register_symbolic FresnelIntegrals_fresnelc(z)
+Symbolics.@register_symbolic coshintegral(z)
+Symbolics.@register_symbolic sinhintegral(z)
+Symbolics.@register_symbolic CannotIntegrate(u, x)
+Symbolics.@register_symbolic Unintegrable(u, x)
 
-hypergeometric2f1(a,b,c,d::SymType′) =
-    last(@syms x hypergeometric2f1(x))(x)
-
-# SymbolicUtils.expinti
-Expinti(x::SymType′, args...; kwargs...) =
-    last(@syms x Expintid1(x))(x)
-
-
-# SymbolicUtils.erf[i[
-Erf(x::SymType′, args...; kwargs...) =
-    last(@syms x Erf(x))(x)
-Erfi(x::SymType′, args...; kwargs...) =
-    last(@syms x Erfi(x))(x)
-
-
-Elliptic_e(x::SymType′, args...; kwargs...) =
-    last(@syms x Elliptic_e(x))(x)
-Elliptic_f(x::SymType′, y, args...; kwargs...) =
-    last(@syms x Elliptic_f(x,x))(x,y)
-Elliptic_pi(x::SymType′, args...; kwargs...) =
-    last(@syms x Elliptic_pi(x))(x)
-
-Sinint(x::SymType′, args...; kwargs...) =
-    last(@syms x Sinint(x))(x)
-Cosint(x::SymType′, args...; kwargs...) =
-    last(@syms x Cosint(x))(x)
-
-FresnelIntegrals_fresnels(x::SymType′, args...; kwargs...) =
-    last(@syms x Fresnels(x))(x)
-FresnelIntegrals_fresnelsc(x::SymType′, args...; kwargs...) =
-    last(@syms x Fresnelsc(x))(x)
-
-
-# PolyLog.reli
-PolyLog_reli(a, x::SymType′, args...;kwargs...) =
-    last(@syms x y PolyLog_reli(x,y))(a, x)
-
-coshintegral(x::SymType′, args...;kwargs...) =
-    last(@syms x coshintegral(x))(x)
-sinhintegral(x::SymType′, args...;kwargs...) =
-    last(@syms x sinhintegral(x))(x)
-
-CannotIntegrate(x::SymType′, args...; kwargs...) =
-    last(@syms x CannotIntegrate(x))(x)
-Unintegrable(x::SymType′, args...; kwargs...) =
-    last(@syms x Unintegrable(x))(x)
-
+# Liₙ(z), PolyLog.jl's `reli(n, z)`, registered so that a term folds to a
+# number on substitution (`substitute(ex, d; fold=Val(true))`) and can be
+# differentiated. (This belongs in a Symbolics extension for PolyLog.)
+import PolyLog
+Symbolics.@register_symbolic PolyLog.reli(n, z)
+@static if isdefined(Symbolics, Symbol("@register_derivative"))
+    # d/dz Liₙ(z) = Liₙ₋₁(z) / z
+    Symbolics.@register_derivative PolyLog.reli(n, z) 2 PolyLog.reli(n - 1, z) / z
+end
 
 end
