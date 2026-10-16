@@ -5,21 +5,25 @@ const HERE = @__DIR__
 const LIMIT = get(ARGS, 1, "120")
 mkpath(joinpath(HERE, "results"))
 
-# the git commit of each package used from a local folder
-open(joinpath(HERE, "results", "commits.tsv"), "w") do io
-    for (name, dir) in (("RUBISymbolicIntegration", joinpath(HERE, "..", "..")),
-                        ("CommutativePatternMatching", joinpath(HERE, "..", "..", "..", "CommutativePatternMatching")),
-                        ("RischIntegrate", joinpath(HERE, "..", "..", "..", "RischIntegrate")),
-                        ("SimpleExpressions", joinpath(HERE, "..", "..", "..", "SimpleExpressions")))
-        commit = try
-            c = readchomp(`git -C $dir rev-parse --short HEAD`)
-            dirty = !isempty(readchomp(`git -C $dir status --porcelain --untracked-files=no`))
-            c * (dirty ? " (with uncommitted changes)" : "")
-        catch
-            "unknown"
-        end
-        println(io, name, "\t", commit)
+# the git commit of each package used from a local folder, and whether it has
+# uncommitted changes (other than this run's results, which the run rewrites).
+# Found before anything is written.
+function commit(dir)
+    try
+        c = readchomp(`git -C $dir rev-parse --short HEAD`)
+        changes = readchomp(`git -C $dir status --porcelain --untracked-files=no -- . ':(exclude)benchmark/apostol/results'`)
+        c * (isempty(changes) ? "" : " (with uncommitted changes)")
+    catch
+        "unknown"
     end
+end
+commits = [(name, commit(dir)) for (name, dir) in
+           (("RUBISymbolicIntegration", joinpath(HERE, "..", "..")),
+            ("CommutativePatternMatching", joinpath(HERE, "..", "..", "..", "CommutativePatternMatching")),
+            ("RischIntegrate", joinpath(HERE, "..", "..", "..", "RischIntegrate")),
+            ("SimpleExpressions", joinpath(HERE, "..", "..", "..", "SimpleExpressions")))]
+open(joinpath(HERE, "results", "commits.tsv"), "w") do io
+    foreach(((name, c),) -> println(io, name, "\t", c), commits)
 end
 
 for (name, env) in (("rubi", "env_su"), ("rubi_se", "env_su"), ("risch", "env_su"), ("si_rules", "env_si"), ("si_risch", "env_si"))
