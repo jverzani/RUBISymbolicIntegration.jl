@@ -1,356 +1,356 @@
-L	1.3183369636535645	1
+L	1.4104928970336914	1
 V	Symbolics	7.46.0
 V	RischIntegrate	1.0.0-DEV
 V	SymbolicUtils	4.51.0
-S	1	1.792182070761517e9
-R	1	solved	verified	1.7066259384155273	(1//3)*(sqrt(1 + 2x)^3)
-S	2	1.792182072658509e9
-R	2	solved	verified	0.050276994705200195	-(2//27)*(sqrt(1 + 3x)^3) + (2//45)*(sqrt(1 + 3x)^5)
-S	3	1.792182072711011e9
-R	3	solved	verified	0.01102304458618164	(2//3)*(sqrt(1 + x)^3) - (4//5)*(sqrt(1 + x)^5) + (2//7)*(sqrt(1 + x)^7)
-S	4	1.792182072724364e9
-R	4	solved	verified	0.00034809112548828125	-(4//9)*sqrt(2 - 3x) + (2//27)*(sqrt(2 - 3x)^3)
-S	5	1.792182072726725e9
-R	5	solved	verified	0.2550179958343506	(-1//4) / (4 + 8x + 8(x^2) + 4(x^3) + x^4)
-S	6	1.79218207311716e9
-R	6	solved	verified	0.016705989837646484	(1//12)*cos(3x) - (3//4)*cos(x)
-S	7	1.792182073140699e9
-R	7	solved	verified	0.263261079788208	(3//4)*((-1 + z)^(4//3)) + (3//7)*((-1 + z)^(7//3))
-S	8	1.792182073465518e9
-R	8	solved	verified	1.0374491214752197	(-4 + 4cos(2x)) / (6 + 2cos(4x) - 8cos(2x))
-S	9	1.792182074507428e9
-R	9	solved	verified	0.456096887588501	(-1//3)*(sqrt(4 - sin(2x))^3)
-S	10	1.792182074965561e9
-R	10	solved	verified	0.07786989212036133	1 / (3 + cos(x))
-S	11	1.792182075045463e9
-R	11	solved	verified	0.6233999729156494	2 / sqrt(cos(x))
-S	12	1.792182075670849e9
-R	12	solved	verified	0.42549991607666016	-2cos(sqrt(1 + x))
-S	13	1.792182076098639e9
-R	13	solved	verified	2.5177369117736816	(-cos(exp(log(x)*(-1 + n))*x)) / n
-S	14	1.792182078618478e9
-R	14	solved	verified	0.02457118034362793	(-1//3)*sqrt(1 - (x^6))
-S	15	1.792182078648956e9
-R	15	solved	verified	0.0004329681396484375	-(4//5)*((1 + t)^(5//4)) + (4//9)*((1 + t)^(9//4))
-S	16	1.792182078652571e9
-R	16	solved	verified	0.11457586288452148	-2 / (1 + (sqrt(1 + x^2) + x)^2)
-S	17	1.792182078769153e9
-R	17	solved	verified	0.022917985916137695	(1//40)*((27 + 8(x^3))^(5//3))
-S	18	1.792182078794148e9
-R	18	solved	verified	0.3763082027435303	(3//2)*((-cos(x) + sin(x))^(2//3))
-S	19	1.792182079181796e9
-R	19	error	none	0.023070096969604492	RischNotImplemented: radical of a non-rational expression (1 + x^2 + (1 + x^2)^(3//2)): only radicals of rational functions of x are supported
-S	20	1.792182079213309e9
-R	20	solved	verified	0.003958940505981445	2sqrt(1 + sqrt(1 + x^2))
-S	21	1.792182079219365e9
-R	21	error	none	0.0017991065979003906	RischNotImplemented: radicals of 1 - 2x + x^2: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
-S	22	1.792182079223017e9
-R	22	solved	verified	6.604194641113281e-5	sin(x) - cos(x)*x
-S	23	1.792182079226126e9
-R	23	solved	verified	9.608268737792969e-5	2sin(x)*x + cos(x)*(2 - (x^2))
-S	24	1.792182079228082e9
-R	24	solved	verified	0.001798868179321289	cos(x)*(-6 + 3(x^2)) + sin(x)*(-6x + x^3)
-S	25	1.792182079232007e9
-R	25	solved	verified	0.00011181831359863281	sin(x)*(-6 + 3(x^2)) + cos(x)*(6x - (x^3))
-S	26	1.792182079233976e9
-R	26	solved	verified	5.0067901611328125e-5	(-1//4)*cos(2x)
-S	27	1.79218207923583e9
-R	27	solved	verified	6.413459777832031e-5	(1//8)*sin(2x) - (1//4)*cos(2x)*x
-S	28	1.792182079240886e9
-R	28	solved	verified	6.985664367675781e-5	-(1//4)*sin(2x) + (1//2)*x
-S	29	1.79218207924278e9
-R	29	solved	verified	6.818771362304688e-5	(1//12)*cos(3x) - (3//4)*cos(x)
-S	30	1.792182079244862e9
-R	30	solved	verified	0.00010704994201660156	(1//32)*sin(4x) - (1//4)*sin(2x) + (3//8)*x
-S	31	1.792182079250229e9
-R	31	solved	verified	0.00010704994201660156	-(1//80)*cos(5x) + (5//48)*cos(3x) - (5//8)*cos(x)
-S	32	1.792182079252218e9
-R	32	solved	verified	0.14296817779541016	-(1//192)*sin(6x) + (3//64)*sin(4x) - (15//64)*sin(2x) + (5//16)*x
-S	33	1.792182079415153e9
-R	33	solved	verified	0.00017690658569335938	-(1//8)*cos(2x) - (1//4)*sin(2x)*x + (1//4)*(x^2)
-S	34	1.792182079417341e9
-R	34	solved	verified	0.00012803077697753906	-(1//36)*sin(3x) + (3//4)*sin(x) + (1//12)*cos(3x)*x - (3//4)*cos(x)*x
-S	35	1.792182079419567e9
-R	35	solved	verified	0.10169291496276855	-(1//4)*cos(2x)*x + sin(2x)*((1//8) - (1//4)*(x^2)) + (1//6)*(x^3)
-S	36	1.792182079525627e9
-R	36	solved	verified	0.0001430511474609375	(1//4)*sin(2x) + (1//2)*x
-S	37	1.792182079527705e9
-R	37	solved	verified	8.392333984375e-5	(1//12)*sin(3x) + (3//4)*sin(x)
-S	38	1.792182079529651e9
-R	38	solved	verified	9.489059448242188e-5	(1//32)*sin(4x) + (1//4)*sin(2x) + (3//8)*x
-S	39	1.792182079531568e9
-R	39	error	none	0.0020940303802490234	RischNotImplemented: radical of a non-rational expression (a^2 - (x^2)): only radicals of rational functions of x are supported
-S	40	1.792182079535673e9
-R	40	solved	verified	0.11292409896850586	((625//32) - (3125//96)*((sqrt(5 + x^2) + x)^2) + (625//16)*((sqrt(5 + x^2) + x)^4) + (125//16)*((sqrt(5 + x^2) + x)^6) - (25//96)*((sqrt(5 + x^2) + x)^8) + (1//160)*((sqrt(5 + x^2) + x)^10)) / ((sqrt(5 + x^2) + x)^5)
-S	41	1.792182079681393e9
-R	41	error	none	0.0014500617980957031	RischNotImplemented: radicals of 4 + t^3: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
-S	42	1.792182079684754e9
-R	42	solved	verified	0.2919349670410156	(2sin(2x) - 2x - 2cos(2x)*x) / (2 + 2cos(2x))
-S	43	1.792182079994751e9
-R	43	solved	verified	0.22867703437805176	(-(8//3)*sin(6x) - 8sin(2x) - 8sin(4x) + 20x + 2cos(6x)*x + 12cos(4x)*x + 30cos(2x)*x) / (20 + 2cos(6x) + 12cos(4x) + 30cos(2x))
-S	44	1.792182080238308e9
-R	44	solved	verified	0.0024309158325195312	(-2sin(2x) - 2x + 2cos(2x)*x) / (2 - 2cos(2x))
-S	45	1.792182080258032e9
-R	45	solved	verified	0.005496978759765625	((8//3)*sin(6x) - 8sin(4x) + 8sin(2x) + 20x - 2cos(6x)*x + 12cos(4x)*x - 30cos(2x)*x) / (20 - 2cos(6x) + 12cos(4x) - 30cos(2x))
-S	46	1.792182080265669e9
-R	46	solved	verified	0.00011205673217773438	(3//25)*sin(5x) + cos(5x)*(-(2//5) - (3//5)*x)
-S	47	1.792182080267661e9
-R	47	solved	verified	0.09811210632324219	((1//24) + (1//8)*((sqrt(1 + x^2) + x)^2) + (1//8)*((sqrt(1 + x^2) + x)^4) + (1//24)*((sqrt(1 + x^2) + x)^6)) / ((sqrt(1 + x^2) + x)^3)
-S	48	1.792182080370297e9
-R	48	solved	verified	0.13313698768615723	-(1//2)*(x^2) + (9//4)*(x^4) - 6(x^6) + (21//2)*(x^8) - (63//5)*(x^10) + (21//2)*(x^12) - 6(x^14) + (9//4)*(x^16) - (1//2)*(x^18) + (1//20)*(x^20)
-S	49	1.792182080511748e9
-R	49	solved	verified	0.09575319290161133	(-(1//81) - (1//108)*x) / ((49//36) + (7//3)*x + x^2)
-S	50	1.792182080612021e9
-R	50	solved	verified	0.0933830738067627	(1//5)*(x^5) + (1//2)*(x^10) + (2//3)*(x^15) + (1//2)*(x^20) + (1//5)*(x^25) + (1//30)*(x^30)
-S	51	1.792182080708685e9
-R	51	solved	verified	0.2061319351196289	(1//5)*(x^5) - (10//3)*(x^6) + (190//7)*(x^7) - (285//2)*(x^8) + (1615//3)*(x^9) - (7752//5)*(x^10) + (38760//11)*(x^11) - 6460(x^12) + 9690(x^13) - (83980//7)*(x^14) + (184756//15)*(x^15) - (20995//2)*(x^16) + 7410(x^17) - (12920//3)*(x^18) + 2040(x^19) - (3876//5)*(x^20) + (1615//7)*(x^21) - (570//11)*(x^22) + (190//23)*(x^23) - (5//6)*(x^24) + (1//25)*(x^25)
-S	52	1.792182080923881e9
-R	52	solved	verified	0.0016181468963623047	cos(1 / x)
-S	53	1.792182080927667e9
-R	53	solved	verified	0.0014150142669677734	sin((-1 + x)^(1//4))*(-24 + 12((-1 + x)^(1//2))) + cos((-1 + x)^(1//4))*(24((-1 + x)^(1//4)) - 4((-1 + x)^(3//4)))
-S	54	1.792182080931422e9
-R	54	solved	verified	0.001302957534790039	(-1//8)*cos(2(x^2))
-S	55	1.792182080934588e9
-R	55	solved	verified	0.004708051681518555	(-2//9)*(sqrt(1 + 3(cos(x)^2))^3)
-S	56	1.792182080941162e9
-R	56	solved	verified	9.083747863769531e-5	(1//3)*log((2//3) + x)
-S	57	1.792182080943056e9
-R	57	solved	verified	0.5006768703460693	2x - 2log(x)*x + (log(x)^2)*x
-S	58	1.792182081445833e9
-R	58	solved	verified	0.00013303756713867188	-(1//4)*(x^2) + (1//2)*log(x)*(x^2)
-S	59	1.792182081447847e9
-R	59	solved	verified	0.00014400482177734375	(1//4)*(x^2) - (1//2)*log(x)*(x^2) + (1//2)*(log(x)^2)*(x^2)
-S	60	1.792182081449856e9
+S	1	1.792185777540479e9
+R	1	solved	verified	1.7030699253082275	(1//3)*(sqrt(1 + 2x)^3)
+S	2	1.792185779503525e9
+R	2	solved	verified	0.07685708999633789	-(2//27)*(sqrt(1 + 3x)^3) + (2//45)*(sqrt(1 + 3x)^5)
+S	3	1.792185779583171e9
+R	3	solved	verified	0.016415119171142578	(2//3)*(sqrt(1 + x)^3) - (4//5)*(sqrt(1 + x)^5) + (2//7)*(sqrt(1 + x)^7)
+S	4	1.792185779602653e9
+R	4	solved	verified	0.0005049705505371094	-(4//9)*sqrt(2 - 3x) + (2//27)*(sqrt(2 - 3x)^3)
+S	5	1.792185779605761e9
+R	5	solved	verified	0.26461195945739746	(-1//4) / (4 + 8x + 8(x^2) + 4(x^3) + x^4)
+S	6	1.792185780041958e9
+R	6	solved	verified	0.01978898048400879	(1//12)*cos(3x) - (3//4)*cos(x)
+S	7	1.792185780069511e9
+R	7	solved	verified	0.27285003662109375	(3//4)*((-1 + z)^(4//3)) + (3//7)*((-1 + z)^(7//3))
+S	8	1.792185780422013e9
+R	8	solved	verified	1.0870728492736816	(-4 + 4cos(2x)) / (6 + 2cos(4x) - 8cos(2x))
+S	9	1.792185781513758e9
+R	9	solved	verified	0.44710278511047363	(-1//3)*(sqrt(4 - sin(2x))^3)
+S	10	1.792185781962981e9
+R	10	solved	verified	0.09187793731689453	1 / (3 + cos(x))
+S	11	1.792185782057009e9
+R	11	solved	verified	0.627842903137207	2 / sqrt(cos(x))
+S	12	1.792185782686957e9
+R	12	solved	verified	0.4127640724182129	-2cos(sqrt(1 + x))
+S	13	1.792185783102048e9
+R	13	solved	verified	2.5818099975585938	(-cos(exp(log(x)*(-1 + n))*x)) / n
+S	14	1.792185785686151e9
+R	14	solved	verified	0.02425694465637207	(-1//3)*sqrt(1 - (x^6))
+S	15	1.792185785716174e9
+R	15	solved	verified	0.000453948974609375	-(4//5)*((1 + t)^(5//4)) + (4//9)*((1 + t)^(9//4))
+S	16	1.792185785719936e9
+R	16	solved	verified	0.1152338981628418	-2 / (1 + (sqrt(1 + x^2) + x)^2)
+S	17	1.792185785837177e9
+R	17	solved	verified	0.02417302131652832	(1//40)*((27 + 8(x^3))^(5//3))
+S	18	1.792185785863409e9
+R	18	solved	verified	0.4112660884857178	(3//2)*((-cos(x) + sin(x))^(2//3))
+S	19	1.792185786285949e9
+R	19	error	none	0.022901058197021484	RischNotImplemented: radical of a non-rational expression (1 + x^2 + (1 + x^2)^(3//2)): only radicals of rational functions of x are supported
+S	20	1.792185786317322e9
+R	20	solved	verified	0.0037610530853271484	2sqrt(1 + sqrt(1 + x^2))
+S	21	1.79218578632313e9
+R	21	error	none	0.0017549991607666016	RischNotImplemented: radicals of 1 - 2x + x^2: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
+S	22	1.79218578632675e9
+R	22	solved	verified	5.507469177246094e-5	sin(x) - cos(x)*x
+S	23	1.792185786329708e9
+R	23	solved	verified	8.702278137207031e-5	2sin(x)*x + cos(x)*(2 - (x^2))
+S	24	1.792185786331704e9
+R	24	solved	verified	0.00011801719665527344	cos(x)*(-6 + 3(x^2)) + sin(x)*(-6x + x^3)
+S	25	1.792185786333982e9
+R	25	solved	verified	0.00012302398681640625	sin(x)*(-6 + 3(x^2)) + cos(x)*(6x - (x^3))
+S	26	1.792185786336051e9
+R	26	solved	verified	4.601478576660156e-5	(-1//4)*cos(2x)
+S	27	1.792185786337865e9
+R	27	solved	verified	6.198883056640625e-5	(1//8)*sin(2x) - (1//4)*cos(2x)*x
+S	28	1.792185786343312e9
+R	28	solved	verified	7.295608520507812e-5	-(1//4)*sin(2x) + (1//2)*x
+S	29	1.792185786345215e9
+R	29	solved	verified	8.606910705566406e-5	(1//12)*cos(3x) - (3//4)*cos(x)
+S	30	1.792185786347355e9
+R	30	solved	verified	0.0001201629638671875	(1//32)*sin(4x) - (1//4)*sin(2x) + (3//8)*x
+S	31	1.792185786352823e9
+R	31	solved	verified	0.00011515617370605469	-(1//80)*cos(5x) + (5//48)*cos(3x) - (5//8)*cos(x)
+S	32	1.792185786354892e9
+R	32	solved	verified	0.09897017478942871	-(1//192)*sin(6x) + (3//64)*sin(4x) - (15//64)*sin(2x) + (5//16)*x
+S	33	1.792185786474345e9
+R	33	solved	verified	0.00018596649169921875	-(1//8)*cos(2x) - (1//4)*sin(2x)*x + (1//4)*(x^2)
+S	34	1.79218578647656e9
+R	34	solved	verified	0.00012302398681640625	-(1//36)*sin(3x) + (3//4)*sin(x) + (1//12)*cos(3x)*x - (3//4)*cos(x)*x
+S	35	1.79218578647877e9
+R	35	solved	verified	0.09850192070007324	-(1//4)*cos(2x)*x + sin(2x)*((1//8) - (1//4)*(x^2)) + (1//6)*(x^3)
+S	36	1.792185786581569e9
+R	36	solved	verified	0.0001380443572998047	(1//4)*sin(2x) + (1//2)*x
+S	37	1.792185786583616e9
+R	37	solved	verified	7.295608520507812e-5	(1//12)*sin(3x) + (3//4)*sin(x)
+S	38	1.792185786585498e9
+R	38	solved	verified	8.20159912109375e-5	(1//32)*sin(4x) + (1//4)*sin(2x) + (3//8)*x
+S	39	1.792185786587411e9
+R	39	error	none	0.0019350051879882812	RischNotImplemented: radical of a non-rational expression (a^2 - (x^2)): only radicals of rational functions of x are supported
+S	40	1.792185786591319e9
+R	40	solved	verified	0.11176395416259766	((625//32) - (3125//96)*((sqrt(5 + x^2) + x)^2) + (625//16)*((sqrt(5 + x^2) + x)^4) + (125//16)*((sqrt(5 + x^2) + x)^6) - (25//96)*((sqrt(5 + x^2) + x)^8) + (1//160)*((sqrt(5 + x^2) + x)^10)) / ((sqrt(5 + x^2) + x)^5)
+S	41	1.792185786736133e9
+R	41	error	none	0.001374959945678711	RischNotImplemented: radicals of 4 + t^3: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
+S	42	1.792185786739436e9
+R	42	solved	verified	0.29731297492980957	(2sin(2x) - 2x - 2cos(2x)*x) / (2 + 2cos(2x))
+S	43	1.792185787100793e9
+R	43	solved	verified	0.21047401428222656	(-(8//3)*sin(6x) - 8sin(2x) - 8sin(4x) + 20x + 2cos(6x)*x + 12cos(4x)*x + 30cos(2x)*x) / (20 + 2cos(6x) + 12cos(4x) + 30cos(2x))
+S	44	1.792185787327043e9
+R	44	solved	verified	0.002440929412841797	(-2sin(2x) - 2x + 2cos(2x)*x) / (2 - 2cos(2x))
+S	45	1.79218578734708e9
+R	45	solved	verified	0.024762868881225586	((8//3)*sin(6x) - 8sin(4x) + 8sin(2x) + 20x - 2cos(6x)*x + 12cos(4x)*x - 30cos(2x)*x) / (20 - 2cos(6x) + 12cos(4x) - 30cos(2x))
+S	46	1.792185787374044e9
+R	46	solved	verified	0.00015306472778320312	(3//25)*sin(5x) + cos(5x)*(-(2//5) - (3//5)*x)
+S	47	1.792185787376173e9
+R	47	solved	verified	0.10660004615783691	((1//24) + (1//8)*((sqrt(1 + x^2) + x)^2) + (1//8)*((sqrt(1 + x^2) + x)^4) + (1//24)*((sqrt(1 + x^2) + x)^6)) / ((sqrt(1 + x^2) + x)^3)
+S	48	1.792185787487343e9
+R	48	solved	verified	0.1168680191040039	-(1//2)*(x^2) + (9//4)*(x^4) - 6(x^6) + (21//2)*(x^8) - (63//5)*(x^10) + (21//2)*(x^12) - 6(x^14) + (9//4)*(x^16) - (1//2)*(x^18) + (1//20)*(x^20)
+S	49	1.792185787612596e9
+R	49	solved	verified	0.10915493965148926	(-(1//81) - (1//108)*x) / ((49//36) + (7//3)*x + x^2)
+S	50	1.792185787726338e9
+R	50	solved	verified	0.0933220386505127	(1//5)*(x^5) + (1//2)*(x^10) + (2//3)*(x^15) + (1//2)*(x^20) + (1//5)*(x^25) + (1//30)*(x^30)
+S	51	1.792185787823027e9
+R	51	solved	verified	0.19575905799865723	(1//5)*(x^5) - (10//3)*(x^6) + (190//7)*(x^7) - (285//2)*(x^8) + (1615//3)*(x^9) - (7752//5)*(x^10) + (38760//11)*(x^11) - 6460(x^12) + 9690(x^13) - (83980//7)*(x^14) + (184756//15)*(x^15) - (20995//2)*(x^16) + 7410(x^17) - (12920//3)*(x^18) + 2040(x^19) - (3876//5)*(x^20) + (1615//7)*(x^21) - (570//11)*(x^22) + (190//23)*(x^23) - (5//6)*(x^24) + (1//25)*(x^25)
+S	52	1.792185788027838e9
+R	52	solved	verified	0.0015938282012939453	cos(1 / x)
+S	53	1.792185788031563e9
+R	53	solved	verified	0.0013930797576904297	sin((-1 + x)^(1//4))*(-24 + 12((-1 + x)^(1//2))) + cos((-1 + x)^(1//4))*(24((-1 + x)^(1//4)) - 4((-1 + x)^(3//4)))
+S	54	1.792185788035313e9
+R	54	solved	verified	0.0012748241424560547	(-1//8)*cos(2(x^2))
+S	55	1.792185788038502e9
+R	55	solved	verified	0.004673004150390625	(-2//9)*(sqrt(1 + 3(cos(x)^2))^3)
+S	56	1.792185788045052e9
+R	56	solved	verified	0.00012612342834472656	(1//3)*log((2//3) + x)
+S	57	1.792185788047031e9
+R	57	solved	verified	0.5405890941619873	2x - 2log(x)*x + (log(x)^2)*x
+S	58	1.792185788589761e9
+R	58	solved	verified	0.0001518726348876953	-(1//4)*(x^2) + (1//2)*log(x)*(x^2)
+S	59	1.792185788591871e9
+R	59	solved	verified	0.00014495849609375	(1//4)*(x^2) - (1//2)*log(x)*(x^2) + (1//2)*(log(x)^2)*(x^2)
+S	60	1.792185788593865e9
 R	60	solved	verified	6.29425048828125e-5	log(1 + t)
-S	61	1.792182081451683e9
-R	61	solved	verified	0.08649706840515137	(1//2)*log(2 - 2cos(2x))
-S	62	1.79218208154004e9
-R	62	error	none	1.7828500270843506	RischNotImplemented: log of the constant RischIntegrate.Frac{RischIntegrate.UPoly{RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}}}(RischIntegrate.UPoly{RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}}(RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}[RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}(RischIntegrate.UPoly{Rational{BigInt}}(Rational{BigInt
-S	63	1.792182083324981e9
-R	63	solved	verified	0.0002579689025878906	(2//27)*(x^3) - (2//9)*log(x)*(x^3) + (1//3)*(log(x)^2)*(x^3)
-S	64	1.792182083327282e9
-R	64	solved	verified	0.00014710426330566406	log(log(x))
-S	65	1.792182083343974e9
-R	65	solved	verified	0.0030851364135742188	(-1//2)*(log(1 - t)^2)
-S	66	1.792182083349e9
-R	66	solved	verified	0.0014889240264892578	-2sqrt(1 + log(x)) + (2//3)*(sqrt(1 + log(x))^3)
-S	67	1.792182083360222e9
-R	67	solved	verified	0.00023603439331054688	-(3//128)*(x^4) + (3//32)*log(x)*(x^4) - (3//16)*(log(x)^2)*(x^4) + (1//4)*(log(x)^3)*(x^4)
-S	68	1.792182083362664e9
-R	68	solved	verified	0.4030568599700928	(1//3)*exp(x^3)
-S	69	1.792182083823888e9
-R	69	solved	verified	1.5946290493011475	(2exp(log(2)*sqrt(x))) / log(2)
-S	70	1.792182085422846e9
-R	70	solved	verified	1.350343942642212	(1//2)*exp(2sin(x))
-S	71	1.792182086775209e9
-R	71	solved	verified	0.13538908958435059	-(1//2)*cos(x)*exp(x) + (1//2)*exp(x)*sin(x)
-S	72	1.792182086912659e9
-R	72	solved	verified	0.00010991096496582031	(1//2)*cos(x)*exp(x) + (1//2)*exp(x)*sin(x)
-S	73	1.792182086914902e9
-R	73	solved	verified	0.0002181529998779297	-log(1 + exp(x)) + x
-S	74	1.792182086917004e9
-R	74	solved	verified	7.700920104980469e-5	exp(x)*(-1 + x)
-S	75	1.79218208691886e9
-R	75	solved	verified	7.295608520507812e-5	exp(-x)*(-1 - x)
-S	76	1.792182086920744e9
-R	76	solved	verified	9.703636169433594e-5	exp(x)*(2 - 2x + x^2)
-S	77	1.792182086922683e9
-R	77	solved	verified	0.00011301040649414062	exp(-2x)*(-(1//4) - (1//2)*x - (1//2)*(x^2))
-S	78	1.792182086924831e9
-R	78	solved	verified	0.02403116226196289	exp(sqrt(x))*(-2 + 2sqrt(x))
-S	79	1.79218208695077e9
-R	79	solved	verified	0.00017499923706054688	exp(-(x^2))*(-(1//2) - (1//2)*(x^2))
-S	80	1.792182086952904e9
-R	80	solved	verified	1.5959601402282715	exp(a*x)*((a*cos(b*x)) / (a^2 + b^2) + (b*sin(b*x)) / (a^2 + b^2))
-S	81	1.792182088550904e9
-R	81	solved	verified	0.044281959533691406	(a*exp(a*x)*sin(b*x)) / (a^2 + b^2) + (-b*cos(b*x)*exp(a*x)) / (a^2 + b^2)
-S	82	1.792182088611137e9
-R	82	solved	verified	0.05047488212585449	(1//2)*log(1 + x^2) + atan(1 / x)*x
-S	83	1.792182088678699e9
-R	83	solved	verified	0.2780001163482666	(1//2)*log(2 + (-2sqrt(-1 + x^2)) / x) - (1//2)*log(2 + (2sqrt(-1 + x^2)) / x) + asec(x)*x
-S	84	1.792182088985134e9
-R	84	solved	verified	0.09586381912231445	-(1//2)*log(2 + (-2sqrt(-1 + x^2)) / x) + (1//2)*log(2 + (2sqrt(-1 + x^2)) / x) + acsc(x)*x
-S	85	1.79218208910554e9
-R	85	solved	verified	0.22974085807800293	-2x + 2asin(x)*sqrt(1 - (x^2)) + (asin(x)^2)*x
-S	86	1.792182089351485e9
-R	86	solved	verified	0.010699987411499023	-(1//2)*log(2 + 2sqrt(1 - (x^2))) + (1//2)*log(2 - 2sqrt(1 - (x^2))) + (-asin(x)) / x
-S	87	1.792182089364195e9
-R	87	error	none	0.0023491382598876953	RischNotImplemented: radical of a non-rational expression (a^2 - (x^2)): only radicals of rational functions of x are supported
-S	88	1.79218208936831e9
-R	88	solved	verified	0.0006120204925537109	2atan((1 - sqrt(1 - 2x - (x^2))) / x)
-S	89	1.792182089383087e9
-R	89	solved	verified	0.26781702041625977	atan(x / a) / a
-S	90	1.792182089652913e9
-R	90	solved	unverified	0.824275016784668	RootSum(α -> α*log((x) + (2a)*α), α^2 + (1 / (4a*b)) = 0)
-S	91	1.79218209059967e9
-R	91	solved	verified	0.10509204864501953	(2//7)*atan(sqrt(7)*(-(1//7) + (2//7)*x))*sqrt(7)
-S	92	1.792182090708063e9
-R	92	solved	verified	0.0003139972686767578	(1//2)*atan(x) - (1//2)*x + (1//2)*atan(x)*(x^2)
-S	93	1.792182090710281e9
-R	93	solved	verified	0.021646976470947266	sqrt(1 - (x^2))*(-(2//9) - (1//9)*(x^2)) + (1//3)*acos(x)*(x^3)
-S	94	1.792182090748046e9
-R	94	solved	verified	0.0003609657287597656	(1//2)*log(1 + x^2) - atan(x)*x + (atan(x)^2)*((1//2) + (1//2)*(x^2))
-S	95	1.792182090750561e9
-R	95	solved	verified	0.00047707557678222656	atan(sqrt(x)) - sqrt(x) + atan(sqrt(x))*x
-S	96	1.792182090752865e9
-R	96	solved	verified	0.00034308433532714844	atan(sqrt(x))^2
-S	97	1.792182090755013e9
-R	97	solved	verified	0.06342792510986328	(1//2)*asin(x) + (1//2)*sqrt(1 - (x^2))*x
-S	98	1.792182090820363e9
-R	98	solved	verified	0.8211939334869385	(exp(atan((-(1//2) + (1//2)*((sqrt(1 + x^2) + x)^2)) / (sqrt(1 + x^2) + x)))*(-(1//2) - sqrt(1 + x^2) - x + (1//2)*((sqrt(1 + x^2) + x)^2))) / (1 + (sqrt(1 + x^2) + x)^2)
-S	99	1.792182091643802e9
-R	99	solved	verified	0.0011780261993408203	(exp(atan((-(1//2) + (1//2)*((sqrt(1 + x^2) + x)^2)) / (sqrt(1 + x^2) + x)))*(-(1//2) + sqrt(1 + x^2) + x + (1//2)*((sqrt(1 + x^2) + x)^2))) / (1 + (sqrt(1 + x^2) + x)^2)
-S	100	1.792182091647307e9
-R	100	solved	verified	0.00018596649169921875	(1//2)*atan(x) + ((-1//2)*x) / (1 + x^2)
-S	101	1.792182091649387e9
-R	101	solved	verified	0.40377378463745117	atan(exp(x))
-S	102	1.792182092055083e9
-R	102	solved	verified	0.16379189491271973	(1//2)*log(1 + exp(x)^2) - x + (-atan(1 / exp(x))) / exp(x)
-S	103	1.79218209222103e9
-R	103	error	none	0.004189968109130859	RischNotImplemented: radical of a non-rational expression ((a + x) / (a - x)): only radicals of rational functions of x are supported
-S	104	1.792182092227087e9
-R	104	error	none	0.02001190185546875	RischNotImplemented: radical of a non-rational expression ((-a + x)*(b - x)): only radicals of rational functions of x are supported
-S	105	1.792182092249113e9
-R	105	error	none	0.017368078231811523	RischNotImplemented: radical of a non-rational expression ((-a + x)*(b - x)): only radicals of rational functions of x are supported
-S	106	1.792182092268322e9
-R	106	solved	verified	0.0002269744873046875	2log(-1 + x) + 3log(3 + x)
-S	107	1.792182092270917e9
-R	107	solved	verified	0.00014090538024902344	(1//4)*log(3 + x) + (7//4)*log(-1 + x)
-S	108	1.792182092273318e9
-R	108	solved	verified	0.0002338886260986328	log(1 + x) + 9log(-3 + x) + 2x + (1//2)*(x^2)
-S	109	1.792182092297951e9
-R	109	solved	verified	0.00038504600524902344	-(1//2)*log(2 + x) + (1//2)*log(x) + 2log(-1 + x)
-S	110	1.792182092301119e9
-R	110	solved	verified	0.00020384788513183594	-(1//2)*log(1 + x) + (3//2)*log(-1 + x) + 1 / (1 + x)
-S	111	1.79218209230368e9
-R	111	solved	verified	0.0003819465637207031	log(-1 + x) + log(1 + x + x^2) + (4//3)*atan(sqrt(3)*((1//3) + (2//3)*x))*sqrt(3)
-S	112	1.792182092312255e9
-R	112	solved	verified	0.0005249977111816406	(1//3)*log(-1 + x) + (1//3)*log(2 + x^2) + (1//6)*atan((-1//2)*sqrt(2)*x)*sqrt(2) + (1//2) / (2 + x^2)
-S	113	1.79218209234767e9
-R	113	solved	verified	0.2602570056915283	(1//4)*log(2 - cos(x)*sqrt(2) + sin(x)*sqrt(2))*sqrt(2) - (1//4)*log(2 + cos(x)*sqrt(2) - sin(x)*sqrt(2))*sqrt(2)
-S	114	1.792182092610272e9
-R	114	solved	verified	0.11928486824035645	(-1//2)*log(5 + 2sqrt(4 - (x^2)) - (x^2))
-S	115	1.792182092731631e9
-R	115	solved	verified	0.00017404556274414062	log(-10 + 3x + x^2)
-S	116	1.792182092734076e9
-R	116	solved	verified	0.00021195411682128906	-(1//2)*log(1 + x) - (3//2)*log(3 + x) + 2log(2 + x)
-S	117	1.792182092739935e9
-R	117	solved	verified	0.0002219676971435547	(2//9)*log(-1 + x) - (2//9)*log(2 + x) + (-1//3) / (-1 + x)
-S	118	1.792182092742476e9
-R	118	solved	verified	0.0003650188446044922	log(2 + x) - log(-1 + x) + 3log(x) - x + (1//2)*(x^2)
-S	119	1.792182092748004e9
-R	119	solved	verified	0.00026988983154296875	log(1 + x) + ((3//2)*x) / ((1//4) + x + x^2)
-S	120	1.792182092750245e9
+S	61	1.7921857885957e9
+R	61	solved	verified	0.08686089515686035	(1//2)*log(2 - 2cos(2x))
+S	62	1.792185788684462e9
+R	62	error	none	1.8128461837768555	RischNotImplemented: log of the constant RischIntegrate.Frac{RischIntegrate.UPoly{RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}}}(RischIntegrate.UPoly{RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}}(RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}[RischIntegrate.Frac{RischIntegrate.UPoly{Rational{BigInt}}}(RischIntegrate.UPoly{Rational{BigInt}}(Rational{BigInt
+S	63	1.792185790499415e9
+R	63	solved	verified	0.00027298927307128906	(2//27)*(x^3) - (2//9)*log(x)*(x^3) + (1//3)*(log(x)^2)*(x^3)
+S	64	1.792185790501774e9
+R	64	solved	verified	0.00015401840209960938	log(log(x))
+S	65	1.792185790518819e9
+R	65	solved	verified	0.0032219886779785156	(-1//2)*(log(1 - t)^2)
+S	66	1.792185790524044e9
+R	66	solved	verified	0.0015461444854736328	-2sqrt(1 + log(x)) + (2//3)*(sqrt(1 + log(x))^3)
+S	67	1.79218579053557e9
+R	67	solved	verified	0.0003039836883544922	-(3//128)*(x^4) + (3//32)*log(x)*(x^4) - (3//16)*(log(x)^2)*(x^4) + (1//4)*(log(x)^3)*(x^4)
+S	68	1.792185790538174e9
+R	68	solved	verified	0.4800760746002197	(1//3)*exp(x^3)
+S	69	1.792185791077108e9
+R	69	solved	verified	1.6337411403656006	(2exp(log(2)*sqrt(x))) / log(2)
+S	70	1.792185792714984e9
+R	70	solved	verified	1.349989891052246	(1//2)*exp(2sin(x))
+S	71	1.792185794067032e9
+R	71	solved	verified	0.13599514961242676	-(1//2)*cos(x)*exp(x) + (1//2)*exp(x)*sin(x)
+S	72	1.792185794205077e9
+R	72	solved	verified	0.00014019012451171875	(1//2)*cos(x)*exp(x) + (1//2)*exp(x)*sin(x)
+S	73	1.792185794207364e9
+R	73	solved	verified	0.0002110004425048828	-log(1 + exp(x)) + x
+S	74	1.792185794209448e9
+R	74	solved	verified	7.891654968261719e-5	exp(x)*(-1 + x)
+S	75	1.792185794211325e9
+R	75	solved	verified	7.414817810058594e-5	exp(-x)*(-1 - x)
+S	76	1.792185794213228e9
+R	76	solved	verified	9.679794311523438e-5	exp(x)*(2 - 2x + x^2)
+S	77	1.792185794215161e9
+R	77	solved	verified	0.00011110305786132812	exp(-2x)*(-(1//4) - (1//2)*x - (1//2)*(x^2))
+S	78	1.792185794217331e9
+R	78	solved	verified	0.02471613883972168	exp(sqrt(x))*(-2 + 2sqrt(x))
+S	79	1.792185794243971e9
+R	79	solved	verified	0.00020313262939453125	exp(-(x^2))*(-(1//2) - (1//2)*(x^2))
+S	80	1.792185794246191e9
+R	80	solved	verified	1.612593173980713	exp(a*x)*((a*cos(b*x)) / (a^2 + b^2) + (b*sin(b*x)) / (a^2 + b^2))
+S	81	1.792185795860831e9
+R	81	solved	verified	0.04504203796386719	(a*exp(a*x)*sin(b*x)) / (a^2 + b^2) + (-b*cos(b*x)*exp(a*x)) / (a^2 + b^2)
+S	82	1.792185795921776e9
+R	82	solved	verified	0.05065512657165527	(1//2)*log(1 + x^2) + atan(1 / x)*x
+S	83	1.792185795989536e9
+R	83	solved	verified	0.2760000228881836	(1//2)*log(2 + (-2sqrt(-1 + x^2)) / x) - (1//2)*log(2 + (2sqrt(-1 + x^2)) / x) + asec(x)*x
+S	84	1.792185796294144e9
+R	84	solved	verified	0.030426979064941406	-(1//2)*log(2 + (-2sqrt(-1 + x^2)) / x) + (1//2)*log(2 + (2sqrt(-1 + x^2)) / x) + acsc(x)*x
+S	85	1.792185796349417e9
+R	85	solved	verified	0.3103601932525635	-2x + 2asin(x)*sqrt(1 - (x^2)) + (asin(x)^2)*x
+S	86	1.79218579667599e9
+R	86	solved	verified	0.010581016540527344	-(1//2)*log(2 + 2sqrt(1 - (x^2))) + (1//2)*log(2 - 2sqrt(1 - (x^2))) + (-asin(x)) / x
+S	87	1.792185796688637e9
+R	87	error	none	0.0023300647735595703	RischNotImplemented: radical of a non-rational expression (a^2 - (x^2)): only radicals of rational functions of x are supported
+S	88	1.79218579669275e9
+R	88	solved	verified	0.0005409717559814453	2atan((1 - sqrt(1 - 2x - (x^2))) / x)
+S	89	1.792185796707934e9
+R	89	solved	verified	0.2698030471801758	atan(x / a) / a
+S	90	1.792185796979808e9
+R	90	solved	unverified	0.8439691066741943	RootSum(α -> α*log((x) + (2a)*α), α^2 + (1 / (4a*b)) = 0)
+S	91	1.79218579794661e9
+R	91	solved	verified	0.10566902160644531	(2//7)*atan(sqrt(7)*(-(1//7) + (2//7)*x))*sqrt(7)
+S	92	1.792185798055523e9
+R	92	solved	verified	0.00026488304138183594	(1//2)*atan(x) - (1//2)*x + (1//2)*atan(x)*(x^2)
+S	93	1.792185798057693e9
+R	93	solved	verified	0.022202014923095703	sqrt(1 - (x^2))*(-(2//9) - (1//9)*(x^2)) + (1//3)*acos(x)*(x^3)
+S	94	1.792185798095951e9
+R	94	solved	verified	0.0003590583801269531	(1//2)*log(1 + x^2) - atan(x)*x + (atan(x)^2)*((1//2) + (1//2)*(x^2))
+S	95	1.792185798098504e9
+R	95	solved	verified	0.0005249977111816406	atan(sqrt(x)) - sqrt(x) + atan(sqrt(x))*x
+S	96	1.792185798100879e9
+R	96	solved	verified	0.00035500526428222656	atan(sqrt(x))^2
+S	97	1.792185798103061e9
+R	97	solved	verified	0.06329607963562012	(1//2)*asin(x) + (1//2)*sqrt(1 - (x^2))*x
+S	98	1.792185798168255e9
+R	98	solved	verified	0.7938930988311768	(exp(atan((-(1//2) + (1//2)*((sqrt(1 + x^2) + x)^2)) / (sqrt(1 + x^2) + x)))*(-(1//2) - sqrt(1 + x^2) - x + (1//2)*((sqrt(1 + x^2) + x)^2))) / (1 + (sqrt(1 + x^2) + x)^2)
+S	99	1.792185798964518e9
+R	99	solved	verified	0.0011560916900634766	(exp(atan((-(1//2) + (1//2)*((sqrt(1 + x^2) + x)^2)) / (sqrt(1 + x^2) + x)))*(-(1//2) + sqrt(1 + x^2) + x + (1//2)*((sqrt(1 + x^2) + x)^2))) / (1 + (sqrt(1 + x^2) + x)^2)
+S	100	1.792185798967995e9
+R	100	solved	verified	0.00019311904907226562	(1//2)*atan(x) + ((-1//2)*x) / (1 + x^2)
+S	101	1.79218579897007e9
+R	101	solved	verified	0.4261958599090576	atan(exp(x))
+S	102	1.792185799398236e9
+R	102	solved	verified	0.16456913948059082	(1//2)*log(1 + exp(x)^2) - x + (-atan(1 / exp(x))) / exp(x)
+S	103	1.792185799564879e9
+R	103	error	none	0.004144906997680664	RischNotImplemented: radical of a non-rational expression ((a + x) / (a - x)): only radicals of rational functions of x are supported
+S	104	1.792185799570862e9
+R	104	error	none	0.019940853118896484	RischNotImplemented: radical of a non-rational expression ((-a + x)*(b - x)): only radicals of rational functions of x are supported
+S	105	1.792185799592822e9
+R	105	error	none	0.017145872116088867	RischNotImplemented: radical of a non-rational expression ((-a + x)*(b - x)): only radicals of rational functions of x are supported
+S	106	1.792185799611853e9
+R	106	solved	verified	0.00022602081298828125	2log(-1 + x) + 3log(3 + x)
+S	107	1.792185799614463e9
+R	107	solved	verified	0.0001468658447265625	(1//4)*log(3 + x) + (7//4)*log(-1 + x)
+S	108	1.792185799616868e9
+R	108	solved	verified	0.0002281665802001953	log(1 + x) + 9log(-3 + x) + 2x + (1//2)*(x^2)
+S	109	1.792185799641996e9
+R	109	solved	verified	0.0003688335418701172	-(1//2)*log(2 + x) + (1//2)*log(x) + 2log(-1 + x)
+S	110	1.792185799645091e9
+R	110	solved	verified	0.00021195411682128906	-(1//2)*log(1 + x) + (3//2)*log(-1 + x) + 1 / (1 + x)
+S	111	1.792185799647657e9
+R	111	solved	verified	0.0004341602325439453	log(-1 + x) + log(1 + x + x^2) + (4//3)*atan(sqrt(3)*((1//3) + (2//3)*x))*sqrt(3)
+S	112	1.792185799656436e9
+R	112	solved	verified	0.0005350112915039062	(1//3)*log(-1 + x) + (1//3)*log(2 + x^2) + (1//6)*atan((-1//2)*sqrt(2)*x)*sqrt(2) + (1//2) / (2 + x^2)
+S	113	1.792185799691783e9
+R	113	solved	verified	0.2589569091796875	(1//4)*log(2 - cos(x)*sqrt(2) + sin(x)*sqrt(2))*sqrt(2) - (1//4)*log(2 + cos(x)*sqrt(2) - sin(x)*sqrt(2))*sqrt(2)
+S	114	1.792185799953089e9
+R	114	solved	verified	0.11996817588806152	(-1//2)*log(5 + 2sqrt(4 - (x^2)) - (x^2))
+S	115	1.792185800075139e9
+R	115	solved	verified	0.00015997886657714844	log(-10 + 3x + x^2)
+S	116	1.792185800077542e9
+R	116	solved	verified	0.0001850128173828125	-(1//2)*log(1 + x) - (3//2)*log(3 + x) + 2log(2 + x)
+S	117	1.792185800083446e9
+R	117	solved	verified	0.00020003318786621094	(2//9)*log(-1 + x) - (2//9)*log(2 + x) + (-1//3) / (-1 + x)
+S	118	1.792185800085976e9
+R	118	solved	verified	0.00033283233642578125	log(2 + x) - log(-1 + x) + 3log(x) - x + (1//2)*(x^2)
+S	119	1.792185800091543e9
+R	119	solved	verified	0.00027298927307128906	log(1 + x) + ((3//2)*x) / ((1//4) + x + x^2)
+S	120	1.792185800093757e9
 R	120	solved	verified	0.00019598007202148438	log(1 + x + x^2) + 2log(-1 + x)
-S	121	1.7921820927527e9
-R	121	solved	verified	0.03217816352844238	(1//3)*atan(x) + (8//3)*atan((-1//2)*x) + x
-S	122	1.79218209278686e9
-R	122	solved	verified	0.0001671314239501953	-log(1 + x) + 2log(x)
-S	123	1.792182092789017e9
-R	123	solved	verified	0.00020885467529296875	log(x) - (1//2)*log(1 + x^2) + (1//2) / (1 + x^2)
-S	124	1.792182092791365e9
-R	124	solved	verified	0.00048804283142089844	(1//8)*log(1 + x) + 2log(2 + x) - (17//8)*log(3 + x) + (17 + (25//2)*x + (9//4)*(x^2)) / (18 + 21x + 8(x^2) + x^3)
-S	125	1.792182092793877e9
-R	125	solved	verified	9.107589721679688e-5	log(1 + x) + 1 / (1 + x)
-S	126	1.792182092795794e9
-R	126	solved	verified	0.00012993812561035156	(1//2)*log(-1 + x^2) - log(x)
-S	127	1.792182092798201e9
-R	127	solved	verified	0.00021314620971679688	(4//5)*log(-2 + x) - (9//5)*log(3 + x) + x
-S	128	1.792182092800731e9
-R	128	solved	verified	0.00010895729064941406	log(-2 + x) + -4 / (-2 + x)
-S	129	1.792182092803249e9
-R	129	solved	verified	0.00023293495178222656	atan(2 - x) + -1 / (-2 + x)
-S	130	1.792182092805404e9
-R	130	solved	verified	0.00024890899658203125	-(3//2)*log(x) - (5//2)*log(2 + x) + 4log(1 + x)
-S	131	1.792182092807584e9
-R	131	solved	verified	0.00017905235290527344	-(1//4)*log(-1 + x) + (1//4)*log(1 + x) + ((-1//2)*x) / (-1 + x^2)
-S	132	1.792182092810086e9
-R	132	solved	verified	0.00016498565673828125	-(1//3)*log(1 + x + x^2) + (2//3)*log(-1 + x)
-S	133	1.792182092812467e9
-R	133	solved	verified	0.000202178955078125	log(x) + 1 / (1 + x^2)
-S	134	1.792182092814733e9
-R	134	solved	verified	0.00019884109497070312	-(1//8)*log(x) + (1//8)*log(-2 + x) + ((1//4) + (1//4)*x) / (x^2)
-S	135	1.792182092817206e9
-R	135	solved	verified	0.00020599365234375	atan(x) + log(x) - (1//2)*log(1 + x^2) - x
-S	136	1.792182092819294e9
-R	136	solved	verified	0.00020194053649902344	(1//2)*atan(-x) + (1//4)*log(-1 + x) - (1//4)*log(1 + x)
-S	137	1.792182092821723e9
-R	137	solved	verified	0.3041980266571045	(1//4)*atan(-1 + sqrt(2)*x)*sqrt(2) + (1//4)*atan(1 + sqrt(2)*x)*sqrt(2) + (1//8)*log(1 + sqrt(2)*x + x^2)*sqrt(2) - (1//8)*log(1 - sqrt(2)*x + x^2)*sqrt(2)
-S	138	1.792182093128001e9
-R	138	solved	verified	0.0002739429473876953	atan(1 + x) + 1 / (2 + 2x + x^2)
-S	139	1.792182093130502e9
-R	139	solved	verified	0.00023794174194335938	(-x) / (1 + x + x^5)
-S	140	1.792182093132607e9
-R	140	solved	verified	1.537426233291626	(1//10)*atan((cos(x)*(2 - (4//5)*sqrt(5)) + sin(x)*(1 - (2//5)*sqrt(5))) / (1 + cos(x)*(-1 + (2//5)*sqrt(5)) + sin(x)*(2 - (4//5)*sqrt(5))))*sqrt(5) - (1//10)*atan((2 + sin(x) + (4//5)*sqrt(5)) / (-1 + cos(x) - (2//5)*sqrt(5)))*sqrt(5) + (1//10)*sqrt(5)*x
-S	141	1.792182094672248e9
-R	141	error	none	0.16008901596069336	RischNotImplemented: the residues are algebraic constants of degree ≥ 2 over the constant field RischIntegrate.Frac{RischIntegrate.UPoly{RischIntegrate.QI}} (RootSum inside towers is implemented over ℚ and ℚ(i) only)
-S	142	1.79218209483418e9
-R	142	solved	verified	1.3228018283843994	(1//6)*log(2 + cos(x) + sin(x)*sqrt(3))*sqrt(3) - (1//6)*log(2 + cos(x) - sin(x)*sqrt(3))*sqrt(3)
-S	143	1.792182096159122e9
-R	143	solved	verified	0.2675769329071045	-(4//3)*atan(sin(x) / (2 + cos(x) + sqrt(3)))*sqrt(3) + (2//3)*sqrt(3)*x
-S	144	1.792182096431406e9
-R	144	solved	verified	0.05459308624267578	x - (1//2)*atan((sin(2x)*(3 - 2sqrt(2))) / (1 + cos(2x)*(-3 + 2sqrt(2))))*sqrt(2) - (1//2)*sqrt(2)*x
-S	145	1.792182096488148e9
-R	145	solved	verified	0.4566371440887451	atan((2sin(4x) + ((-4a + 4b)*sin(2x)) / (a + b)) / (2cos(4x) + (6(a^2) - 4a*b + 6(b^2)) / (a^2 + 2a*b + b^2) + ((-8a + 8b)*cos(2x)) / (a + b))) / (2a*b) + (-atan((2sin(4x) + ((4a + 4b)*sin(2x)) / (-a + b)) / (2cos(4x) + (6(a^2) + 4a*b + 6(b^2)) / (a^2 - 2a*b + b^2) + ((8a + 8b)*cos(2x)) / (-a + b)))) / (2a*b)
-S	146	1.792182096947366e9
-R	146	solved	verified	0.022210121154785156	(((-2(a^2) + 2(b^2))*sin(2x)) / (a^4 + 2(a^2)*(b^2) + b^4) + (-4a*b*cos(2x)) / (a^4 + 2(a^2)*(b^2) + b^4)) / (2 + ((-2(a^2) + 2(b^2))*cos(2x)) / (a^2 + b^2) + (4a*b*sin(2x)) / (a^2 + b^2))
-S	147	1.79218209697184e9
-R	147	solved	verified	0.0018758773803710938	-(1//2)*log(2 + 2sin(x)) + (1//2)*x
-S	148	1.792182096975826e9
-R	148	solved	verified	1.1853458881378174	3atan((sqrt(3) - sqrt(3 - (x^2))) / x) + ((-3(sqrt(3 - (x^2)) - sqrt(3))) / x + 3(((sqrt(3 - (x^2)) - sqrt(3)) / x)^3)) / (1 + 2(((sqrt(3 - (x^2)) - sqrt(3)) / x)^2) + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^4)
-S	149	1.792182098163368e9
-R	149	solved	verified	0.008723974227905273	(-2sqrt(3)) / (1 + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^2)
-S	150	1.792182098174145e9
-R	150	solved	verified	0.11186504364013672	(2sqrt(3)) / (1 + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^2) + (1//2)*log(((sqrt(3 - (x^2)) - sqrt(3)) / x)^2)*sqrt(3)
-S	151	1.792182098288176e9
-R	151	solved	verified	0.0008051395416259766	(1//4)*log(((1//2) + sqrt(x + x^2) + x)^2) + (-(1//8) + (1//4)*(sqrt(x + x^2) + x) + (1//2)*((sqrt(x + x^2) + x)^2)) / ((1//2) + sqrt(x + x^2) + x)
-S	152	1.792182098291263e9
-R	152	solved	verified	0.0004239082336425781	(5//2)*log(sqrt(5 + x^2) + x) + (-(25//8) + (1//8)*((sqrt(5 + x^2) + x)^4)) / ((sqrt(5 + x^2) + x)^2)
-S	153	1.792182098293625e9
-R	153	solved	verified	0.00038814544677734375	-(1//2)*log((1//2) + sqrt(1 + x + x^2) + x) + ((3//8) + (1//4)*(sqrt(1 + x + x^2) + x) + (1//2)*((sqrt(1 + x + x^2) + x)^2)) / ((1//2) + sqrt(1 + x + x^2) + x)
-S	154	1.792182098295954e9
-R	154	solved	verified	0.0004379749298095703	(1//2)*log(((1//2) + sqrt(x + x^2) + x)^2)
-S	155	1.792182098298237e9
-R	155	solved	verified	0.18555092811584473	-asin((1//3) + (2//3)*x) + (-sqrt(2 - x - (x^2))) / x - (1//8)*log((16//9) - (4//9)*x - (8//9)*sqrt(2 - x - (x^2))*sqrt(2))*sqrt(2) + (1//8)*log((16//9) - (4//9)*x + (8//9)*sqrt(2 - x - (x^2))*sqrt(2))*sqrt(2)
-S	156	1.792182098485982e9
-R	156	solved	verified	0.05554080009460449	PolyLog.li2(1 / (1 + t)) + (1//2)*(log(1 + t)^2)
-S	157	1.79218209856571e9
-R	157	solved	verified	0.027842044830322266	sin(x)
-S	158	1.792182098595461e9
-R	158	solved	verified	0.440960168838501	SpecialFunctions.expinti(t)
-S	159	1.792182099064712e9
-R	159	solved	verified	0.8554880619049072	SpecialFunctions.expinti(a*t)
-S	160	1.792182099922191e9
-R	160	solved	verified	0.020751953125	SpecialFunctions.expinti(t) + (-exp(t)) / t
-S	161	1.792182099945196e9
-R	161	solved	verified	0.0002739429473876953	-SpecialFunctions.expinti(1 / t) + exp(1 / t)*t
-S	162	1.792182099947333e9
-R	162	solved	verified	0.0007739067077636719	exp(-1 - a)*SpecialFunctions.expinti(1 + a - t)
-S	163	1.792182099949961e9
-R	163	solved	verified	0.03596210479736328	(1//2)*exp(-1)*SpecialFunctions.expinti(1 + t^2)
-S	164	1.792182099987905e9
-R	164	solved	verified	0.0004520416259765625	(-exp(t)) / (1 + t) + exp(-1)*SpecialFunctions.expinti(1 + t)
-S	165	1.792182099990312e9
-R	165	error	none	0.3677070140838623	NotElementary: no elementary antiderivative: the Risch differential equation y' + 1·u'·y = a has no solution in the coefficient field, so the coefficient of exp(u)^1 has no elementary integral
-S	166	1.792182100366257e9
-R	166	solved	verified	0.00017714500427246094	(-1 - t) / exp(t)
-S	167	1.792182100368389e9
-R	167	solved	verified	0.00014209747314453125	(-2 - 2t - (t^2)) / exp(t)
-S	168	1.792182100370399e9
-R	168	solved	verified	0.00014495849609375	(-6 - 6t - 3(t^2) - (t^3)) / exp(t)
-S	169	1.792182100372443e9
-R	169	solved	verified	3.5714499950408936	((a*c + b*d)*x) / (a^2 + b^2) + (((1//2)*a*d - (1//2)*b*c)*log(2 + ((-2(a^2) + 2(b^2))*cos(2x)) / (a^2 + b^2) + (4a*b*sin(2x)) / (a^2 + b^2))) / (a^2 + b^2)
-S	170	1.792182103946337e9
-R	170	solved	verified	0.0004208087921142578	SpecialFunctions.expinti(log(t))
-S	171	1.792182103948632e9
-R	171	solved	verified	0.0031669139862060547	SpecialFunctions.expinti(log(t)) + (-t) / log(t)
-S	172	1.792182103953671e9
-R	172	error	none	4.3645031452178955	NotElementary: no elementary antiderivative: the Risch differential equation y' + -1·u'·y = a has no solution in the coefficient field, so the coefficient of exp(u)^-1 has no elementary integral
-S	173	1.792182108319968e9
-R	173	solved	verified	0.00034689903259277344	exp(2)*SpecialFunctions.expinti(-2 + 2t)
-S	174	1.792182108322275e9
-R	174	solved	verified	0.00033092498779296875	exp(4)*SpecialFunctions.expinti(-4 + 2x) - exp(2)*SpecialFunctions.expinti(-2 + 2x)
-S	175	1.792182108324571e9
-R	175	error	none	0.005309104919433594	RischNotImplemented: radicals of 1 + t^3: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
+S	121	1.792185800096195e9
+R	121	solved	verified	0.032160043716430664	(1//3)*atan(x) + (8//3)*atan((-1//2)*x) + x
+S	122	1.792185800130338e9
+R	122	solved	verified	0.00017499923706054688	-log(1 + x) + 2log(x)
+S	123	1.792185800132504e9
+R	123	solved	verified	0.00021886825561523438	log(x) - (1//2)*log(1 + x^2) + (1//2) / (1 + x^2)
+S	124	1.79218580013485e9
+R	124	solved	verified	0.0004940032958984375	(1//8)*log(1 + x) + 2log(2 + x) - (17//8)*log(3 + x) + (17 + (25//2)*x + (9//4)*(x^2)) / (18 + 21x + 8(x^2) + x^3)
+S	125	1.792185800137344e9
+R	125	solved	verified	9.298324584960938e-5	log(1 + x) + 1 / (1 + x)
+S	126	1.792185800139284e9
+R	126	solved	verified	0.00016307830810546875	(1//2)*log(-1 + x^2) - log(x)
+S	127	1.792185800141757e9
+R	127	solved	verified	0.00016880035400390625	(4//5)*log(-2 + x) - (9//5)*log(3 + x) + x
+S	128	1.792185800144202e9
+R	128	solved	verified	0.0001010894775390625	log(-2 + x) + -4 / (-2 + x)
+S	129	1.792185800146636e9
+R	129	solved	verified	0.0002300739288330078	atan(2 - x) + -1 / (-2 + x)
+S	130	1.792185800148761e9
+R	130	solved	verified	0.0002739429473876953	-(3//2)*log(x) - (5//2)*log(2 + x) + 4log(1 + x)
+S	131	1.792185800150977e9
+R	131	solved	verified	0.00018095970153808594	-(1//4)*log(-1 + x) + (1//4)*log(1 + x) + ((-1//2)*x) / (-1 + x^2)
+S	132	1.792185800153397e9
+R	132	solved	verified	0.00016117095947265625	-(1//3)*log(1 + x + x^2) + (2//3)*log(-1 + x)
+S	133	1.792185800155785e9
+R	133	solved	verified	0.00018310546875	log(x) + 1 / (1 + x^2)
+S	134	1.792185800157985e9
+R	134	solved	verified	0.0001881122589111328	-(1//8)*log(x) + (1//8)*log(-2 + x) + ((1//4) + (1//4)*x) / (x^2)
+S	135	1.792185800160426e9
+R	135	solved	verified	0.00021314620971679688	atan(x) + log(x) - (1//2)*log(1 + x^2) - x
+S	136	1.792185800162526e9
+R	136	solved	verified	0.00020885467529296875	(1//2)*atan(-x) + (1//4)*log(-1 + x) - (1//4)*log(1 + x)
+S	137	1.792185800164936e9
+R	137	solved	verified	0.27735185623168945	(1//4)*atan(-1 + sqrt(2)*x)*sqrt(2) + (1//4)*atan(1 + sqrt(2)*x)*sqrt(2) + (1//8)*log(1 + sqrt(2)*x + x^2)*sqrt(2) - (1//8)*log(1 - sqrt(2)*x + x^2)*sqrt(2)
+S	138	1.792185800444383e9
+R	138	solved	verified	0.0002830028533935547	atan(1 + x) + 1 / (2 + 2x + x^2)
+S	139	1.792185800446898e9
+R	139	solved	verified	0.0002429485321044922	(-x) / (1 + x + x^5)
+S	140	1.792185800449053e9
+R	140	solved	verified	1.5438690185546875	(1//10)*atan((cos(x)*(2 - (4//5)*sqrt(5)) + sin(x)*(1 - (2//5)*sqrt(5))) / (1 + cos(x)*(-1 + (2//5)*sqrt(5)) + sin(x)*(2 - (4//5)*sqrt(5))))*sqrt(5) - (1//10)*atan((2 + sin(x) + (4//5)*sqrt(5)) / (-1 + cos(x) - (2//5)*sqrt(5)))*sqrt(5) + (1//10)*sqrt(5)*x
+S	141	1.792185801995136e9
+R	141	error	none	0.18943095207214355	RischNotImplemented: the residues are algebraic constants of degree ≥ 2 over the constant field RischIntegrate.Frac{RischIntegrate.UPoly{RischIntegrate.QI}} (RootSum inside towers is implemented over ℚ and ℚ(i) only)
+S	142	1.79218580218645e9
+R	142	solved	verified	1.2528350353240967	(1//6)*log(2 + cos(x) + sin(x)*sqrt(3))*sqrt(3) - (1//6)*log(2 + cos(x) - sin(x)*sqrt(3))*sqrt(3)
+S	143	1.792185803441426e9
+R	143	solved	verified	0.2969701290130615	-(4//3)*atan(sin(x) / (2 + cos(x) + sqrt(3)))*sqrt(3) + (2//3)*sqrt(3)*x
+S	144	1.792185803743041e9
+R	144	solved	verified	0.05436301231384277	x - (1//2)*atan((sin(2x)*(3 - 2sqrt(2))) / (1 + cos(2x)*(-3 + 2sqrt(2))))*sqrt(2) - (1//2)*sqrt(2)*x
+S	145	1.792185803799626e9
+R	145	solved	verified	0.5061562061309814	atan((2sin(4x) + ((-4a + 4b)*sin(2x)) / (a + b)) / (2cos(4x) + (6(a^2) - 4a*b + 6(b^2)) / (a^2 + 2a*b + b^2) + ((-8a + 8b)*cos(2x)) / (a + b))) / (2a*b) + (-atan((2sin(4x) + ((4a + 4b)*sin(2x)) / (-a + b)) / (2cos(4x) + (6(a^2) + 4a*b + 6(b^2)) / (a^2 - 2a*b + b^2) + ((8a + 8b)*cos(2x)) / (-a + b)))) / (2a*b)
+S	146	1.792185804308323e9
+R	146	solved	verified	0.02269291877746582	(((-2(a^2) + 2(b^2))*sin(2x)) / (a^4 + 2(a^2)*(b^2) + b^4) + (-4a*b*cos(2x)) / (a^4 + 2(a^2)*(b^2) + b^4)) / (2 + ((-2(a^2) + 2(b^2))*cos(2x)) / (a^2 + b^2) + (4a*b*sin(2x)) / (a^2 + b^2))
+S	147	1.792185804333346e9
+R	147	solved	verified	0.0020160675048828125	-(1//2)*log(2 + 2sin(x)) + (1//2)*x
+S	148	1.792185804337554e9
+R	148	solved	verified	1.193263053894043	3atan((sqrt(3) - sqrt(3 - (x^2))) / x) + ((-3(sqrt(3 - (x^2)) - sqrt(3))) / x + 3(((sqrt(3 - (x^2)) - sqrt(3)) / x)^3)) / (1 + 2(((sqrt(3 - (x^2)) - sqrt(3)) / x)^2) + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^4)
+S	149	1.792185805533007e9
+R	149	solved	verified	0.008927106857299805	(-2sqrt(3)) / (1 + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^2)
+S	150	1.792185805543986e9
+R	150	solved	verified	0.11191105842590332	(2sqrt(3)) / (1 + ((sqrt(3 - (x^2)) - sqrt(3)) / x)^2) + (1//2)*log(((sqrt(3 - (x^2)) - sqrt(3)) / x)^2)*sqrt(3)
+S	151	1.792185805658054e9
+R	151	solved	verified	0.0008299350738525391	(1//4)*log(((1//2) + sqrt(x + x^2) + x)^2) + (-(1//8) + (1//4)*(sqrt(x + x^2) + x) + (1//2)*((sqrt(x + x^2) + x)^2)) / ((1//2) + sqrt(x + x^2) + x)
+S	152	1.792185805661234e9
+R	152	solved	verified	0.0004458427429199219	(5//2)*log(sqrt(5 + x^2) + x) + (-(25//8) + (1//8)*((sqrt(5 + x^2) + x)^4)) / ((sqrt(5 + x^2) + x)^2)
+S	153	1.792185805663625e9
+R	153	solved	verified	0.0003910064697265625	-(1//2)*log((1//2) + sqrt(1 + x + x^2) + x) + ((3//8) + (1//4)*(sqrt(1 + x + x^2) + x) + (1//2)*((sqrt(1 + x + x^2) + x)^2)) / ((1//2) + sqrt(1 + x + x^2) + x)
+S	154	1.792185805665959e9
+R	154	solved	verified	0.0004210472106933594	(1//2)*log(((1//2) + sqrt(x + x^2) + x)^2)
+S	155	1.792185805668242e9
+R	155	solved	verified	0.19024109840393066	-asin((1//3) + (2//3)*x) + (-sqrt(2 - x - (x^2))) / x - (1//8)*log((16//9) - (4//9)*x - (8//9)*sqrt(2 - x - (x^2))*sqrt(2))*sqrt(2) + (1//8)*log((16//9) - (4//9)*x + (8//9)*sqrt(2 - x - (x^2))*sqrt(2))*sqrt(2)
+S	156	1.792185805860685e9
+R	156	solved	verified	0.05617499351501465	PolyLog.li2(1 / (1 + t)) + (1//2)*(log(1 + t)^2)
+S	157	1.792185805941795e9
+R	157	solved	verified	0.02857208251953125	sin(x)
+S	158	1.792185805972326e9
+R	158	solved	verified	0.44489192962646484	SpecialFunctions.expinti(t)
+S	159	1.792185806445714e9
+R	159	solved	verified	0.8556959629058838	SpecialFunctions.expinti(a*t)
+S	160	1.792185807303427e9
+R	160	solved	verified	0.0212099552154541	SpecialFunctions.expinti(t) + (-exp(t)) / t
+S	161	1.79218580732687e9
+R	161	solved	verified	0.0002961158752441406	-SpecialFunctions.expinti(1 / t) + exp(1 / t)*t
+S	162	1.792185807329079e9
+R	162	solved	verified	0.0008230209350585938	exp(-1 - a)*SpecialFunctions.expinti(1 + a - t)
+S	163	1.792185807331786e9
+R	163	solved	verified	0.03695988655090332	(1//2)*exp(-1)*SpecialFunctions.expinti(1 + t^2)
+S	164	1.792185807370785e9
+R	164	solved	verified	0.00045800209045410156	(-exp(t)) / (1 + t) + exp(-1)*SpecialFunctions.expinti(1 + t)
+S	165	1.792185807373229e9
+R	165	error	none	0.3680691719055176	NotElementary: no elementary antiderivative: the Risch differential equation y' + 1·u'·y = a has no solution in the coefficient field, so the coefficient of exp(u)^1 has no elementary integral
+S	166	1.792185807749491e9
+R	166	solved	verified	0.0001800060272216797	(-1 - t) / exp(t)
+S	167	1.792185807751599e9
+R	167	solved	verified	0.000141143798828125	(-2 - 2t - (t^2)) / exp(t)
+S	168	1.792185807753593e9
+R	168	solved	verified	0.00015211105346679688	(-6 - 6t - 3(t^2) - (t^3)) / exp(t)
+S	169	1.792185807755625e9
+R	169	solved	verified	3.631894826889038	((a*c + b*d)*x) / (a^2 + b^2) + (((1//2)*a*d - (1//2)*b*c)*log(2 + ((-2(a^2) + 2(b^2))*cos(2x)) / (a^2 + b^2) + (4a*b*sin(2x)) / (a^2 + b^2))) / (a^2 + b^2)
+S	170	1.792185811390003e9
+R	170	solved	verified	0.0004398822784423828	SpecialFunctions.expinti(log(t))
+S	171	1.792185811392423e9
+R	171	solved	verified	0.0034952163696289062	SpecialFunctions.expinti(log(t)) + (-t) / log(t)
+S	172	1.792185811397819e9
+R	172	error	none	4.3644959926605225	NotElementary: no elementary antiderivative: the Risch differential equation y' + -1·u'·y = a has no solution in the coefficient field, so the coefficient of exp(u)^-1 has no elementary integral
+S	173	1.792185815764147e9
+R	173	solved	verified	0.00032806396484375	exp(2)*SpecialFunctions.expinti(-2 + 2t)
+S	174	1.792185815766452e9
+R	174	solved	verified	0.0003349781036376953	exp(4)*SpecialFunctions.expinti(-4 + 2x) - exp(2)*SpecialFunctions.expinti(-2 + 2x)
+S	175	1.792185815768729e9
+R	175	error	none	0.005266904830932617	RischNotImplemented: radicals of 1 + t^3: supported are u^(p/q) with u = (ax+b)/(cx+d), and √ of a quadratic polynomial; this needs the algebraic Risch algorithm or is not elementary in general
 D
-T	39.84123706817627	120.0
+T	40.79828095436096	120.0
