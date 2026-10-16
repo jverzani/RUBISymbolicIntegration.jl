@@ -127,10 +127,12 @@ Then add it to the loop in `run_all.jl` and to `METHODS` in `build.jl`.
 out" section is written by hand in `template.html`; check it against the new
 results and edit it before publishing.
 
-The package README has a badge with the number of apostol problems verified
-(the best of this package's rows, currently `rubi_se`) that links to the page
-through htmlpreview.github.io, from `main`. It is a static badge: update the
-number in the badge URL after a run that changes it.
+The package README has a badge comparing the number of apostol problems
+verified by `rubi` (this package, SymbolicUtils) and `si_rules`
+(SymbolicIntegration's `RuleBasedMethod`, Symbolics), and a sentence that
+also gives `rubi_se`. The badge links to the page through htmlpreview.github.io,
+from `main`. It is a static badge: after a run that changes these numbers,
+update them in the badge URL, its alt text and that sentence.
 
 The page was also published as a claude.ai artifact:
 https://claude.ai/artifact/5xFfniAuWyEt1REQHVKDTg. To update it, ask Claude
