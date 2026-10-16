@@ -63,7 +63,10 @@ _substitute(x::SymType, args::Pair...;kwargs...) = begin
     end
     x
 end
-_simplify(x::SymType, args...; kwargs...) = SimpleExpressions.simplify(x)
+# with `expand = true` (as the frontend asks when no rule applies), multiply
+# out first, e.g. (x - a)*(b - x) to a quadratic that a rule matches
+_simplify(x::SymType, args...; expand = false, kwargs...) =
+    SimpleExpressions.simplify(expand ? SimpleExpressions.expand(x) : x)
 _expand(x::SymType) = x
 _derivative(f,dx::SymType) = begin
     diff(f, dx)
