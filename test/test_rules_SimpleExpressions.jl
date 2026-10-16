@@ -7,6 +7,6 @@ const I = SimpleExpressions.SymbolicNumber(im)
 include("rules_test_common.jl")
 include("problems_apostol.jl")
 
-test_problems("apostol (SimpleExpressions)", apostol; min_passed = 129)
+test_problems("apostol (SimpleExpressions)", apostol; min_passed = 133)
 
 end

@@ -264,7 +264,24 @@ function ext_expand(expr, x)
     end
     #case6 = @rule (~u::p)/(~v::p) => exponent_of(~u,x)>=exponent_of(~v,x) ? polynomial_divide(~u,~v,x) : nothing
 
+    # Rubi's ExpandIntegrand expands a rational function in partial fractions,
+    # which is not done here. Multiplying out its denominator instead loses the
+    # factors the other rules use, so leave such an integrand as it is.
+    _has_denominator(expr, x) && return expr
     return _expand(expr)
+end
+
+# does `ex` divide by something containing `x`: a quotient, or a power with a
+# negative exponent?
+function _has_denominator(ex, x)
+    iscall(ex) || return false
+    op, args = Symbol(operation(ex)), arguments(ex)
+    op === :/ && contains_var(args[2], x) && return true
+    if op === :^ && contains_var(args[1], x)
+        k = unwrap_const(args[2])
+        isa(k, Real) && k < 0 && return true
+    end
+    any(a -> _has_denominator(a, x), args)
 end
 
 function ext_expand(u, v, x)

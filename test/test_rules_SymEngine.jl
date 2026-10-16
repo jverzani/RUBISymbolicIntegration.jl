@@ -7,6 +7,6 @@ const I = SymEngine.IM
 include("rules_test_common.jl")
 include("problems_apostol.jl")
 
-test_problems("apostol (SymEngine)", apostol; min_passed = 126)
+test_problems("apostol (SymEngine)", apostol; min_passed = 128)
 
 end

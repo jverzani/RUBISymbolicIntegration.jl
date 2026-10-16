@@ -25,16 +25,17 @@ function repeated_prewalk(expr, n=50)
             return repeated_prewalk(new_expr, n-1)
 
         else
-
-            # TODO Can this be a bad idea sometimes?
-            simplified_expr = _simplify(expr, expand=true)
-            if simplified_expr !== expr
-                (new_expr,success) = apply_rules(simplified_expr)
-                if !success
-                    return new_expr
-                end
+            # No rule applies: try the integral simplified (with expand=true),
+            # then fully expanded. Which form a rule matches depends on the
+            # type: e.g. -a*b + (a + b)*x - x^2 or 1//2 + x//2 + x^2//2.
+            for alt in (_simplify(expr, expand=true), _expand(expr))
+                isequal(alt, expr) && continue
+                (new_expr, success) = apply_rules(alt)
+                success || continue
+                !contains_int(new_expr) && return new_expr
+                return repeated_prewalk(new_expr, n-1)
             end
-            return new_expr
+            return expr
         end
     end
 
