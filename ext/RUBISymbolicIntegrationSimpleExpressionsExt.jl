@@ -108,11 +108,13 @@ end
 
 USE_GAMMA = false
 
-# Special Functions
-Gamma(x::SymType, args...; kwargs...) =
-    SymFunction("Gamma")(x, args...; kwargs...)
-LogGamma(x::SymType, args...; kwargs...) =
-    SymFunction("Gamma")(x, args...; kwargs...)
+# Special Functions. Where SpecialFunctions.jl has the function, the term's
+# operation is that function, so the term evaluates to a number.
+import SpecialFunctions as SF
+Gamma(x::SymType) = SymbolicExpression(SF.gamma, (x,))
+Gamma(a::SymType, x) = SymbolicExpression(SF.gamma, (a, x))        # upper incomplete Γ(a, x)
+Gamma(a::Number, x::SymType) = SymbolicExpression(SF.gamma, (a, x))
+LogGamma(x::SymType) = SymbolicExpression(SF.loggamma, (x,))
 
 # HyperGeometric Functions (?)
 appell_f1(a, b, c, d, e, z::SymType) =
@@ -122,9 +124,7 @@ hypergeometric2f1(a,b,c,d::SymType) =
     SymFunction("hypergeometric2f1")(a,b,c,d)
 
 
-# SymbolicUtils.expinti
-Expinti(x::SymType, args...; kwargs...) =
-    SymFunction("Expini")(x, args...; kwargs...)
+Expinti(x::SymType) = SymbolicExpression(SF.expinti, (x,))
 
 # SymbolicUtils.erf[i[
 Erf(x::SymType, args...; kwargs...) =
