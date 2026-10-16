@@ -4,14 +4,14 @@ file_rules = [
 # ("3_5_1",
 # @rule ∫((~u)*log((~v)),(~x)) =>
 #     !(FalseQ[(~w)])] ?
-# With[{(~w) = DerivativeDivides[(~v), (~u)*(1 - (~v)), (~x)]}, (~w)*PolyLog_reli(2, 1 - (~v)) : nothing)
+# With[{(~w) = DerivativeDivides[(~v), (~u)*(1 - (~v)), (~x)]}, (~w)*reli(2, 1 - (~v)) : nothing)
 #
 # ("3_5_2",
 # @rule ∫(((~!a) + (~!b)*log((~u)))*log((~v))*(~w),(~x)) =>
 #     !contains_var((~a), (~b), (~x)) &&
 #     !contains_inverse_function((~u), (~x)) &&
 #     !(FalseQ[DerivativeDivides[(~v), (~w)*(1 - (~v)), (~x)]]) ?
-# DerivativeDivides[(~v), (~w)*(1 - (~v)), (~x)]*((~a) + (~b)*log((~u)))*PolyLog_reli(2, 1 - (~v)) - (~b)*∫(ext_simplify(DerivativeDivides[(~v), (~w)*(1 - (~v)), (~x)]*PolyLog_reli(2, 1 - (~v))*(~D)[(~u), (~x)]⨸(~u), (~x)), (~x)) ] : nothing)
+# DerivativeDivides[(~v), (~w)*(1 - (~v)), (~x)]*((~a) + (~b)*log((~u)))*reli(2, 1 - (~v)) - (~b)*∫(ext_simplify(DerivativeDivides[(~v), (~w)*(1 - (~v)), (~x)]*reli(2, 1 - (~v))*(~D)[(~u), (~x)]⨸(~u), (~x)), (~x)) ] : nothing)
 
 ("3_5_3",
 :(∫(log((~!c)*log((~!d)*(~x)^(~!n))^(~!p)),(~x)) ) => :(
@@ -99,7 +99,7 @@ log((~d) + (~e)*(~x))*((~a) + (~b)*log((~c)*(~Rx)^(~p)))^(~n)⨸(~e) - (~b)*(~n)
 :(∫(((~!f) + (~!g)*(~x))^(~!m)*log(1 + (~!e)*((~F)^((~!c)*((~!a) + (~!b)*(~x))))^(~!n)),(~x)) ) => :(
     !contains_var((~F), (~a), (~b), (~c), (~e), (~f), (~g), (~n), (~x)) &&
     gt((~m), 0) ?
--((~f) + (~g)*(~x))^(~m)*PolyLog_reli(2, -(~e)*((~F)^((~c)*((~a) + (~b)*(~x))))^(~n))⨸((~b)*(~c)*(~n)*log((~F))) + (~g)*(~m)⨸((~b)*(~c)*(~n)*log((~F)))* ∫(((~f) + (~g)*(~x))^((~m) - 1)*PolyLog_reli(2, -(~e)*((~F)^((~c)*((~a) + (~b)*(~x))))^(~n)), (~x)) : nothing))
+-((~f) + (~g)*(~x))^(~m)*reli(2, -(~e)*((~F)^((~c)*((~a) + (~b)*(~x))))^(~n))⨸((~b)*(~c)*(~n)*log((~F))) + (~g)*(~m)⨸((~b)*(~c)*(~n)*log((~F)))* ∫(((~f) + (~g)*(~x))^((~m) - 1)*reli(2, -(~e)*((~F)^((~c)*((~a) + (~b)*(~x))))^(~n)), (~x)) : nothing))
 
 ("3_5_15",
 :(∫(((~!f) + (~!g)*(~x))^(~!m)*log((~d) + (~!e)*((~F)^((~!c)*((~!a) + (~!b)*(~x))))^(~!n)),(~x)) ) => :(

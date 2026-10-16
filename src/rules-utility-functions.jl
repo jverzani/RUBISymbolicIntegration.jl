@@ -1,57 +1,11 @@
-### make more generic than from SymbolicIntegration
-
-## These methods should be specialized in extesion packages
-XXX() = throw("Create a method")
-
-∫(f, dx) = make_integral(f, dx)
-_substitute() = XXX()
-_simplify(x, args...;kwargs...) = x
-_simpler(args...; kwargs...) = _simplify(args...; kwargs...)
-_expand() = XXX()
-_expand(x::Number) = x
-_derivative() = XXX()
-is_constant(x::Number) = true
-is_symbolic(x) = false
-is_symbol(x) = false
-_iszero(x) = iszero(x)
+# The functions an extension specializes are in `interface.jl`
 ext_coeff(u::Number, x::Number, n) = 0
-eq_expr() = false
-unwrap_const() = XXX()
-unwrap_const(x::Number) = x # bad form here! _unwrap_const???
-
-# to work with expresssions, define these
-#__isnumber(x::Number) = true
-#__isnumber(x::Symbol) = false
-#__isnumber(x::Expr) = all(__isnumber, arguments(x))
-#RUBISymbolicIntegration.unwrap_const(x::Symbol) = x
-#RUBISymbolicIntegration.unwrap_const(x::Expr) = __isnumber(x) ?  eval(x) : x
-unwrap(x::Number) = x
-Gamma() = XXX()
-LogGamma() = XXX()
-appell_f1() = XXX()
-hypergeometric2f1() = XXX()
-Expinti() = XXX()
-Erf() = XXX()
-Erfi() = XXX()
-Elliptic_e() = XXX()
-Elliptic_f() = XXX()
-Elliptic_pi() = XXX()
-Sinint() = XXX()
-Cosint() = XXX()
-FresnelIntegrals_fresnels() = XXX()
-FresnelIntegrals_fresnelsc() = XXX()
-PolyLog_reli() = XXX()
-coshintegral() = XXX()
-sinhintegral() = XXX()
-CannotIntegrate() = XXX()
-Unintegrable() = XXX()
 
 USE_GAMMA = false
 
 ### ------- TermInterface only below here ------
 
 _is_operation(fs::Tuple)   = @nospecialize(x) -> iscall(x) && (operation(x) ∈ fs)
-_is_operation(fn)   = _is_operation((fn, Symbol(fn)))
 eq_op(op1, op2) = op1 == op2 || Symbol(op1) == Symbol(op2)
 
 ## --------- From SymbolicIntegration
@@ -75,8 +29,8 @@ end
 # this custom exponentiation function should be used whenever there are
 # fractional powers, because (-1)^(1/2) errors
 # it's a infix operator with the same precedence of ^
-⟰(x, y) = lt(x, 0) ? Complex(x) ^ y : x ^ y
-⟰(x, y::Integer) = x ^ y
+⟰(x, y) = lt(x, 0) ? (x + 0im) ^ y : x ^ y
+⟰(x, y::Integer) = (@show x, y; sign(y) == -1 ? 1/x^abs(y) :  x ^ y)
 
 # if expr contains variable var return true
 #function contains_var(expr, var)
@@ -99,6 +53,26 @@ function contains_op(op, expr)
     end
     return false
 end
+
+
+# does any piece of expresion match predicate
+function anyQ(ex, pred)
+    pred(ex) && return true
+    iscall(ex) && return any(Base.Fix2(anyQ, pred), arguments(ex))
+    return false
+end
+
+# does a match b syntactically?
+function syntactic_match(a, b)
+    𝑎, 𝑏 = isexpr(a), isexpr(b)
+    𝑎 == 𝑏 || return false
+    !𝑎 && return a == b
+    operation(a) ==  operation(b) || return false
+    as, bs = arguments(a), arguments(b)
+    length(as) == length(bs) || return false
+    all(splat(==), zip(as, bs))
+end
+syntactic_match(a) = Base.Fix1(syntactic_match, a)
 
 function complexfree(expr)
     isa(expr, Complex) && !eq(imag(expr),0) && return true
@@ -290,7 +264,24 @@ function ext_expand(expr, x)
     end
     #case6 = @rule (~u::p)/(~v::p) => exponent_of(~u,x)>=exponent_of(~v,x) ? polynomial_divide(~u,~v,x) : nothing
 
+    # Rubi's ExpandIntegrand expands a rational function in partial fractions,
+    # which is not done here. Multiplying out its denominator instead loses the
+    # factors the other rules use, so leave such an integrand as it is.
+    _has_denominator(expr, x) && return expr
     return _expand(expr)
+end
+
+# does `ex` divide by something containing `x`: a quotient, or a power with a
+# negative exponent?
+function _has_denominator(ex, x)
+    iscall(ex) || return false
+    op, args = Symbol(operation(ex)), arguments(ex)
+    op === :/ && contains_var(args[2], x) && return true
+    if op === :^ && contains_var(args[1], x)
+        k = unwrap_const(args[2])
+        isa(k, Real) && k < 0 && return true
+    end
+    any(a -> _has_denominator(a, x), args)
 end
 
 function ext_expand(u, v, x)
@@ -1135,6 +1126,7 @@ P_le_neg1_x_0(x::Any)       = le(-1, x, 0)::Bool
 
 ## Extras
 function f11372(pq, x)
-    pat = :((~u)*$(Symbol(x))^(~m::ext_isinteger) )
-    return !isnothing(_match(pat, pq))
+    pat = :((~u)*$(Symbol(x))^(~m::$ext_isinteger) )
+    return !isempty(_eachmatch(pat, pq))
+    #return !isnothing(_match(pat, pq))
 end

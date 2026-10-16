@@ -63,15 +63,15 @@ file_rules = [
 :(∫((~x)^(~!m)*((~!a) + (~!b)*atan((~!c)*(~x)^(~n)))^(~!p),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~m), (~n), (~x)) &&
     igt((~p), 1) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*atan((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "5_3_2_9") : nothing))
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*atan((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "5_3_2_9") : nothing))
 
 ("5_3_2_10",
 :(∫((~x)^(~!m)*((~!a) + (~!b)*acot((~!c)*(~x)^(~n)))^(~!p),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~m), (~n), (~x)) &&
     igt((~p), 1) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*acot((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "5_3_2_10") : nothing))
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) ?
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~a) + (~b)*acot((~c)*(~x)))^(~p),  (~x), (~x), (~x)^(~n), "5_3_2_10") : nothing))
 
 # ("5_3_2_11",
 # @rule ∫((~x)^(~!m)*((~!a) + (~!b)*atan((~!c)*(~x)^(~n)))^(~p),(~x)) =>
