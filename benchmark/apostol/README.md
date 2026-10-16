@@ -1,17 +1,18 @@
 # Apostol comparison
 
-Four symbolic integrators on the 175 apostol problems of
-`test/problems_apostol.jl`:
+Four symbolic integrators, one of them on two term types, on the 175 apostol
+problems of `test/problems_apostol.jl`:
 
 | Method | Package | Terms |
 |---|---|---|
 | `rubi` | RUBISymbolicIntegration (this package), RUBI rules | SymbolicUtils |
+| `rubi_se` | RUBISymbolicIntegration, RUBI rules | SimpleExpressions |
 | `risch` | [RischIntegrate](https://github.com/jverzani/RischIntegrate.jl) | SymbolicUtils |
 | `si_rules` | [SymbolicIntegration](https://github.com/JuliaSymbolics/SymbolicIntegration.jl), `RuleBasedMethod()` | Symbolics |
 | `si_risch` | SymbolicIntegration, `RischMethod()` | Symbolics |
 
 The result is a page, `results/apostol_comparison.html`, with a summary
-(counts and times) and a 4 × 175 grid: one row per method, one column per
+(counts and times) and a grid with one row per method, one column per
 problem. Selecting a problem shows the integrand and each method's answer.
 
 ## Running it
@@ -23,6 +24,7 @@ this repository:
 ~/julia/RUBISymbolicIntegration.jl     (this repository)
 ~/julia/CommutativePatternMatching     (used by this package through its [sources])
 ~/julia/RischIntegrate
+~/julia/SimpleExpressions              (needs `reli(n, x)` for symbolic `x`, not yet released)
 ```
 
 SymbolicIntegration, Symbolics and SymbolicUtils come from the registry.
@@ -34,8 +36,12 @@ julia --project=env_si -e 'using Pkg; Pkg.instantiate()'
 julia run_all.jl            # or `julia run_all.jl 60` for a 60 s limit per problem
 ```
 
-`run_all.jl` runs the four methods one after another, so they do not compete
-for the CPU, and then builds the page. The whole run takes a few minutes.
+`run_all.jl` runs the methods one after another, so they do not compete for
+the CPU, and then builds the page. The whole run takes about 10 minutes, most of
+it SimpleExpressions compiling.
+
+After adding a package to an environment's `Project.toml`, run
+`Pkg.resolve()` in that environment before `Pkg.instantiate()`.
 Open `results/apostol_comparison.html` in a browser; it is self-contained.
 
 To run or rerun one method, then rebuild the page:
@@ -59,10 +65,11 @@ newest compatible versions.
 | `core.jl` | shared by the workers: builds each integrand with the worker's variables, integrates, checks, writes a line per problem |
 | `supervise.jl` | runs a worker; if one problem takes longer than the limit, kills the process, records a timeout and restarts at the next problem |
 | `build.jl`, `template.html` | turn the results into the page |
-| `env_su`, `env_si` | the two environments: `env_su` for this package and RischIntegrate, `env_si` for SymbolicIntegration |
+| `env_su`, `env_si` | the two environments: `env_su` for this package and RischIntegrate (SymbolicUtils and SimpleExpressions), `env_si` for SymbolicIntegration |
 
 Each integrand is built from its expression with the worker's own variables:
-SymbolicUtils `@syms x::Real ...` for `rubi` and `risch`, Symbolics
+SymbolicUtils `@syms x::Real ...` for `rubi` and `risch`,
+`SimpleExpressions.@symbolic_variables` for `rubi_se`, Symbolics
 `@variables x ...` for `si_*`. The problems use this package's `⨸` operator
 (e.g. `1 ⨸ 2`); each worker defines it as `//` for integers and `/` otherwise, so
 every method gets the same input.
@@ -107,8 +114,10 @@ must set `T_START`, load the packages, and define
 - `VAR::Dict{Symbol,Any}`: the variables `w x y z t d n m a b c h k l p q r s alpha epsilon e mc A B H K b1 c1`
 - `INTEGRATE(f, x)`: the method
 - `SOLVED(out)::Bool`: did it return an antiderivative?
-- `TOSU(ex)`: the answer as a SymbolicUtils term, for the numeric check (for
-  another term type, `core.jl`'s `value` needs a way to substitute and evaluate)
+- for the numeric check, either `TOSU(ex)`, the answer as a SymbolicUtils term,
+  or `EVAL(ex, vals)`, the value of `ex` with each variable `v` replaced by the
+  number `vals[v]` (a `Dict{Symbol,Number}`), or `nothing` if it does not
+  evaluate to a number. `worker_rubi_se.jl` defines `EVAL` for SimpleExpressions.
 
 Then add it to the loop in `run_all.jl` and to `METHODS` in `build.jl`.
 
@@ -145,6 +154,8 @@ Solved (verified) out of 175. Times are on one machine and only comparable withi
 | 2026-10-16 | 1.12.7 | first run | 86 (77), 37 errors | 163 (162) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | CPM: `isequal` in `different_powers`; Symbolics extension: special functions keep their arguments | 112 (103), 4 errors | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | sign of rule `4_1_10_1_1`, (c+dx)^m cos(e+fx) (RUBISymbolicIntegration `067a185`, CPM `dba8415`) | 112 (106), 4 errors, none wrong | 162 (161) | 124 (117) | 97 (97) |
+| 2026-10-16 | 1.13.0 | added `rubi_se`: 127 (110), none wrong, 17 not checked; 393 s wall, mostly compiling | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
+| 2026-10-16 | 1.13.0 | `rubi_se`: SimpleExpressions extension builds `Expinti`, `Gamma`, `LogGamma` with SpecialFunctions: 127 (119), 8 not checked (`hypergeometric2f1`) | 112 (106) | 162 (161) | 124 (117) | 97 (97) |
 
 Notes:
 

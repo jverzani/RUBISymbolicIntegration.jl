@@ -102,7 +102,7 @@ table.grid { border-collapse: separate; border-spacing: 2px; font-variant-numeri
   <header class="lede">
     <div class="eyebrow">Symbolic integration · 175 problems from Apostol's <i>Calculus</i></div>
     <h1>Apostol Integration Comparison</h1>
-    <p>Four integrators on the apostol problems in <code>test/problems_apostol.jl</code>: this package's RUBI rules and RischIntegrate on SymbolicUtils terms, and SymbolicIntegration.jl's rule-based and Risch methods on Symbolics terms. Each answer was also checked by comparing a numerical derivative of the answer with the integrand.</p>
+    <p>Four integrators on the apostol problems in <code>test/problems_apostol.jl</code>: RUBISymbolicIntegration's rules (on SymbolicUtils and on SimpleExpressions terms), RischIntegrate on SymbolicUtils terms, and SymbolicIntegration.jl's rule-based and Risch methods on Symbolics terms. Each answer was also checked by comparing a numerical derivative of the answer with the integrand.</p>
   </header>
 
   <section>
@@ -128,6 +128,7 @@ table.grid { border-collapse: separate; border-spacing: 2px; font-variant-numeri
     <p><b>RischIntegrate</b> solves the most. Every answer it gives that can be checked is right; it verifies its own answers by differentiating them.</p>
     <p><b>SymbolicIntegration's rule-based method gives wrong answers</b> for ∫ x² sin x, ∫ x³ cos x and ∫ x³ sin x (problems 23–25): <code>2(−cos x + x sin x) − x² cos x</code> has the sign of <code>2 cos x</code> reversed. The cause is rule <code>4_1_10_1_1</code>, a hand-written rule for (c + dx)ᵐ cos(e + fx) that adds the remaining integral where it should subtract it. RUBISymbolicIntegration had the same rule and it is fixed there; SymbolicIntegration.jl 3.8.1 still has it.</p>
     <p><b>RUBISymbolicIntegration</b> went from 86 solved (77 verified) to 112 (106) after three fixes: the sign in rule <code>4_1_10_1_1</code>; CommutativePatternMatching compared a SymbolicUtils term with <code>==</code> in <code>different_powers</code>, which threw and stopped the integration (33 problems); and the Symbolics extension built special functions such as <code>hypergeometric2f1</code> on a placeholder <code>x</code> instead of their arguments. The 4 remaining errors are a <code>DomainError</code> from raising an integer to a negative power.</p>
+    <p><b>RUBISymbolicIntegration on SimpleExpressions</b> solves 127, more than on SymbolicUtils (112) and more than SymbolicIntegration's rule-based method (124), with no wrong answers, and verifies 119 against 117. The 8 answers not checked contain <code>hypergeometric2f1</code>, which the term types here leave unevaluated; <code>Expinti</code>, <code>Gamma</code> and <code>LogGamma</code> are built with SpecialFunctions.jl and so are checked. Most of its 6½ minutes is SimpleExpressions compiling: it encodes each expression's structure in its type, so each new shape compiles anew; rerun in the same session, problems take a fraction of a second.</p>
     <p><b>RischIntegrate depends on the Julia version</b> for problem 165, ∫ eᵗ log(1 + t) dt: on Julia 1.12 it returns an answer with <code>expinti</code>, on Julia 1.13 (this run) it throws <code>NotElementary</code>.</p>
   </section>
 
@@ -212,7 +213,7 @@ function renderGrid() {
   const g = document.getElementById("grid");
   if (!idx.length) { g.innerHTML = `<tr><td class="empty">No problems match this filter.</td></tr>`; return; }
   const head = `<thead><tr><th class="rowhead">Problem</th>${idx.map(i => `<th><button data-i="${i}" class="${i === selected ? "sel" : ""}" aria-label="Problem ${i + 1}">${i + 1}</button></th>`).join("")}</tr></thead>`;
-  const body = DATA.methods.map((m, j) => `<tr><th class="rowhead">${m.pkg}<span>${m.method}</span></th>${idx.map(i => {
+  const body = DATA.methods.map((m, j) => `<tr><th class="rowhead">${m.pkg}<span>${m.method} · ${m.terms}</span></th>${idx.map(i => {
     const k = K[j][i];
     return `<td><button class="${STATUS[k].cls}${i === selected ? " sel" : ""}" data-i="${i}" title="${i + 1}: ${STATUS[k].label}" aria-label="Problem ${i + 1}, ${m.pkg} ${m.method}: ${STATUS[k].label}"></button></td>`;
   }).join("")}</tr>`).join("");
@@ -232,7 +233,7 @@ function renderDetail() {
   const rows = DATA.methods.map((m, j) => {
     const c = m.cells[i], k = K[j][i];
     const out = c.o ? `<pre>${esc(c.o)}${c.o.length >= 400 ? " …" : ""}</pre>` : "";
-    return `<div class="result"><i class="sw ${STATUS[k].cls}"></i><div class="head">${m.pkg} <span>${m.method} · ${STATUS[k].label} · ${c.t.toFixed(2)} s</span></div>${out}</div>`;
+    return `<div class="result"><i class="sw ${STATUS[k].cls}"></i><div class="head">${m.pkg} <span>${m.method} · ${m.terms} · ${STATUS[k].label} · ${c.t.toFixed(2)} s</span></div>${out}</div>`;
   }).join("");
   d.innerHTML = `<div class="eyebrow">Problem ${p.i}</div><div class="integrand">∫ ${esc(p.f)} d${p.x}</div><div class="results">${rows}</div>`;
 }

@@ -2,7 +2,9 @@
 #   VAR::Dict{Symbol,Any}   the symbolic variables
 #   INTEGRATE(f, x)          the method being compared
 #   SOLVED(out)::Bool        did it return an antiderivative?
-#   TOSU(ex)                 a SymbolicUtils term, for checking
+#   TOSU(ex)                 a SymbolicUtils term, for checking; or instead
+#   EVAL(ex, vals)           the value of `ex` with each variable `v` replaced by
+#                            `vals[v]`, as a number, or `nothing`
 # Usage: julia --project=ENV worker_X.jl START OUTFILE (run by supervise.jl)
 using SymbolicUtils
 const T_LOADED = time()
@@ -28,24 +30,26 @@ end
 # ---- numeric check: d/dx F == f at two points, parameters fixed
 const PARAMS = Dict(v => 1.0 + 0.137 * i for (i, v) in enumerate(ALLVARS))
 
-function value(e, d)
-    r = SymbolicUtils.substitute(e, d; fold = Val(true))
+# the default EVAL, through SymbolicUtils
+function su_eval(ex, vals)
+    d = Dict{Any,Any}(TOSU(VAR[v]) => p for (v, p) in vals)
+    r = SymbolicUtils.substitute(TOSU(ex), d; fold = Val(true))
     u = SymbolicUtils.unwrap_const(r)
     isa(u, Number) ? complex(u) : nothing
 end
+isdefined(@__MODULE__, :EVAL) || (EVAL(ex, vals) = su_eval(ex, vals))
 
 function evalat(e, xs, x0, cplx)
-    d = Dict{Any,Any}()
+    vals = Dict{Symbol,Number}()
     for v in ALLVARS
-        s = TOSU(VAR[v])
         p = v === xs ? x0 : PARAMS[v]
-        d[s] = cplx ? complex(p) : p
+        vals[v] = cplx ? complex(p) : p
     end
-    value(e, d)
+    EVAL(e, vals)
 end
 
 function check(f, F, xs)
-    fsu, Fsu = TOSU(f), TOSU(F)
+    fsu, Fsu = f, F
     for x0 in (0.31, 0.57)
         h = 1e-5
         ok = nothing
@@ -100,7 +104,7 @@ let start = parse(Int, ARGS[1]), outfile = ARGS[2]
         println(io, "L\t", T_LOADED - T_START, "\t", start); flush(io)
         start == 1 && for (k, m) in Base.loaded_modules
             k.name in ("RUBISymbolicIntegration", "CommutativePatternMatching", "RischIntegrate",
-                       "SymbolicIntegration", "Symbolics", "SymbolicUtils") || continue
+                       "SymbolicIntegration", "Symbolics", "SymbolicUtils", "SimpleExpressions") || continue
             println(io, "V\t", k.name, "\t", pkgversion(m))
         end
         foreach(i -> run_one(io, i), start:length(PROBLEMS))
