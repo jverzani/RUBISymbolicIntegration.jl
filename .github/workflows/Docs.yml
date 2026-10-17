@@ -28,6 +28,11 @@ jobs:
   docs:
     name: Documentation
     runs-on: ubuntu-latest
+    permissions:
+      # push to gh-pages with GITHUB_TOKEN when DOCUMENTER_KEY is absent
+      contents: write
+      # let Documenter set the deployment status on pull requests
+      statuses: write
     steps:
       - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2
@@ -46,7 +51,7 @@ jobs:
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
             using RUBISymbolicIntegration
-            DocMeta.setdocmeta!(RUBISymbolicIntegration, :DocTestSetup, :(using RUBISymbolicIntegraion); recursive=true)
+            DocMeta.setdocmeta!(RUBISymbolicIntegration, :DocTestSetup, :(using RUBISymbolicIntegration); recursive=true)
             doctest(RUBISymbolicIntegration)'
       - name: Generate and deploy documentation
         run: julia --project=docs docs/make.jl
