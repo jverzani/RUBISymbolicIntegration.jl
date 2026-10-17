@@ -66,7 +66,7 @@ file_rules = [
     igt((~m), 0) ?
 1⨸(~a)*∫(((~c) + (~d)*(~x))^(~m)*((~a) + (~b)*((~F)^((~g)*((~e) + (~f)*(~x))))^(~n))^((~p) + 1), (~x)) - (~b)⨸(~a)* ∫(((~c) + (~d)*(~x))^(~m)*((~F)^((~g)*((~e) + (~f)*(~x))))^(~n)*((~a) + (~b)*((~F)^((~g)*((~e) + (~f)*(~x))))^(~n))^(~p), (~x)) : nothing))
 
-# TODO find definition of Dist and NormalizePowerOfLinear functinos.... where are they!!!!!??????
+# TODO find definition of Dist and NormalizePowerOfLinear functions.... where are they!!!!!??????
 # ("2_1_11",
 # @rule ∫(((~!c) + (~!d)*(~x))^(~!m)*((~a) + (~!b)*((~F)^((~!g)*((~!e) + (~!f)*(~x))))^(~!n))^(~p),(~x)) =>
 #     !contains_var((~F), (~a), (~b), (~c), (~d), (~e), (~f), (~g), (~n), (~x)) &&
