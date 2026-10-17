@@ -5,10 +5,13 @@ const HERE = @__DIR__
 const LIMIT = get(ARGS, 1, "120")
 mkpath(joinpath(HERE, "results"))
 
-# the git commit of each package used from a local folder, and whether it has
-# uncommitted changes (other than this run's results, which the run rewrites).
-# Found before anything is written.
-function commit(dir)
+# The commit of each package, found before anything is written. A package
+# from a local folder records its commit and whether it has uncommitted
+# changes (other than this run's results, which the run rewrites); one from a
+# git repository records the commit of the branch used.
+using TOML
+
+function local_commit(dir)
     try
         c = readchomp(`git -C $dir rev-parse --short HEAD`)
         changes = readchomp(`git -C $dir status --porcelain --untracked-files=no -- . ':(exclude)benchmark/apostol/results'`)
@@ -17,16 +20,35 @@ function commit(dir)
         "unknown"
     end
 end
-commits = [(name, commit(dir)) for (name, dir) in
-           (("RUBISymbolicIntegration", joinpath(HERE, "..", "..")),
-            ("CommutativePatternMatching", joinpath(HERE, "..", "..", "..", "CommutativePatternMatching")),
-            ("RischIntegrate", joinpath(HERE, "..", "..", "..", "RischIntegrate")),
-            ("SimpleExpressions", joinpath(HERE, "..", "..", "..", "SimpleExpressions")))]
+
+# where env_rubi takes a package from
+function package_commit(name)
+    manifest = TOML.parsefile(joinpath(HERE, "env_rubi", "Manifest.toml"))
+    entry = only(manifest["deps"][name])
+    if haskey(entry, "path")
+        local_commit(normpath(joinpath(HERE, "env_rubi", entry["path"])))
+    elseif haskey(entry, "repo-url")
+        url, rev = entry["repo-url"], get(entry, "repo-rev", "HEAD")
+        c = try
+            first(split(readchomp(`git ls-remote $url $rev`)))[1:7]
+        catch
+            "unknown"
+        end
+        "$c ($url, $rev)"
+    else
+        "version " * get(entry, "version", "unknown")
+    end
+end
+
+commits = [("RUBISymbolicIntegration", local_commit(joinpath(HERE, "..", ".."))),
+           ("CommutativePatternMatching", package_commit("CommutativePatternMatching")),
+           ("SimpleExpressions", package_commit("SimpleExpressions"))]
 open(joinpath(HERE, "results", "commits.tsv"), "w") do io
     foreach(((name, c),) -> println(io, name, "\t", c), commits)
 end
 
-for (name, env) in (("rubi", "env_su"), ("rubi_se", "env_su"), ("risch", "env_su"), ("si_rules", "env_si"), ("si_risch", "env_si"))
+for (name, env) in (("rubi_symengine", "env_rubi"), ("rubi_simpleexpressions", "env_rubi"),
+                    ("rubi_symbolicutils", "env_rubi"), ("si_rules", "env_si"))
     @info "running $name"
     run(`julia $(joinpath(HERE, "supervise.jl")) $name $env $LIMIT`)
 end
