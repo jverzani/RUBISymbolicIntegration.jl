@@ -55,7 +55,7 @@ function contains_op(op, expr)
 end
 
 
-# does any piece of expresion match predicate
+# does any piece of expression match predicate
 function anyQ(ex, pred)
     pred(ex) && return true
     iscall(ex) && return any(Base.Fix2(anyQ, pred), arguments(ex))

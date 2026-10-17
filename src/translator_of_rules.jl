@@ -481,7 +481,7 @@ function translate_slots_in_result(result, vardefs)
     if vardefs===nothing
         # else use a regex that:
         # - matches one or two letters optionally followed by a digit
-        # - that are not beofre a "[" as they would be a function call
+        # - that are not before a "[" as they would be a function call
         # - that are not before words
         # - that are not the "in" letter, because that is needed for sum function translation
         result = replace(result, r"(?<!\w)(?!in\b)([a-zA-Z]{1,2}\d*)(?![\w(])" => s"(~\1)")
