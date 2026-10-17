@@ -1,5 +1,6 @@
 # RUBISymbolicIntegration with SymEngine, SimpleExpressions and SymbolicUtils terms
 [deps]
+CommutativePatternMatching = "a5619ad1-7b8c-4723-92a4-4e9a75a52c0f"
 RUBISymbolicIntegration = "442f6feb-61f5-5b3d-b533-e46f4d561939"
 SimpleExpressions = "deba94f7-f32a-40ad-b45e-be020a5ded2f"
 SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
@@ -8,6 +9,9 @@ Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
 [sources]
 RUBISymbolicIntegration = {path = "../../.."}
+# the local checkout, on its `nospecialize` branch (not yet on GitHub); this
+# overrides the GitHub `main` that RUBISymbolicIntegration's [sources] gives
+CommutativePatternMatching = {path = "../../../../CommutativePatternMatching"}
 # needs `PolyLog.reli(n, x::AbstractSymbolic)` and the HypergeometricFunctions
 # extension, not yet in a release
 SimpleExpressions = {url = "https://github.com/jverzani/SimpleExpressions.jl", rev = "main"}
