@@ -71,8 +71,8 @@ const IDENTIFIERS = String[]
 # to use or not the gamma function in integration results
 USE_GAMMA = false # TODO make it work with revise and not just with reloading rules
 
-# to print or not the integration steps
-VERBOSE = false
+# to print or not the integration steps; set by `integrate(f, x; verbose)`
+const VERBOSE = Ref(false)
 # global array of rules identifiers to not print the corresponding rule
 # It's needed otherwise rules with subst_and_int would be printed twice
 const SILENCE = String[]

@@ -121,6 +121,19 @@ With SymEngine these stay unevaluated functions, such as `Sinint` and
 Symbolics they are the functions of SpecialFunctions.jl, PolyLog.jl and
 HypergeometricFunctions.jl, so such an answer can be evaluated numerically.
 
+### Showing the steps
+
+With `verbose = true`, `integrate` prints each rule as it is applied: its
+identifier, the integral it matched, the rule itself and what it gave. An
+integral that a rule does in turn is shown inside that rule's step. The
+identifier names the rule's section in RUBI; `3_1_2_2` is in section 3.1.2,
+`(d x)^m (a+b log(c x^n))^p`:
+
+```@example symengine
+F = integrate(1 / (x * log(x)), x; verbose = true)
+nothing # hide
+```
+
 ### Checking an answer
 
 Differentiate the antiderivative and compare it with the integrand:

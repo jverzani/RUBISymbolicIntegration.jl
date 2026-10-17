@@ -14,6 +14,7 @@ include("general.jl")
 include("interface.jl")
 
 # applying rules
+include("string_manipulator_helpers.jl") # `pretty_print_rule` for `verbose`
 include("frontend.jl")
 include("polynomial-defns.jl")
 include("rules-utility-functions.jl")
