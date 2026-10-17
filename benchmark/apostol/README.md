@@ -159,6 +159,7 @@ within a run.
 | Date | Julia | Change | rubi_symengine | rubi_simpleexpressions | rubi_symbolicutils | si_rules |
 |---|---|---|---|---|---|---|
 | 2026-10-17 | 1.13.0 | only rule-based methods; SymEngine added | 128 (115), 13 not checked | 133 (133) | 128 (125) | 124 (117), 4 wrong |
+| 2026-10-17 | 1.13.0 | CPM `nospecialize` branch (`82ea70a`): the matcher is not specialized on the subject's type. SimpleExpressions integration 456 s → 273 s (wall 564 s → 358 s); the others unchanged | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
 
 SymbolicIntegration's rule-based method is wrong on problems 23–25 because of
 rule `4_1_10_1_1` (it adds the remaining integral where it should subtract
