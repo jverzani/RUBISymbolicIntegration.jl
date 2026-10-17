@@ -1,15 +1,15 @@
 # Apostol comparison
 
-Four symbolic integrators, one of them on two term types, on the 175 apostol
-problems of `test/problems_apostol.jl`:
+Rule-based integration of the 175 apostol problems of
+`test/problems_apostol.jl`: this package with three term types, and the
+rule-based method of SymbolicIntegration.jl.
 
 | Method | Package | Terms |
 |---|---|---|
-| `rubi` | RUBISymbolicIntegration (this package), RUBI rules | SymbolicUtils |
-| `rubi_se` | RUBISymbolicIntegration, RUBI rules | SimpleExpressions |
-| `risch` | [RischIntegrate](https://github.com/jverzani/RischIntegrate.jl) | SymbolicUtils |
-| `si_rules` | [SymbolicIntegration](https://github.com/JuliaSymbolics/SymbolicIntegration.jl), `RuleBasedMethod()` | Symbolics |
-| `si_risch` | SymbolicIntegration, `RischMethod()` | Symbolics |
+| `rubi_symengine` | RUBISymbolicIntegration (this package), RUBI rules | [SymEngine](https://github.com/symengine/SymEngine.jl) |
+| `rubi_simpleexpressions` | RUBISymbolicIntegration | [SimpleExpressions](https://github.com/jverzani/SimpleExpressions.jl) |
+| `rubi_symbolicutils` | RUBISymbolicIntegration | [SymbolicUtils](https://github.com/JuliaSymbolics/SymbolicUtils.jl) |
+| `si_rules` | [SymbolicIntegration](https://github.com/JuliaSymbolics/SymbolicIntegration.jl), `RuleBasedMethod()` | [Symbolics](https://github.com/JuliaSymbolics/Symbolics.jl) |
 
 The result is a page, `results/apostol_comparison.html`, with a summary
 (counts and times) and a grid with one row per method, one column per
@@ -17,21 +17,18 @@ problem. Selecting a problem shows the integrand and each method's answer.
 
 ## Running it
 
-The environments expect sibling checkouts of the local packages, next to
-this repository:
-
-```
-~/julia/RUBISymbolicIntegration.jl     (this repository)
-~/julia/CommutativePatternMatching     (used by this package through its [sources])
-~/julia/RischIntegrate
-~/julia/SimpleExpressions              (needs `reli(n, x)` for symbolic `x`, not yet released)
-```
-
-SymbolicIntegration, Symbolics and SymbolicUtils come from the registry.
+`env_rubi` uses this package from this checkout, and CommutativePatternMatching
+from the local checkout next to it (`../CommutativePatternMatching`, at
+present its `nospecialize` branch, which is not yet on GitHub); its own
+`[sources]` entry overrides the GitHub `main` this package declares.
+SimpleExpressions (for `reli(n, x)` and its HypergeometricFunctions
+extension, not yet released) comes from the `main` branch of its GitHub
+repository. The other packages come from the registry. `results/commits.tsv`
+records which commit of each was used.
 
 ```sh
 cd benchmark/apostol
-julia --project=env_su -e 'using Pkg; Pkg.instantiate()'   # once, or after changing a package
+julia --project=env_rubi -e 'using Pkg; Pkg.instantiate()'   # once, or after changing a package
 julia --project=env_si -e 'using Pkg; Pkg.instantiate()'
 julia run_all.jl            # or `julia run_all.jl 60` for a 60 s limit per problem
 ```
@@ -47,12 +44,13 @@ Open `results/apostol_comparison.html` in a browser; it is self-contained.
 To run or rerun one method, then rebuild the page:
 
 ```sh
-julia supervise.jl rubi env_su 120
+julia supervise.jl rubi_symbolicutils env_rubi 120
 julia build.jl
 ```
 
-To pick up a newer registered SymbolicIntegration, run
-`julia --project=env_si -e 'using Pkg; Pkg.update()'` first. The
+To pick up newer versions, such as a new `main` of CommutativePatternMatching or
+a newer registered SymbolicIntegration, run `Pkg.update()` in the environment
+first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
 `Manifest.toml` files are not committed, so a fresh checkout resolves to the
 newest compatible versions.
 
@@ -61,31 +59,30 @@ newest compatible versions.
 | File | Role |
 |---|---|
 | `problems.jl` | parses (does not evaluate) `test/problems_apostol.jl` into `(integrand, variable)` expressions |
-| `worker_*.jl` | one per method: loads the packages, makes the variables, and defines `INTEGRATE`, `SOLVED` and `TOSU` |
+| `worker_*.jl` | one per method: loads the packages, makes the variables, and defines `INTEGRATE`, `SOLVED` and `TOSU` or `EVAL` |
 | `core.jl` | shared by the workers: builds each integrand with the worker's variables, integrates, checks, writes a line per problem |
 | `supervise.jl` | runs a worker; if one problem takes longer than the limit, kills the process, records a timeout and restarts at the next problem |
 | `build.jl`, `template.html` | turn the results into the page |
-| `env_su`, `env_si` | the two environments: `env_su` for this package and RischIntegrate (SymbolicUtils and SimpleExpressions), `env_si` for SymbolicIntegration |
+| `env_rubi`, `env_si` | the two environments: `env_rubi` for this package (with SymEngine, SimpleExpressions and SymbolicUtils), `env_si` for SymbolicIntegration |
 
 Each integrand is built from its expression with the worker's own variables:
-SymbolicUtils `@syms x::Real ...` for `rubi` and `risch`,
-`SimpleExpressions.@symbolic_variables` for `rubi_se`, Symbolics
-`@variables x ...` for `si_*`. The problems use this package's `⨸` operator
+SymEngine `@vars x ...` for `rubi_symengine`,
+`SimpleExpressions.@symbolic_variables` for `rubi_simpleexpressions`,
+SymbolicUtils `@syms x::Real ...` for `rubi_symbolicutils`, and Symbolics
+`@variables x ...` for `si_rules`. The problems use this package's `⨸` operator
 (e.g. `1 ⨸ 2`); each worker defines it as `//` for integers and `/` otherwise, so
 every method gets the same input.
 
 What is recorded:
 
 - **Solved**: the method returned a result with no unevaluated `∫` and threw
-  nothing. RischIntegrate throws when it can not integrate. SymbolicIntegration
-  and this package return an unevaluated `∫` instead; this package's `Cannot…`
-  markers also count as not solved.
+  nothing; this package's `Cannot…` markers also count as not solved.
 - **Verified**: a central difference of the answer at `x = 0.31` and `x = 0.57`
   (every other variable given a fixed value) matches the integrand to 1e-4. Real
   values are tried first, then complex ones if the real evaluation fails.
 - **Not checked**: solved, but the answer has a function the term type can not
-  evaluate numerically (an unevaluated `appell_f1`, say). Such an
-  answer may be wrong.
+  evaluate numerically. With SymEngine the special functions (`Expinti`,
+  `reli`, `_₂F₁`, ...) stay unevaluated. Such an answer may be wrong.
 - **Differs**: solved, but the derivative does not match: a wrong answer.
 - **Times**: each method starts cold in a new process. Integration time is the
   sum of the per-problem times, so it includes compiling; load time is loading
@@ -103,8 +100,9 @@ What is recorded:
 | `D` | the worker finished |
 | `T` | wall time in seconds, limit in seconds |
 
-`results/commits.tsv` records the git commit of each local package (and
-whether it had uncommitted changes) when `run_all.jl` ran.
+`results/commits.tsv` records, when `run_all.jl` ran, the commit of this
+package (and whether it had uncommitted changes) and, for a package taken from
+GitHub, the commit of the branch used.
 
 ## Adding a method
 
@@ -117,7 +115,8 @@ must set `T_START`, load the packages, and define
 - for the numeric check, either `TOSU(ex)`, the answer as a SymbolicUtils term,
   or `EVAL(ex, vals)`, the value of `ex` with each variable `v` replaced by the
   number `vals[v]` (a `Dict{Symbol,Number}`), or `nothing` if it does not
-  evaluate to a number. `worker_rubi_se.jl` defines `EVAL` for SimpleExpressions.
+  evaluate to a number. `worker_rubi_symengine.jl` and
+  `worker_rubi_simpleexpressions.jl` define `EVAL`.
 
 Then add it to the loop in `run_all.jl` and to `METHODS` in `build.jl`.
 
@@ -128,9 +127,9 @@ out" section is written by hand in `template.html`; check it against the new
 results and edit it before publishing.
 
 The package README has a badge comparing the number of apostol problems
-verified by `rubi` (this package, SymbolicUtils) and `si_rules`
-(SymbolicIntegration's `RuleBasedMethod`, Symbolics), and a sentence that
-also gives `rubi_se`. The badge links to the page through htmlpreview.github.io,
+verified by `rubi_symbolicutils` and `si_rules` (SymbolicIntegration's
+`RuleBasedMethod`, Symbolics), and a sentence that also gives the other two
+term types. The badge links to the page through htmlpreview.github.io,
 from `main`. It is a static badge: after a run that changes these numbers,
 update them in the badge URL, its alt text and that sentence.
 
@@ -154,7 +153,24 @@ Code to republish `results/apostol_comparison.html` to that URL.
 
 ## Results so far
 
-Solved (verified) out of 175. Times are on one machine and only comparable within a run.
+Solved (verified) out of 175. Times are on one machine and only comparable
+within a run.
+
+| Date | Julia | Change | rubi_symengine | rubi_simpleexpressions | rubi_symbolicutils | si_rules |
+|---|---|---|---|---|---|---|
+| 2026-10-17 | 1.13.0 | only rule-based methods; SymEngine added | 128 (115), 13 not checked | 133 (133) | 128 (125) | 124 (117), 4 wrong |
+| 2026-10-17 | 1.13.0 | CPM `nospecialize` branch (`82ea70a`): the matcher is not specialized on the subject's type. SimpleExpressions integration 456 s → 273 s (wall 564 s → 358 s); the others unchanged | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
+
+SymbolicIntegration's rule-based method is wrong on problems 23–25 because of
+rule `4_1_10_1_1` (it adds the remaining integral where it should subtract
+it), fixed in this package but still in SymbolicIntegration.jl 3.8.1.
+
+### Earlier runs
+
+These also compared RischIntegrate and SymbolicIntegration's `RischMethod`,
+since moved elsewhere. `rubi` is now `rubi_symbolicutils`, and `rubi_se`
+`rubi_simpleexpressions`.
+
 
 | Date | Julia | Change | rubi | risch | si_rules | si_risch |
 |---|---|---|---|---|---|---|
@@ -167,11 +183,6 @@ Solved (verified) out of 175. Times are on one machine and only comparable withi
 | 2026-10-16 | 1.13.0 | CPM matches a quotient against a quotient, and `1/sqrt(u)` against `u^(-1//2)`; SimpleExpressions `_simplify` expands (problems 64, 105) (`2e70b7f`, CPM `05a6c95`): `rubi_se` 129 (129) | 113 (109) | 162 (161) | 124 (117) | 97 (97) |
 | 2026-10-16 | 1.13.0 | CPM splits a quotient's denominator into factors; `ext_expand` keeps rational integrands factored; the frontend also tries the expanded integral (problems 110, 111, 126, 129, 130) (`2f574b4`, CPM `e7e3e9e`): `rubi_se` 133 (133) | 128 (125), no errors | 162 (161) | 124 (117) | 97 (97) |
 
-Notes:
-
 - RischIntegrate's one change between the first two runs is problem 165
   (∫ eᵗ log(1 + t) dt): an `expinti` answer on Julia 1.12, `NotElementary` on
   Julia 1.13, with the same code.
-- SymbolicIntegration's rule-based method is wrong on problems 23–25 because
-  of the same rule `4_1_10_1_1` (it adds the remaining integral where it should
-  subtract it). SymbolicIntegration.jl 3.8.1 still has it.

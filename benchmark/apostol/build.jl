@@ -3,11 +3,10 @@
 const HERE = @__DIR__
 const RESULTS = joinpath(HERE, "results")
 const METHODS = [
-    ("rubi", "RUBISymbolicIntegration", "rules (RUBI)", "SymbolicUtils"),
-    ("rubi_se", "RUBISymbolicIntegration", "rules (RUBI)", "SimpleExpressions"),
-    ("risch", "RischIntegrate", "Risch", "SymbolicUtils"),
+    ("rubi_symengine", "RUBISymbolicIntegration", "rules (RUBI)", "SymEngine"),
+    ("rubi_simpleexpressions", "RUBISymbolicIntegration", "rules (RUBI)", "SimpleExpressions"),
+    ("rubi_symbolicutils", "RUBISymbolicIntegration", "rules (RUBI)", "SymbolicUtils"),
     ("si_rules", "SymbolicIntegration", "rules (RuleBasedMethod)", "Symbolics"),
-    ("si_risch", "SymbolicIntegration", "Risch (RischMethod)", "Symbolics"),
 ]
 
 # a small JSON writer, enough for the page's data
