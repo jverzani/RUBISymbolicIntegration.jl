@@ -6,9 +6,8 @@ using PolyLog: PolyLog, reli # Liₙ(z) is `reli(n, z)` in the rules
 using HypergeometricFunctions: HypergeometricFunctions, _₂F₁ # ₂F₁(a, b; c; z) is `_₂F₁(a, b, c, z)`
 export integrate
 
-# matching
-using CommutativePatternMatching
-import CommutativePatternMatching: Rule, _eachmatch, _match, _rewrite, unwrap_const
+# matching, with the commutative (not associative) matcher
+import AssociativeCommutativePatternMatching: Rule, @rule, _ceachmatch, _rewrite, unwrap_const
 
 include("general.jl")
 include("interface.jl")

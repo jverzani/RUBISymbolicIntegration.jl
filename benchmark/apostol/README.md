@@ -17,13 +17,9 @@ problem. Selecting a problem shows the integrand and each method's answer.
 
 ## Running it
 
-`env_rubi` uses this package from this checkout, and CommutativePatternMatching
-from the local checkout next to it (`../CommutativePatternMatching`, at
-present its `nospecialize` branch, which is not yet on GitHub); its own
-`[sources]` entry overrides the GitHub `main` this package declares.
-SimpleExpressions (for `reli(n, x)` and its HypergeometricFunctions
-extension, not yet released) comes from the `main` branch of its GitHub
-repository. The other packages come from the registry. `results/commits.tsv`
+`env_rubi` uses this package from this checkout and the other packages,
+including AssociativeCommutativePatternMatching (which now holds the matcher
+of CommutativePatternMatching) and SimpleExpressions, from the registry. `results/commits.tsv`
 records which commit of each was used.
 
 ```sh
@@ -48,9 +44,9 @@ julia supervise.jl rubi_symbolicutils env_rubi 120
 julia build.jl
 ```
 
-To pick up newer versions, such as a new `main` of CommutativePatternMatching or
-a newer registered SymbolicIntegration, run `Pkg.update()` in the environment
-first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
+To pick up newer versions, such as a new release of
+AssociativeCommutativePatternMatching or SymbolicIntegration, run
+`Pkg.update()` in the environment first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
 `Manifest.toml` files are not committed, so a fresh checkout resolves to the
 newest compatible versions.
 

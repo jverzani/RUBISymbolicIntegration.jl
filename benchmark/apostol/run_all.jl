@@ -41,7 +41,7 @@ function package_commit(name)
 end
 
 commits = [("RUBISymbolicIntegration", local_commit(joinpath(HERE, "..", ".."))),
-           ("CommutativePatternMatching", package_commit("CommutativePatternMatching")),
+           ("AssociativeCommutativePatternMatching", package_commit("AssociativeCommutativePatternMatching")),
            ("SimpleExpressions", package_commit("SimpleExpressions"))]
 open(joinpath(HERE, "results", "commits.tsv"), "w") do io
     foreach(((name, c),) -> println(io, name, "\t", c), commits)
