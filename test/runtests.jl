@@ -2,5 +2,7 @@ using Test
 using Random
 using RUBISymbolicIntegration
 
-# include("test-rules.jl") # needs development symengine version
-include("test-matching.jl")
+# integrate the apostol problems with each symbolic package
+include("test_rules_SymEngine.jl")
+#include("test_rules_SimpleExpressions.jl")  # too slow; uncomment to test
+include("test_rules_SymbolicUtils.jl")

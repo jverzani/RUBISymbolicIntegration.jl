@@ -1,514 +1,20 @@
-using Test
-using SymEngine
-import RUBISymbolicIntegration:
-    integrate,⨸,contains_int,
-    Expinti,
-    PolyLog_reli,
-    Gamma,
-    Elliptic_e,
-    Elliptic_f,
-    Elliptic_pi,
-    Erf,
-    Erfi,
-    Sinint,
-    Cosint,
-    hypergeometric2f1,
-    CannotIntegrate,
-    Unintegrable
+# Integration problems
+#
+# Each problem is a tuple `(integrand, antiderivative, variable, steps)`: the
+# expected antiderivative and the number of steps Rubi takes, from Rubi's
+# test suite.
+#
+# The problems are Julia expressions, evaluated when this file is included.
+# So include it after defining, for the symbolic package being used, the
+# variables `w x y z t d n m a b c h k l p q r s alpha epsilon e mc A B H K b1 c1`,
+# the imaginary unit `I`, and the special functions this package uses
+# (`Expinti`, `Gamma`, `reli`, ...; see `rules_test_common.jl`).
+#
+# This is the library of all the problems. It is not run by the tests, which
+# use only the apostol problems (`problems_apostol.jl`).
+
+include("problems_apostol.jl")
 
-@vars ∫() w x y z t d n m a b c h k l p q r s alpha epsilon e mc A B H K b1 c1
-I = IM
-
-# file format (integrand, result, integration variable, mystery value)
-
-# this custom division function is added to produce
-# - rationals if called with integers
-# - floats if called with floats
-# it's a infix operator with the same precedence of /
-#=
-function ⨸(x::Union{Rational, Integer}, y::Union{Rational, Integer})
-    iszero(y) && return nothing
-    res = x // y
-    #SymbolicIntegration.ext_isinteger(res) ? Int(res) : res
-end
-⨸(x, y) = iszero(y) ? nothing : x / y
-=#
-# Each tuple is (integrand, result, integration variable, mystery value)
-apostol = [
-# ::Package::
-
-# ::Title::
-# Tom M. Apostol - Calculus, Volume I, Second Edition (1967)
-
-
-# ::Section::Closed::
-# Section 5.8 Exercises (p. 216-217)
-
-
-# ::Subsection::Closed::
-# Exercises 1 - 10
-
-
-(sqrt(2*x + 1), (1⨸3)*(1 + 2*x)^(3⨸2), x, 1),
-(x*sqrt(1 + 3*x), (-(2⨸27))*(1 + 3*x)^(3⨸2) + (2⨸45)*(1 + 3*x)^(5⨸2), x, 2),
-(x^2*sqrt(x + 1), (2⨸3)*(1 + x)^(3⨸2) - (4⨸5)*(1 + x)^(5⨸2) + (2⨸7)*(1 + x)^(7⨸2), x, 2),
-(x/sqrt(2 - 3*x), (-(4⨸9))*sqrt(2 - 3*x) + (2⨸27)*(2 - 3*x)^(3⨸2), x, 2),
-((x + 1)/(x^2 + 2*x + 2)^3, -(1/(4*(2 + 2*x + x^2)^2)), x, 1),
-(sin(x)^3, -cos(x) + cos(x)^3/3, x, 2),
-(z*(z - 1)^(1⨸3), (3⨸4)*(-1 + z)^(4⨸3) + (3⨸7)*(-1 + z)^(7⨸3), z, 2),
-(cos(x)/sin(x)^3, (-(1⨸2))*csc(x)^2, x, 2),
-(cos(2*x)*sqrt(4 - sin(2*x)), (-(1⨸3))*(4 - sin(2*x))^(3⨸2), x, 2),
-(sin(x)/(3 + cos(x))^2, 1/(3 + cos(x)), x, 2),
-
-
-# ::Subsection::Closed::
-# Exercises 11 - 20
-
-
-(sin(x)/sqrt(cos(x)^3), (2*cos(x))/sqrt(cos(x)^3), x, 3),
-(sin(sqrt(x + 1))/sqrt(x + 1), -2*cos(sqrt(1 + x)), x, 3),
-(x^(n - 1)*sin(x^n), -(cos(x^n)/n), x, 2),
-(x^5/sqrt(1 - x^6), (-(1⨸3))*sqrt(1 - x^6), x, 1),
-(t*(1 + t)^(1⨸4), (-(4⨸5))*(1 + t)^(5⨸4) + (4⨸9)*(1 + t)^(9⨸4), t, 2),
-((x^2 + 1)^(-3⨸2), x/sqrt(1 + x^2), x, 1),
-(x^2*(8*x^3 + 27)^(2⨸3), (1⨸40)*(27 + 8*x^3)^(5⨸3), x, 1),
-((sin(x) + cos(x))/(sin(x) - cos(x))^(1⨸3), (3⨸2)*(-cos(x) + sin(x))^(2⨸3), x, 1),
-(x/sqrt(1 + x^2 + (1 + x^2)^(3⨸2)), (2*sqrt((1 + x^2)*(1 + sqrt(1 + x^2))))/sqrt(1 + x^2), x, 3),
-(x/(sqrt(1 + x^2)*sqrt(1 + sqrt(1 + x^2))), 2*sqrt(1 + sqrt(1 + x^2)), x, 1),
-((x^2 + 1 - 2*x)^(1⨸5)/(1 - x), (-(5⨸2))*(1 - 2*x + x^2)^(1⨸5), x, 2),
-
-
-# ::Section::Closed::
-# Section 5.10 Exercises (p. 220-222)
-
-
-# ::Subsection::Closed::
-# Exercises 1 - 6
-
-
-(x*sin(x), (-x)*cos(x) + sin(x), x, 2),
-(x^2*sin(x), 2*cos(x) - x^2*cos(x) + 2*x*sin(x), x, 3),
-(x^3*cos(x), -6*cos(x) + 3*x^2*cos(x) - 6*x*sin(x) + x^3*sin(x), x, 4),
-(x^3*sin(x), 6*x*cos(x) - x^3*cos(x) - 6*sin(x) + 3*x^2*sin(x), x, 4),
-(sin(x)*cos(x), sin(x)^2/2, x, 2),
-(x*sin(x)*cos(x), -(x/4) + (1⨸4)*cos(x)*sin(x) + (1⨸2)*x*sin(x)^2, x, 3),
-
-
-# ::Subsection::Closed::
-# Exercises 7 - 10
-
-
-(sin(x)^2, x/2 - (1⨸2)*cos(x)*sin(x), x, 2),
-(sin(x)^3, -cos(x) + cos(x)^3⨸3, x, 2),
-(sin(x)^4, (3*x)/8 - (3⨸8)*cos(x)*sin(x) - (1⨸4)*cos(x)*sin(x)^3, x, 3),
-(sin(x)^5, -cos(x) + (2*cos(x)^3)/3 - cos(x)^5⨸5, x, 2),
-(sin(x)^6, (5*x)/16 - (5⨸16)*cos(x)*sin(x) - (5⨸24)*cos(x)*sin(x)^3 - (1⨸6)*cos(x)*sin(x)^5, x, 4),
-
-
-# ::Subsection::Closed::
-# Exercise 11
-
-
-(x*sin(x)^2, x^2⨸4 - (1⨸2)*x*cos(x)*sin(x) + sin(x)^2⨸4, x, 2),
-(x*sin(x)^3, (-(2⨸3))*x*cos(x) + (2*sin(x))/3 - (1⨸3)*x*cos(x)*sin(x)^2 + sin(x)^3⨸9, x, 3),
-(x^2*sin(x)^2, -(x/4) + x^3⨸6 + (1⨸4)*cos(x)*sin(x) - (1⨸2)*x^2*cos(x)*sin(x) + (1⨸2)*x*sin(x)^2, x, 4),
-
-
-# ::Subsection::Closed::
-# Exercise 13
-
-
-(cos(x)^2, x/2 + (1⨸2)*cos(x)*sin(x), x, 2),
-(cos(x)^3, sin(x) - sin(x)^3⨸3, x, 2),
-(cos(x)^4, (3*x)/8 + (3⨸8)*cos(x)*sin(x) + (1⨸4)*cos(x)^3*sin(x), x, 3),
-
-
-# ::Subsection::Closed::
-# Exercises 15 - 17
-
-
-((a^2 - x^2)^(5⨸2), (5⨸16)*a^4*x*sqrt(a^2 - x^2) + (5⨸24)*a^2*x*(a^2 - x^2)^(3⨸2) + (1⨸6)*x*(a^2 - x^2)^(5⨸2) + (5⨸16)*a^6*atan(x/sqrt(a^2 - x^2)), x, 5),
-(x^5/sqrt(5 + x^2), 25*sqrt(5 + x^2) - (10⨸3)*(5 + x^2)^(3⨸2) + (1⨸5)*(5 + x^2)^(5⨸2), x, 3),
-(t^3/(4 + t^3)^(1⨸2), (2⨸5)*t*sqrt(4 + t^3) - (8*2^(2⨸3)*sqrt(2 + sqrt(3))*(2^(2⨸3) + t)*sqrt((2*2^(1⨸3) - 2^(2⨸3)*t + t^2)/(2^(2⨸3)*(1 + sqrt(3)) + t)^2)*Elliptic_f(asin((2^(2⨸3)*(1 - sqrt(3)) + t)/(2^(2⨸3)*(1 + sqrt(3)) + t)), -7 - 4*sqrt(3)))/(5*3^(1⨸4)*sqrt((2^(2⨸3) + t)/(2^(2⨸3)*(1 + sqrt(3)) + t)^2)*sqrt(4 + t^3)), t, 2),
-
-
-# ::Subsection::Closed::
-# Exercises 18 - 19
-
-
-(tan(x)^2, -x + tan(x), x, 2),
-(tan(x)^4, x - tan(x) + tan(x)^3⨸3, x, 3),
-(cot(x)^2, -x - cot(x), x, 2),
-(cot(x)^4, x + cot(x) - cot(x)^3⨸3, x, 3),
-
-
-# ::Section::Closed::
-# Section 5.11 Miscellaneous review exercises (p. 222-225)
-
-
-# ::Subsection::Closed::
-# Exercises 11 - 20
-
-
-((2 + 3*x)*sin(5*x), (-(1⨸5))*(2 + 3*x)*cos(5*x) + (3⨸25)*sin(5*x), x, 2),
-(x*sqrt(1 + x^2), (1⨸3)*(1 + x^2)^(3⨸2), x, 1),
-(x*(x^2 - 1)^9, (1⨸20)*(1 - x^2)^10, x, 1),
-((2*x + 3)/(6*x + 7)^3, -((3 + 2*x)^2/(8*(7 + 6*x)^2)), x, 1),
-(x^4*(1 + x^5)^5, (1⨸30)*(1 + x^5)^6, x, 1),
-(x^4*(1 - x)^20, (-(1⨸21))*(1 - x)^21 + (2⨸11)*(1 - x)^22 - (6⨸23)*(1 - x)^23 + (1⨸6)*(1 - x)^24 - (1⨸25)*(1 - x)^25, x, 2),
-(sin(1/x)/x^2, cos(1/x), x, 2),
-(sin((x - 1)^(1⨸4)), 24*(-1 + x)^(1⨸4)*cos((-1 + x)^(1⨸4)) - 4*(-1 + x)^(3⨸4)*cos((-1 + x)^(1⨸4)) - 24*sin((-1 + x)^(1⨸4)) + 12*sqrt(-1 + x)*sin((-1 + x)^(1⨸4)), x, 5),
-(x*sin(x^2)*cos(x^2), (1⨸4)*sin(x^2)^2, x, 1),
-(sqrt(1 + 3*cos(x)^2)*sin(2*x), (-(2⨸9))*(4 - 3*sin(x)^2)^(3⨸2), x, 3),
-
-
-# ::Section::Closed::
-# Section 6.9 Exercises (p. 236-238)
-
-
-# ::Subsection::Closed::
-# Exercises 16 - 21
-
-
-(1/(2 + 3*x), (1⨸3)*log(2 + 3*x), x, 1),
-(log(x)^2, 2*x - 2*x*log(x) + x*log(x)^2, x, 2),
-(x*log(x), -(x^2⨸4) + (1⨸2)*x^2*log(x), x, 1),
-(x*log(x)^2, x^2⨸4 - (1⨸2)*x^2*log(x) + (1⨸2)*x^2*log(x)^2, x, 2),
-(1/(1 + t), log(1 + t), t, 1),
-(cot(x), log(sin(x)), x, 1),
-
-
-# ::Subsection::Closed::
-# Exercises 22 - 27
-
-
-(x^n*log(a*x), -(x^(1 + n)/(1 + n)^2) + (x^(1 + n)*log(a*x))/(1 + n), x, 1),
-(x^2*log(x)^2, (2*x^3)/27 - (2⨸9)*x^3*log(x) + (1⨸3)*x^3*log(x)^2, x, 2),
-(1/(x*log(x)), log(log(x)), x, 2),
-(log(1 - t)/(1 - t), (-(1⨸2))*log(1 - t)^2, t, 2),
-(log(x)/(x*sqrt(1 + log(x))), -2*sqrt(1 + log(x)) + (2⨸3)*(1 + log(x))^(3⨸2), x, 3),
-(x^3*log(x)^3, -((3*x^4)/128) + (3⨸32)*x^4*log(x) - (3⨸16)*x^4*log(x)^2 + (1⨸4)*x^4*log(x)^3, x, 3),
-
-
-# ::Section::Closed::
-# Section 6.16 Differentiation and integration formulas involving exponentials (p. 245-248)
-
-
-# ::Subsection::Closed::
-# Example 1
-
-
-(x^2*ℯ^(x^3), ℯ^x^3⨸3, x, 1),
-
-
-# ::Subsection::Closed::
-# Example 2
-
-
-(2^sqrt(x)/sqrt(x), 2^(1 + sqrt(x))/log(2), x, 1),
-
-
-# ::Subsection::Closed::
-# Example 3
-
-
-(cos(x)*ℯ^(2*sin(x)), (1⨸2)*ℯ^(2*sin(x)), x, 2),
-
-
-# ::Subsection::Closed::
-# Example 4
-
-
-(ℯ^x*sin(x), (-(1⨸2))*ℯ^x*cos(x) + (1⨸2)*ℯ^x*sin(x), x, 1),
-(ℯ^x*cos(x), (1⨸2)*ℯ^x*cos(x) + (1⨸2)*ℯ^x*sin(x), x, 1),
-
-
-# ::Subsection::Closed::
-# Example 5
-
-
-(1/(1 + ℯ^x), x - log(1 + ℯ^x), x, 4),
-
-
-# ::Section::Closed::
-# Section 6.17 Exercises (p. 248-250)
-
-
-# ::Subsection::Closed::
-# Exercises 13 - 18
-
-
-(x*ℯ^x, -ℯ^x + ℯ^x*x, x, 2),
-(x*ℯ^(-x), -ℯ^(-x) - x/ℯ^x, x, 2),
-(x^2*ℯ^x, 2*ℯ^x - 2*ℯ^x*x + ℯ^x*x^2, x, 3),
-(x^2*ℯ^(-2*x), -(1⨸4)/ℯ^(2*x) - ((1⨸2)*x)/ℯ^(2*x) - ((1⨸2)*x^2)/ℯ^(2*x), x, 3),
-(ℯ^sqrt(x), -2*ℯ^sqrt(x) + 2*ℯ^sqrt(x)*sqrt(x), x, 3),
-(x^3*ℯ^(-x^2), -(1/(ℯ^x^2*2)) - ((1⨸2)*x^2)/ℯ^x^2, x, 2),
-
-
-# ::Subsection::Closed::
-# Exercise 20
-
-
-(ℯ^(a*x)*cos(b*x), (a*ℯ^(a*x)*cos(b*x))/(a^2 + b^2) + (b*ℯ^(a*x)*sin(b*x))/(a^2 + b^2), x, 1),
-(ℯ^(a*x)*sin(b*x), -((b*ℯ^(a*x)*cos(b*x))/(a^2 + b^2)) + (a*ℯ^(a*x)*sin(b*x))/(a^2 + b^2), x, 1),
-
-
-# ::Section::Closed::
-# Section 6.22 Exercises (p. 256-258)
-
-
-# ::Subsection::Closed::
-# Exercises 6 - 10
-
-
-(acot(x), x*acot(x) + (1⨸2)*log(1 + x^2), x, 2),
-(asec(x), x*asec(x) - atanh(sqrt(1 - 1/x^2)), x, 4),
-(acsc(x), x*acsc(x) + atanh(sqrt(1 - 1/x^2)), x, 4),
-(asin(x)^2, -2*x + 2*sqrt(1 - x^2)*asin(x) + x*asin(x)^2, x, 3),
-(asin(x)/x^2, -(asin(x)/x) - atanh(sqrt(1 - x^2)), x, 4),
-
-
-# ::Subsection::Closed::
-# Exercises 29 - 37
-
-
-(1/sqrt(a^2 - x^2), atan(x/sqrt(a^2 - x^2)), x, 2),
-(1/sqrt(1 - 2*x - x^2), asin((1 + x)/sqrt(2)), x, 2),
-(1/(a^2 + x^2), atan(x/a)/a, x, 1),
-(1/(a + b*x^2), atan((sqrt(b)*x)/sqrt(a))/(sqrt(a)*sqrt(b)), x, 1),
-(1/(x^2 - x + 2), -((2*atan((1 - 2*x)/sqrt(7)))/sqrt(7)), x, 2),
-(x*atan(x), -(x/2) + atan(x)/2 + (1⨸2)*x^2*atan(x), x, 3),
-(x^2*acos(x), (-(1⨸3))*sqrt(1 - x^2) + (1⨸9)*(1 - x^2)^(3⨸2) + (1⨸3)*x^3*acos(x), x, 4),
-(x*atan(x)^2, (-x)*atan(x) + atan(x)^2⨸2 + (1⨸2)*x^2*atan(x)^2 + (1⨸2)*log(1 + x^2), x, 5),
-(atan(sqrt(x)), -sqrt(x) + atan(sqrt(x)) + x*atan(sqrt(x)), x, 4),
-
-
-# ::Subsection::Closed::
-# Exercises 38 - 47
-
-
-(atan(sqrt(x))/(sqrt(x)*(1 + x)), atan(sqrt(x))^2, x, 1),
-(sqrt(1 - x^2), (1⨸2)*x*sqrt(1 - x^2) + asin(x)/2, x, 2),
-(x*ℯ^atan(x)/(1 + x^2)^(3⨸2), -((ℯ^atan(x)*(1 - x))/(2*sqrt(1 + x^2))), x, 1),
-(ℯ^atan(x)/(1 + x^2)^(3⨸2), (ℯ^atan(x)*(1 + x))/(2*sqrt(1 + x^2)), x, 1),
-(x^2/(1 + x^2)^2, -(x/(2*(1 + x^2))) + atan(x)/2, x, 2),
-(ℯ^x/(1 + ℯ^(2*x)), atan(ℯ^x), x, 2),
-(acot(ℯ^x)/ℯ^x, -x - acot(ℯ^x)/ℯ^x + (1⨸2)*log(1 + ℯ^(2*x)), x, 5),
-(((a + x)/(a - x))^(1⨸2), -((a - x)*sqrt((a + x)/(a - x))) + 2*a*atan(sqrt((a + x)/(a - x))), x, 3),
-(sqrt((x - a)*(b - x)), (-(1⨸4))*(a + b - 2*x)*sqrt((-a)*b + (a + b)*x - x^2) - (1⨸8)*(a - b)^2*atan((a + b - 2*x)/(2*sqrt((-a)*b + (a + b)*x - x^2))), x, 4),
-(1/sqrt((x - a)*(b - x)), -atan((a + b - 2*x)/(2*sqrt((-a)*b + (a + b)*x - x^2))), x, 3),
-
-
-# ::Section::Closed::
-# Section 6.23 Integration by partial fractions (p. 258-264)
-
-
-# ::Subsection::Closed::
-# Example 1
-
-
-((5*x + 3)/(x^2 + 2*x - 3), 2*log(1 - x) + 3*log(3 + x), x, 3),
-
-
-# ::Subsection::Closed::
-# Example 2
-
-
-((2*x + 5)/(x^2 + 2*x - 3), (7⨸4)*log(1 - x) + (1⨸4)*log(3 + x), x, 3),
-((x^3 + 3*x)/(x^2 - 2*x - 3), 2*x + x^2⨸2 + 9*log(3 - x) + log(1 + x), x, 6),
-
-
-# ::Subsection::Closed::
-# Example 3
-
-
-((2*x^2 + 5*x - 1)/(x^3 + x^2 - 2*x), 2*log(1 - x) + log(x)/2 - (1⨸2)*log(2 + x), x, 3),
-
-
-# ::Subsection::Closed::
-# Example 4
-
-
-((x^2 + 2*x + 3)/((x - 1)*(x + 1)^2), 1/(1 + x) + (3⨸2)*log(1 - x) - (1⨸2)*log(1 + x), x, 2),
-
-
-# ::Subsection::Closed::
-# Example 5
-
-
-((3*x^2 + 2*x - 2)/(x^3 - 1), (4*atan((1 + 2*x)/sqrt(3)))/sqrt(3) + log(1 - x^3), x, 5),
-
-
-# ::Subsection::Closed::
-# Example 6
-
-
-((x^4 - x^3 + 2*x^2 - x + 2)/((x - 1)*(x^2 + 2)^2), 1/(2*(2 + x^2)) - atan(x/sqrt(2))/(3*sqrt(2)) + (1⨸3)*log(1 - x) + (1⨸3)*log(2 + x^2), x, 6),
-
-
-# ::Section::Closed::
-# Section 6.24 Integrals which can be transformed into integrals of rational functions (p. 264-266)
-
-
-# ::Subsection::Closed::
-# Example 1
-
-
-(1/(sin(x) + cos(x)), -(atanh((cos(x) - sin(x))/sqrt(2))/sqrt(2)), x, 2),
-
-
-# ::Subsection::Closed::
-# Example 2
-
-
-(x/(4 - x^2 + sqrt(4 - x^2)), -log(1 + sqrt(4 - x^2)), x, 3),
-
-
-# ::Section::Closed::
-# Section 6.25 Exercises (p. 267-268)
-
-
-# ::Subsection::Closed::
-# Exercises 1 - 10
-
-
-((2*x + 3)/((x - 2)*(x + 5)), log(2 - x) + log(5 + x), x, 2),
-(x/((x + 1)*(x + 2)*(x + 3)), (-(1⨸2))*log(1 + x) + 2*log(2 + x) - (3⨸2)*log(3 + x), x, 2),
-(x/(x^3 - 3*x + 2), 1/(3*(1 - x)) + (2⨸9)*log(1 - x) - (2⨸9)*log(2 + x), x, 2),
-((x^4 + 2*x - 6)/(x^3 + x^2 - 2*x), -x + x^2⨸2 - log(1 - x) + 3*log(x) + log(2 + x), x, 3),
-((8*x^3 + 7)/((x + 1)*(2*x + 1)^3), -(3/(1 + 2*x)^2) + 3/(1 + 2*x) + log(1 + x), x, 2),
-((4*x^2 + x + 1)/(x^3 - 1), 2*log(1 - x) + log(1 + x + x^2), x, 3),
-(x^4/(x^4 + 5*x^2 + 4), x - (8⨸3)*atan(x/2) + atan(x)/3, x, 4),
-((x + 2)/(x^2 + x), 2*log(x) - log(1 + x), x, 2),
-(1/(x*(x^2 + 1)^2), 1/(2*(1 + x^2)) + log(x) - (1⨸2)*log(1 + x^2), x, 3),
-(1/((x + 1)*(x + 2)^2*(x + 3)^3), 1/(2 + x) + 1/(4*(3 + x)^2) + 5/(4*(3 + x)) + (1⨸8)*log(1 + x) + 2*log(2 + x) - (17⨸8)*log(3 + x), x, 2),
-
-
-# ::Subsection::Closed::
-# Exercises 11 - 20
-
-
-(x/(x + 1)^2, 1/(1 + x) + log(1 + x), x, 2),
-(1/(x^3 - x), -log(x) + (1⨸2)*log(1 - x^2), x, 5),
-(x^2/(x^2 + x - 6), x + (4⨸5)*log(2 - x) - (9⨸5)*log(3 + x), x, 4),
-((x + 2)/(x^2 - 4*x + 4), 4/(2 - x) + log(2 - x), x, 3),
-(1/((x^2 - 4*x + 4)*(x^2 - 4*x + 5)), 1/(2 - x) + atan(2 - x), x, 4),
-((x - 3)/(x^3 + 3*x^2 + 2*x), -((3*log(x))/2) + 4*log(1 + x) - (5⨸2)*log(2 + x), x, 3),
-(1/(x^2 - 1)^2, x/(2*(1 - x^2)) + atanh(x)/2, x, 2),
-((x + 1)/(x^3 - 1), (2⨸3)*log(1 - x) - (1⨸3)*log(1 + x + x^2), x, 3),
-((x^4 + 1)/(x*(x^2 + 1)^2), 1/(1 + x^2) + log(x), x, 3),
-(1/(x^4 - 2*x^3), 1/(4*x^2) + 1/(4*x) + (1⨸8)*log(2 - x) - log(x)/8, x, 3),
-
-
-# ::Subsection::Closed::
-# Exercises 21 - 30
-
-
-((1 - x^3)/(x*(x^2 + 1)), -x + atan(x) + log(x) - log(1 + x^2)/2, x, 5),
-(1/(x^4 - 1), -(atan(x)/2) - atanh(x)/2, x, 3),
-(1/(x^4 + 1), -(atan(1 - sqrt(2)*x)/(2*sqrt(2))) + atan(1 + sqrt(2)*x)/(2*sqrt(2)) - log(1 - sqrt(2)*x + x^2)/(4*sqrt(2)) + log(1 + sqrt(2)*x + x^2)/(4*sqrt(2)), x, 9),
-(x^2/(x^2 + 2*x + 2)^2, -((x*(2 + x))/(2*(2 + 2*x + x^2))) + atan(1 + x), x, 3),
-((4*x^5 - 1)/(x^5 + x + 1)^2, -(x/(1 + x + x^5)), x, 1),
-(1/(2*sin(x) - cos(x) + 5), x/(2*sqrt(5)) + atan((2*cos(x) + sin(x))/(5 + 2*sqrt(5) - cos(x) + 2*sin(x)))/sqrt(5), x, 3),
-(1/(1 + a*cos(x)), (2*atan((sqrt(1 - a)*tan(x/2))/sqrt(1 + a)))/sqrt(1 - a^2), x, 2),
-(1/(1 + 2*cos(x)), -(log(sqrt(3)*cos(x/2) - sin(x/2))/sqrt(3)) + log(sqrt(3)*cos(x/2) + sin(x/2))/sqrt(3), x, 2),
-(1/(1 + 1⨸2*cos(x)), (2*x)/sqrt(3) - (4*atan(sin(x)/(2 + sqrt(3) + cos(x))))/sqrt(3), x, 1),
-(sin(x)^2/(1 + sin(x)^2), x - x/sqrt(2) - atan((cos(x)*sin(x))/(1 + sqrt(2) + sin(x)^2))/sqrt(2), x, 3),
-(1/(a^2*sin(x)^2 + b^2*cos(x)^2), atan((a*tan(x))/b)/(a*b), x, 2),
-
-
-# ::Subsection::Closed::
-# Exercises 31 - 40
-
-
-(1/(a*sin(x) + b*cos(x))^2, sin(x)/(b*(b*cos(x) + a*sin(x))), x, 1),
-(sin(x)/(1 + sin(x) + cos(x)), x/2 - (1⨸2)*log(1 + cos(x) + sin(x)) - (1⨸2)*log(1 + tan(x/2)), x, 3),
-(sqrt(3 - x^2), (1⨸2)*x*sqrt(3 - x^2) + (3⨸2)*asin(x/sqrt(3)), x, 2),
-(x/sqrt(3 - x^2), -sqrt(3 - x^2), x, 1),
-(sqrt(3 - x^2)/x, sqrt(3 - x^2) - sqrt(3)*atanh(sqrt(3 - x^2)/sqrt(3)), x, 4),
-(sqrt(x^2 + x)/x, sqrt(x + x^2) + atanh(x/sqrt(x + x^2)), x, 3),
-(sqrt(x^2 + 5), (1⨸2)*x*sqrt(5 + x^2) + (5⨸2)*asinh(x/sqrt(5)), x, 2),
-(x/sqrt(x^2 + x + 1), sqrt(1 + x + x^2) - (1⨸2)*asinh((1 + 2*x)/sqrt(3)), x, 3),
-(1/sqrt(x^2 + x), 2*atanh(x/sqrt(x + x^2)), x, 2),
-(sqrt(2 - x - x^2)/x^2, -(sqrt(2 - x - x^2)/x) + asin((1⨸3)*(-1 - 2*x)) + atanh((4 - x)/(2*sqrt(2)*sqrt(2 - x - x^2)))/(2*sqrt(2)), x, 6),
-
-
-# ::Section::Closed::
-# Section 6.26 Miscellaneous review exercises (p. 268-271)
-
-
-# ::Subsection::Closed::
-# Exercise 1
-
-
-(log(t)/(t + 1), log(t)*log(1 + t) + PolyLog_reli(2., -t), t, 2),
-
-
-# ::Subsection::Closed::
-# Exercise 4
-
-
-(log(ℯ^cos(x)), (-x)*cos(x) + x*log(ℯ^cos(x)) + sin(x), x, 3),
-
-
-# ::Subsection::Closed::
-# Exercise 6
-
-
-(ℯ^t/t, Expinti(t), t, 1),
-(ℯ^(a*t)/t, Expinti(a*t), t, 1),
-(ℯ^t/t^2, -(ℯ^t/t) + Expinti(t), t, 2),
-(ℯ^(1/t), ℯ^(1/t)*t - Expinti(1/t), t, 2),
-
-
-# ::Subsection::Closed::
-# Exercise 12
-
-
-(1/(ℯ^t*(t - a - 1)), ℯ^(-1 - a)*Expinti(1 + a - t), t, 1),
-(t*(ℯ^t^2/(t^2 + 1)), Expinti(1 + t^2)/(2*ℯ), t, 2),
-(ℯ^t/(t + 1)^2, -(ℯ^t/(1 + t)) + Expinti(1 + t)/ℯ, t, 2),
-(ℯ^t*log(1 + t), -(Expinti(1 + t)/ℯ) + ℯ^t*log(1 + t), t, 2),
-
-
-# ::Subsection::Closed::
-# Exercise 25
-
-
-(t/ℯ^t, -ℯ^(-t) - t/ℯ^t, t, 2),
-(t^2/ℯ^t, -2/ℯ^t - (2*t)/ℯ^t - t^2/ℯ^t, t, 3),
-(t^3/ℯ^t, -6/ℯ^t - (6*t)/ℯ^t - (3*t^2)/ℯ^t - t^3/ℯ^t, t, 4),
-
-
-# ::Subsection::Closed::
-# Exercise 26
-
-
-((c*sin(x) + d*cos(x))/(a*sin(x) + b*cos(x)), ((a*c + b*d)*x)/(a^2 + b^2) - ((c*b - a*d)*log(b*cos(x) + a*sin(x)))/(a^2 + b^2), x, 1),
-
-
-# ::Subsection::Closed::
-# Exercise 28
-
-
-(1/log(t), Expinti(log(t)), t, 1),
-(1/log(t)^2, -(t/log(t)) + Expinti(log(t)), t, 2),
-(1/log(t)^(n + 1), ((-Gamma(-n, -log(t)))*(-log(t))^n)/log(t)^n, t, 2),
-(ℯ^(2*t)/(t - 1), ℯ^2*Expinti(-2*(1 - t)), t, 1),
-(ℯ^(2*x)/(x^2 - 3*x + 2), ℯ^4*Expinti(-4 + 2*x) - ℯ^2*Expinti(-2 + 2*x), x, 4),
-
-
-# ::Subsection::Closed::
-# Exercise 30
-
-
-(1/(1 + t^3)^(1⨸2), (2*sqrt(2 + sqrt(3))*(1 + t)*sqrt((1 - t + t^2)/(1 + sqrt(3) + t)^2)*Elliptic_f(asin((1 - sqrt(3) + t)/(1 + sqrt(3) + t)), -7 - 4*sqrt(3)))/(3^(1⨸4)*sqrt((1 + t)/(1 + sqrt(3) + t)^2)*sqrt(1 + t^3)), t, 1),
-
-
-
-
-]
 # Total integrals translated: 175
 
 bondarenko = [
@@ -534,8 +40,8 @@ bondarenko = [
 
 
 (log(x^4 + 1/x^4), -4*x - sqrt(2 + sqrt(2))*atan((sqrt(2 - sqrt(2)) - 2*x)/sqrt(2 + sqrt(2))) - sqrt(2 - sqrt(2))*atan((sqrt(2 + sqrt(2)) - 2*x)/sqrt(2 - sqrt(2))) + sqrt(2 + sqrt(2))*atan((sqrt(2 - sqrt(2)) + 2*x)/sqrt(2 + sqrt(2))) + sqrt(2 - sqrt(2))*atan((sqrt(2 + sqrt(2)) + 2*x)/sqrt(2 - sqrt(2))) - (1//2)*sqrt(2 - sqrt(2))*log(1 - sqrt(2 - sqrt(2))*x + x^2) + (1//2)*sqrt(2 - sqrt(2))*log(1 + sqrt(2 - sqrt(2))*x + x^2) - (1//2)*sqrt(2 + sqrt(2))*log(1 - sqrt(2 + sqrt(2))*x + x^2) + (1//2)*sqrt(2 + sqrt(2))*log(1 + sqrt(2 + sqrt(2))*x + x^2) + x*log(1/x^4 + x^4), x, 22),
-(log(1 + x)/(x*sqrt(1 + sqrt(1 + x))), -8*atanh(sqrt(1 + sqrt(1 + x))) - (2*log(1 + x))/sqrt(1 + sqrt(1 + x)) - sqrt(2)*atanh(sqrt(1 + sqrt(1 + x))/sqrt(2))*log(1 + x) + 2*sqrt(2)*atanh(1/sqrt(2))*log(1 - sqrt(1 + sqrt(1 + x))) - 2*sqrt(2)*atanh(1/sqrt(2))*log(1 + sqrt(1 + sqrt(1 + x))) + sqrt(2)*PolyLog_reli(2., -((sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) - sqrt(2)*PolyLog_reli(2., (sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))) - sqrt(2)*PolyLog_reli(2., -((sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) + sqrt(2)*PolyLog_reli(2., (sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))), x, -1),
-(log(1 + x)/x*sqrt(1 + sqrt(1 + x)), -16*sqrt(1 + sqrt(1 + x)) + 16*atanh(sqrt(1 + sqrt(1 + x))) + 4*sqrt(1 + sqrt(1 + x))*log(1 + x) - 2*sqrt(2)*atanh(sqrt(1 + sqrt(1 + x))/sqrt(2))*log(1 + x) + 4*sqrt(2)*atanh(1/sqrt(2))*log(1 - sqrt(1 + sqrt(1 + x))) - 4*sqrt(2)*atanh(1/sqrt(2))*log(1 + sqrt(1 + sqrt(1 + x))) + 2*sqrt(2)*PolyLog_reli(2., -((sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) - 2*sqrt(2)*PolyLog_reli(2., (sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))) - 2*sqrt(2)*PolyLog_reli(2., -((sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) + 2*sqrt(2)*PolyLog_reli(2., (sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))), x, -1),
+(log(1 + x)/(x*sqrt(1 + sqrt(1 + x))), -8*atanh(sqrt(1 + sqrt(1 + x))) - (2*log(1 + x))/sqrt(1 + sqrt(1 + x)) - sqrt(2)*atanh(sqrt(1 + sqrt(1 + x))/sqrt(2))*log(1 + x) + 2*sqrt(2)*atanh(1/sqrt(2))*log(1 - sqrt(1 + sqrt(1 + x))) - 2*sqrt(2)*atanh(1/sqrt(2))*log(1 + sqrt(1 + sqrt(1 + x))) + sqrt(2)*reli(2., -((sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) - sqrt(2)*reli(2., (sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))) - sqrt(2)*reli(2., -((sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) + sqrt(2)*reli(2., (sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))), x, -1),
+(log(1 + x)/x*sqrt(1 + sqrt(1 + x)), -16*sqrt(1 + sqrt(1 + x)) + 16*atanh(sqrt(1 + sqrt(1 + x))) + 4*sqrt(1 + sqrt(1 + x))*log(1 + x) - 2*sqrt(2)*atanh(sqrt(1 + sqrt(1 + x))/sqrt(2))*log(1 + x) + 4*sqrt(2)*atanh(1/sqrt(2))*log(1 - sqrt(1 + sqrt(1 + x))) - 4*sqrt(2)*atanh(1/sqrt(2))*log(1 + sqrt(1 + sqrt(1 + x))) + 2*sqrt(2)*reli(2., -((sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) - 2*sqrt(2)*reli(2., (sqrt(2)*(1 - sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))) - 2*sqrt(2)*reli(2., -((sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 - sqrt(2)))) + 2*sqrt(2)*reli(2., (sqrt(2)*(1 + sqrt(1 + sqrt(1 + x))))/(2 + sqrt(2))), x, -1),
 
 
 # ::Section::Closed::
@@ -568,20 +74,20 @@ bondarenko = [
 
 
 (log(x^2 + sqrt(1 - x^2)), -2*x - asin(x) + sqrt((1//2)*(1 + sqrt(5)))*atan(sqrt(2/(1 + sqrt(5)))*x) + sqrt((1//2)*(1 + sqrt(5)))*atan((sqrt((1//2)*(1 + sqrt(5)))*x)/sqrt(1 - x^2)) + sqrt((1//2)*(-1 + sqrt(5)))*atanh(sqrt(2/(-1 + sqrt(5)))*x) - sqrt((1//2)*(-1 + sqrt(5)))*atanh((sqrt((1//2)*(-1 + sqrt(5)))*x)/sqrt(1 - x^2)) + x*log(x^2 + sqrt(1 - x^2)), x, -31),
-(log(1 + exp(x))/(1 + exp(2*x)), (-(1//2))*log((1//2 - I/2)*(I - ℯ^x))*log(1 + ℯ^x) - (1//2)*log((-(1//2) - I/2)*(I + ℯ^x))*log(1 + ℯ^x) - PolyLog_reli(2., -ℯ^x) - (1//2)*PolyLog_reli(2., (1//2 - I/2)*(1 + ℯ^x)) - (1//2)*PolyLog_reli(2., (1//2 + I/2)*(1 + ℯ^x)), x, 12),
-(log(1 + cosh(x)^2)^2*cosh(x), -8*sqrt(2)*atan(sinh(x)/sqrt(2)) + 4*I*sqrt(2)*atan(sinh(x)/sqrt(2))^2 + 8*sqrt(2)*atan(sinh(x)/sqrt(2))*log((2*sqrt(2))/(sqrt(2) + I*sinh(x))) + 4*sqrt(2)*atan(sinh(x)/sqrt(2))*log(2 + sinh(x)^2) + 4*I*sqrt(2)*PolyLog_reli(2., 1 - (2*sqrt(2))/(sqrt(2) + I*sinh(x))) + 8*sinh(x) - 4*log(2 + sinh(x)^2)*sinh(x) + log(2 + sinh(x)^2)^2*sinh(x), x, 13),
-(log(sinh(x) + cosh(x)^2)^2*cosh(x), -4*sqrt(3)*atan((1 + 2*sinh(x))/sqrt(3)) - (1//2)*(1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))^2 - (1 + I*sqrt(3))*log((I*(1 - I*sqrt(3) + 2*sinh(x)))/(2*sqrt(3)))*log(1 + I*sqrt(3) + 2*sinh(x)) - (1//2)*(1 + I*sqrt(3))*log(1 + I*sqrt(3) + 2*sinh(x))^2 - (1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))*log(-((I*(1 + I*sqrt(3) + 2*sinh(x)))/(2*sqrt(3)))) - 2*log(1 + sinh(x) + sinh(x)^2) + (1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))*log(1 + sinh(x) + sinh(x)^2) + (1 + I*sqrt(3))*log(1 + I*sqrt(3) + 2*sinh(x))*log(1 + sinh(x) + sinh(x)^2) - (1 + I*sqrt(3))*PolyLog_reli(2., -((I - sqrt(3) + 2*I*sinh(x))/(2*sqrt(3)))) - (1 - I*sqrt(3))*PolyLog_reli(2., (I + sqrt(3) + 2*I*sinh(x))/(2*sqrt(3))) + 8*sinh(x) - 4*log(1 + sinh(x) + sinh(x)^2)*sinh(x) + log(1 + sinh(x) + sinh(x)^2)^2*sinh(x), x, 28),
-(log(x + sqrt(1 + x))/(1 + x^2), (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log(x + sqrt(1 + x)) + (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 - I) - sqrt(5))) - (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 - I) - sqrt(5))) + (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 + I) - sqrt(5))) + (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 + I) - sqrt(5))) - (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 - I) + sqrt(5))) - (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 - I) + sqrt(5))) + (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 + I) + sqrt(5))) + (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 + I) + sqrt(5))) - (1//2)*I*PolyLog_reli(2., (2*(sqrt(1 - I) - sqrt(1 + x)))/(1 + 2*sqrt(1 - I) - sqrt(5))) - (1//2)*I*PolyLog_reli(2., (2*(sqrt(1 - I) - sqrt(1 + x)))/(1 + 2*sqrt(1 - I) + sqrt(5))) + (1//2)*I*PolyLog_reli(2., (2*(sqrt(1 + I) - sqrt(1 + x)))/(1 + 2*sqrt(1 + I) - sqrt(5))) + (1//2)*I*PolyLog_reli(2., (2*(sqrt(1 + I) - sqrt(1 + x)))/(1 + 2*sqrt(1 + I) + sqrt(5))) - (1//2)*I*PolyLog_reli(2., -((2*(sqrt(1 - I) + sqrt(1 + x)))/(1 - 2*sqrt(1 - I) - sqrt(5)))) - (1//2)*I*PolyLog_reli(2., -((2*(sqrt(1 - I) + sqrt(1 + x)))/(1 - 2*sqrt(1 - I) + sqrt(5)))) + (1//2)*I*PolyLog_reli(2., -((2*(sqrt(1 + I) + sqrt(1 + x)))/(1 - 2*sqrt(1 + I) - sqrt(5)))) + (1//2)*I*PolyLog_reli(2., -((2*(sqrt(1 + I) + sqrt(1 + x)))/(1 - 2*sqrt(1 + I) + sqrt(5)))), x, 44),
-(log(x + sqrt(1 + x))^2/(1 + x)^2, log(1 + x) + (2*log(x + sqrt(1 + x)))/sqrt(1 + x) - 6*log(sqrt(1 + x))*log(x + sqrt(1 + x)) - log(x + sqrt(1 + x))^2/(1 + x) - (1 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x)) + 6*log((1//2)*(-1 + sqrt(5)))*log(1 - sqrt(5) + 2*sqrt(1 + x)) + (3 + sqrt(5))*log(x + sqrt(1 + x))*log(1 - sqrt(5) + 2*sqrt(1 + x)) - (1//2)*(3 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x))^2 - (1 - sqrt(5))*log(1 + sqrt(5) + 2*sqrt(1 + x)) + (3 - sqrt(5))*log(x + sqrt(1 + x))*log(1 + sqrt(5) + 2*sqrt(1 + x)) - (3 - sqrt(5))*log(-((1 - sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))))*log(1 + sqrt(5) + 2*sqrt(1 + x)) - (1//2)*(3 - sqrt(5))*log(1 + sqrt(5) + 2*sqrt(1 + x))^2 - (3 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))) + 6*log(sqrt(1 + x))*log(1 + (2*sqrt(1 + x))/(1 + sqrt(5))) + 6*PolyLog_reli(2., -((2*sqrt(1 + x))/(1 + sqrt(5)))) - (3 + sqrt(5))*PolyLog_reli(2., -((1 - sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5)))) - (3 - sqrt(5))*PolyLog_reli(2., (1 + sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))) - 6*PolyLog_reli(2., 1 + (2*sqrt(1 + x))/(1 - sqrt(5))), x, 35),
-(log(x + sqrt(1 + x))/x, log(-1 + sqrt(1 + x))*log(x + sqrt(1 + x)) + log(1 + sqrt(1 + x))*log(x + sqrt(1 + x)) - log(-1 + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(3 - sqrt(5))) - log(1 + sqrt(1 + x))*log(-((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + sqrt(5)))) - log(1 + sqrt(1 + x))*log(-((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - sqrt(5)))) - log(-1 + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(3 + sqrt(5))) - PolyLog_reli(2., (2*(1 - sqrt(1 + x)))/(3 - sqrt(5))) - PolyLog_reli(2., (2*(1 - sqrt(1 + x)))/(3 + sqrt(5))) - PolyLog_reli(2., (2*(1 + sqrt(1 + x)))/(1 - sqrt(5))) - PolyLog_reli(2., (2*(1 + sqrt(1 + x)))/(1 + sqrt(5))), x, 21),
+(log(1 + exp(x))/(1 + exp(2*x)), (-(1//2))*log((1//2 - I/2)*(I - ℯ^x))*log(1 + ℯ^x) - (1//2)*log((-(1//2) - I/2)*(I + ℯ^x))*log(1 + ℯ^x) - reli(2., -ℯ^x) - (1//2)*reli(2., (1//2 - I/2)*(1 + ℯ^x)) - (1//2)*reli(2., (1//2 + I/2)*(1 + ℯ^x)), x, 12),
+(log(1 + cosh(x)^2)^2*cosh(x), -8*sqrt(2)*atan(sinh(x)/sqrt(2)) + 4*I*sqrt(2)*atan(sinh(x)/sqrt(2))^2 + 8*sqrt(2)*atan(sinh(x)/sqrt(2))*log((2*sqrt(2))/(sqrt(2) + I*sinh(x))) + 4*sqrt(2)*atan(sinh(x)/sqrt(2))*log(2 + sinh(x)^2) + 4*I*sqrt(2)*reli(2., 1 - (2*sqrt(2))/(sqrt(2) + I*sinh(x))) + 8*sinh(x) - 4*log(2 + sinh(x)^2)*sinh(x) + log(2 + sinh(x)^2)^2*sinh(x), x, 13),
+(log(sinh(x) + cosh(x)^2)^2*cosh(x), -4*sqrt(3)*atan((1 + 2*sinh(x))/sqrt(3)) - (1//2)*(1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))^2 - (1 + I*sqrt(3))*log((I*(1 - I*sqrt(3) + 2*sinh(x)))/(2*sqrt(3)))*log(1 + I*sqrt(3) + 2*sinh(x)) - (1//2)*(1 + I*sqrt(3))*log(1 + I*sqrt(3) + 2*sinh(x))^2 - (1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))*log(-((I*(1 + I*sqrt(3) + 2*sinh(x)))/(2*sqrt(3)))) - 2*log(1 + sinh(x) + sinh(x)^2) + (1 - I*sqrt(3))*log(1 - I*sqrt(3) + 2*sinh(x))*log(1 + sinh(x) + sinh(x)^2) + (1 + I*sqrt(3))*log(1 + I*sqrt(3) + 2*sinh(x))*log(1 + sinh(x) + sinh(x)^2) - (1 + I*sqrt(3))*reli(2., -((I - sqrt(3) + 2*I*sinh(x))/(2*sqrt(3)))) - (1 - I*sqrt(3))*reli(2., (I + sqrt(3) + 2*I*sinh(x))/(2*sqrt(3))) + 8*sinh(x) - 4*log(1 + sinh(x) + sinh(x)^2)*sinh(x) + log(1 + sinh(x) + sinh(x)^2)^2*sinh(x), x, 28),
+(log(x + sqrt(1 + x))/(1 + x^2), (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log(x + sqrt(1 + x)) + (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log(x + sqrt(1 + x)) - (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 - I) - sqrt(5))) - (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 - I) - sqrt(5))) + (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 + I) - sqrt(5))) + (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 + I) - sqrt(5))) - (1//2)*I*log(sqrt(1 - I) + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 - I) + sqrt(5))) - (1//2)*I*log(sqrt(1 - I) - sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 - I) + sqrt(5))) + (1//2)*I*log(sqrt(1 + I) + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - 2*sqrt(1 + I) + sqrt(5))) + (1//2)*I*log(sqrt(1 + I) - sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(1 + 2*sqrt(1 + I) + sqrt(5))) - (1//2)*I*reli(2., (2*(sqrt(1 - I) - sqrt(1 + x)))/(1 + 2*sqrt(1 - I) - sqrt(5))) - (1//2)*I*reli(2., (2*(sqrt(1 - I) - sqrt(1 + x)))/(1 + 2*sqrt(1 - I) + sqrt(5))) + (1//2)*I*reli(2., (2*(sqrt(1 + I) - sqrt(1 + x)))/(1 + 2*sqrt(1 + I) - sqrt(5))) + (1//2)*I*reli(2., (2*(sqrt(1 + I) - sqrt(1 + x)))/(1 + 2*sqrt(1 + I) + sqrt(5))) - (1//2)*I*reli(2., -((2*(sqrt(1 - I) + sqrt(1 + x)))/(1 - 2*sqrt(1 - I) - sqrt(5)))) - (1//2)*I*reli(2., -((2*(sqrt(1 - I) + sqrt(1 + x)))/(1 - 2*sqrt(1 - I) + sqrt(5)))) + (1//2)*I*reli(2., -((2*(sqrt(1 + I) + sqrt(1 + x)))/(1 - 2*sqrt(1 + I) - sqrt(5)))) + (1//2)*I*reli(2., -((2*(sqrt(1 + I) + sqrt(1 + x)))/(1 - 2*sqrt(1 + I) + sqrt(5)))), x, 44),
+(log(x + sqrt(1 + x))^2/(1 + x)^2, log(1 + x) + (2*log(x + sqrt(1 + x)))/sqrt(1 + x) - 6*log(sqrt(1 + x))*log(x + sqrt(1 + x)) - log(x + sqrt(1 + x))^2/(1 + x) - (1 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x)) + 6*log((1//2)*(-1 + sqrt(5)))*log(1 - sqrt(5) + 2*sqrt(1 + x)) + (3 + sqrt(5))*log(x + sqrt(1 + x))*log(1 - sqrt(5) + 2*sqrt(1 + x)) - (1//2)*(3 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x))^2 - (1 - sqrt(5))*log(1 + sqrt(5) + 2*sqrt(1 + x)) + (3 - sqrt(5))*log(x + sqrt(1 + x))*log(1 + sqrt(5) + 2*sqrt(1 + x)) - (3 - sqrt(5))*log(-((1 - sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))))*log(1 + sqrt(5) + 2*sqrt(1 + x)) - (1//2)*(3 - sqrt(5))*log(1 + sqrt(5) + 2*sqrt(1 + x))^2 - (3 + sqrt(5))*log(1 - sqrt(5) + 2*sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))) + 6*log(sqrt(1 + x))*log(1 + (2*sqrt(1 + x))/(1 + sqrt(5))) + 6*reli(2., -((2*sqrt(1 + x))/(1 + sqrt(5)))) - (3 + sqrt(5))*reli(2., -((1 - sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5)))) - (3 - sqrt(5))*reli(2., (1 + sqrt(5) + 2*sqrt(1 + x))/(2*sqrt(5))) - 6*reli(2., 1 + (2*sqrt(1 + x))/(1 - sqrt(5))), x, 35),
+(log(x + sqrt(1 + x))/x, log(-1 + sqrt(1 + x))*log(x + sqrt(1 + x)) + log(1 + sqrt(1 + x))*log(x + sqrt(1 + x)) - log(-1 + sqrt(1 + x))*log((1 - sqrt(5) + 2*sqrt(1 + x))/(3 - sqrt(5))) - log(1 + sqrt(1 + x))*log(-((1 - sqrt(5) + 2*sqrt(1 + x))/(1 + sqrt(5)))) - log(1 + sqrt(1 + x))*log(-((1 + sqrt(5) + 2*sqrt(1 + x))/(1 - sqrt(5)))) - log(-1 + sqrt(1 + x))*log((1 + sqrt(5) + 2*sqrt(1 + x))/(3 + sqrt(5))) - reli(2., (2*(1 - sqrt(1 + x)))/(3 - sqrt(5))) - reli(2., (2*(1 - sqrt(1 + x)))/(3 + sqrt(5))) - reli(2., (2*(1 + sqrt(1 + x)))/(1 - sqrt(5))) - reli(2., (2*(1 + sqrt(1 + x)))/(1 + sqrt(5))), x, 21),
 
 
-(atan(2*tan(x)), x*atan(2*tan(x)) + (1//2)*I*x*log(1 - 3*ℯ^(2*I*x)) - (1//2)*I*x*log(1 - (1//3)*ℯ^(2*I*x)) - (1//4)*PolyLog_reli(2., (1//3)*ℯ^(2*I*x)) + (1//4)*PolyLog_reli(2., 3*ℯ^(2*I*x)), x, 7),
-(atan(x)*log(x)/x, (1//2)*I*log(x)*PolyLog_reli(2., (-I)*x) - (1//2)*I*log(x)*PolyLog_reli(2., I*x) - (1//2)*I*PolyLog_reli(3., (-I)*x) + (1//2)*I*PolyLog_reli(3., I*x), x, 5),
+(atan(2*tan(x)), x*atan(2*tan(x)) + (1//2)*I*x*log(1 - 3*ℯ^(2*I*x)) - (1//2)*I*x*log(1 - (1//3)*ℯ^(2*I*x)) - (1//4)*reli(2., (1//3)*ℯ^(2*I*x)) + (1//4)*reli(2., 3*ℯ^(2*I*x)), x, 7),
+(atan(x)*log(x)/x, (1//2)*I*log(x)*reli(2., (-I)*x) - (1//2)*I*log(x)*reli(2., I*x) - (1//2)*I*reli(3., (-I)*x) + (1//2)*I*reli(3., I*x), x, 5),
 
 
 # Note: Mathematica is unable to differentiate result back to integrand!
-(atan(x)^2*sqrt(1 + x^2), asinh(x) - sqrt(1 + x^2)*atan(x) + (1//2)*x*sqrt(1 + x^2)*atan(x)^2 - I*atan(ℯ^(I*atan(x)))*atan(x)^2 + I*atan(x)*PolyLog_reli(2., (-I)*ℯ^(I*atan(x))) - I*atan(x)*PolyLog_reli(2., I*ℯ^(I*atan(x))) - PolyLog_reli(3., (-I)*ℯ^(I*atan(x))) + PolyLog_reli(3., I*ℯ^(I*atan(x))), x, 10),
+(atan(x)^2*sqrt(1 + x^2), asinh(x) - sqrt(1 + x^2)*atan(x) + (1//2)*x*sqrt(1 + x^2)*atan(x)^2 - I*atan(ℯ^(I*atan(x)))*atan(x)^2 + I*atan(x)*reli(2., (-I)*ℯ^(I*atan(x))) - I*atan(x)*reli(2., I*ℯ^(I*atan(x))) - reli(3., (-I)*ℯ^(I*atan(x))) + reli(3., I*ℯ^(I*atan(x))), x, 10),
 ]
 
 bronstein = [
@@ -608,7 +114,7 @@ bronstein = [
 
 
 ((x - tan(x))/tan(x)^2, -(x^2//2) - x*cot(x), x, 6),
-(1 + x*tan(x) + tan(x)^2, (I*x^2)/2 - x*log(1 + ℯ^(2*I*x)) + (1//2)*I*PolyLog_reli(2., -ℯ^(2*I*x)) + tan(x), x, 7),
+(1 + x*tan(x) + tan(x)^2, (I*x^2)/2 - x*log(1 + ℯ^(2*I*x)) + (1//2)*I*reli(2., -ℯ^(2*I*x)) + tan(x), x, 7),
 (sin(x)/x, Sinint(x), x, 1),
 ((3*(x + ℯ^x)^(1//3) + (2*x^2 + 3*x)*ℯ^x + 5*x^2)/(x*(x + ℯ^x)^(1//3)), 3*x*(ℯ^x + x)^(2//3) + 3*log(x), x, 8),
 
@@ -1117,7 +623,7 @@ hearn = [
 (sin(x)^2, x/2 - (1//2)*cos(x)*sin(x), x, 2),
 (x^3*sin(x^2), (-(1//2))*x^2*cos(x^2) + sin(x^2)/2, x, 3),
 (sin(x)^3, -cos(x) + cos(x)^3//3, x, 2),
-(sin(x)^p, (cos(x)*hypergeometric2f1(1//2, (1 + p)/2, (3 + p)/2, sin(x)^2)*sin(x)^(1 + p))/((1 + p)*sqrt(cos(x)^2)), x, 1),
+(sin(x)^p, (cos(x)*_₂F₁(1//2, (1 + p)/2, (3 + p)/2, sin(x)^2)*sin(x)^(1 + p))/((1 + p)*sqrt(cos(x)^2)), x, 1),
 ((sin(x)^2+1)^2*cos(x), sin(x) + (2*sin(x)^3)/3 + sin(x)^5//5, x, 3),
 (cos(x)^2, x/2 + (1//2)*cos(x)*sin(x), x, 2),
 (cos(x)^3, sin(x) - sin(x)^3//3, x, 2),
@@ -1163,8 +669,8 @@ hearn = [
 (cos(x)*cos(2*x), sin(x)/2 + (1//6)*sin(3*x), x, 1),
 (x^2*cos(a+b*x)^2, -(x/(4*b^2)) + x^3//6 + (x*cos(a + b*x)^2)/(2*b^2) - (cos(a + b*x)*sin(a + b*x))/(4*b^3) + (x^2*cos(a + b*x)*sin(a + b*x))/(2*b), x, 4),
 (1/tan(x)^3, (-(1//2))*cot(x)^2 - log(sin(x)), x, 2),
-(x^3*tan(x)^4, -(x^2//2) + (4*I*x^3)/3 + x^4//4 - 4*x^2*log(1 + ℯ^(2*I*x)) + log(cos(x)) + 4*I*x*PolyLog_reli(2, -ℯ^(2*I*x)) - 2*PolyLog_reli(3, -ℯ^(2*I*x)) + x*tan(x) - x^3*tan(x) - (1//2)*x^2*tan(x)^2 + (1//3)*x^3*tan(x)^3, x, 17),
-(x^3*tan(x)^6, (19*x^2)/20 - (23*I*x^3)/15 - x^4//4 + (23//5)*x^2*log(1 + ℯ^(2*I*x)) - 2*log(cos(x)) - (23//5)*I*x*PolyLog_reli(2, -ℯ^(2*I*x)) + (23//10)*PolyLog_reli(3, -ℯ^(2*I*x)) - (19//10)*x*tan(x) + x^3*tan(x) - tan(x)^2//20 + (4//5)*x^2*tan(x)^2 + (1//10)*x*tan(x)^3 - (1//3)*x^3*tan(x)^3 - (3//20)*x^2*tan(x)^4 + (1//5)*x^3*tan(x)^5, x, 34),
+(x^3*tan(x)^4, -(x^2//2) + (4*I*x^3)/3 + x^4//4 - 4*x^2*log(1 + ℯ^(2*I*x)) + log(cos(x)) + 4*I*x*reli(2, -ℯ^(2*I*x)) - 2*reli(3, -ℯ^(2*I*x)) + x*tan(x) - x^3*tan(x) - (1//2)*x^2*tan(x)^2 + (1//3)*x^3*tan(x)^3, x, 17),
+(x^3*tan(x)^6, (19*x^2)/20 - (23*I*x^3)/15 - x^4//4 + (23//5)*x^2*log(1 + ℯ^(2*I*x)) - 2*log(cos(x)) - (23//5)*I*x*reli(2, -ℯ^(2*I*x)) + (23//10)*reli(3, -ℯ^(2*I*x)) - (19//10)*x*tan(x) + x^3*tan(x) - tan(x)^2//20 + (4//5)*x^2*tan(x)^2 + (1//10)*x*tan(x)^3 - (1//3)*x^3*tan(x)^3 - (3//20)*x^2*tan(x)^4 + (1//5)*x^3*tan(x)^5, x, 34),
 (x*tan(x)^2, -(x^2//2) + log(cos(x)) + x*tan(x), x, 3),
 (sin(2*x)*cos(3*x), cos(x)/2 - (1//10)*cos(5*x), x, 1),
 (sin(x)^2*cos(x)^2, x/8 + (1//8)*cos(x)*sin(x) - (1//4)*cos(x)^3*sin(x), x, 3),
@@ -1358,7 +864,7 @@ hearn = [
 (1/(x-3)^4, 1/(3*(3 - x)^3), x, 1),
 (x/(x^3-1), atan((1 + 2*x)/sqrt(3))/sqrt(3) + (1//3)*log(1 - x) - (1//6)*log(1 + x + x^2), x, 6),
 (x/(x^4-1), (-(1//2))*atanh(x^2), x, 2),
-##XXX (log(x)*(x^3+1)/(x^4+2), (1//8)*(2 + I*(-2.0)^(1//4))*log(x)*log(1 - ((1 + I)*x)/2^(3//4)) + (1//16)*(4 + (1 - I)*2^(3//4))*log(x)*log(1 + ((1 + I)*x)/2^(3//4)) + (1//8)*(2 + (-2.0)^(1//4))*log(x)*log(1 - ((-1)^(3//4)*x)/2^(1//4)) + (1//8)*(2 - (-2.0)^(1//4))*log(x)*log(1 + ((-1)^(3//4)*x)/2^(1//4)) + (1//16)*(4 + (1 - I)*2^(3//4))*PolyLog_reli(2, -(((1 + I)*x)/2^(3//4))) + (1//8)*(2 + I*(-2.0)^(1//4))*PolyLog_reli(2, ((1 + I)*x)/2^(3//4)) + (1//8)*(2 - (-2.0)^(1//4))*PolyLog_reli(2, -(((-1)^(3//4)*x)/2^(1//4))) + (1//8)*(2 + (-2.0)^(1//4))*PolyLog_reli(2, ((-1)^(3//4)*x)/2^(1//4)), x, 10),
+##XXX (log(x)*(x^3+1)/(x^4+2), (1//8)*(2 + I*(-2.0)^(1//4))*log(x)*log(1 - ((1 + I)*x)/2^(3//4)) + (1//16)*(4 + (1 - I)*2^(3//4))*log(x)*log(1 + ((1 + I)*x)/2^(3//4)) + (1//8)*(2 + (-2.0)^(1//4))*log(x)*log(1 - ((-1)^(3//4)*x)/2^(1//4)) + (1//8)*(2 - (-2.0)^(1//4))*log(x)*log(1 + ((-1)^(3//4)*x)/2^(1//4)) + (1//16)*(4 + (1 - I)*2^(3//4))*reli(2, -(((1 + I)*x)/2^(3//4))) + (1//8)*(2 + I*(-2.0)^(1//4))*reli(2, ((1 + I)*x)/2^(3//4)) + (1//8)*(2 - (-2.0)^(1//4))*reli(2, -(((-1)^(3//4)*x)/2^(1//4))) + (1//8)*(2 + (-2.0)^(1//4))*reli(2, ((-1)^(3//4)*x)/2^(1//4)), x, 10),
 (log(x)+log(x+1)+log(x+2), -3*x + x*log(x) + (1 + x)*log(1 + x) + (2 + x)*log(2 + x), x, 6),
 (1/(x^3+5), -(atan((5^(1//3) - 2*x)/(sqrt(3)*5^(1//3)))/(sqrt(3)*5^(2//3))) + log(5^(1//3) + x)/(3*5^(2//3)) - log(5^(2//3) - 5^(1//3)*x + x^2)/(6*5^(2//3)), x, 6),
 (1/sqrt(1+x^2), asinh(x), x, 1),
@@ -2578,14 +2084,14 @@ timofeev = [
 (1/(x^3*(a^3 + x^3)), -(1/(2*a^3*x^2)) + atan((a - 2*x)/(sqrt(3)*a))/(sqrt(3)*a^5) - log(a + x)/(3*a^5) + log(a^2 - a*x + x^2)/(6*a^5), x, 7),
 (1/(x^4*(a^3 + x^3)), -(1/(3*a^3*x^3)) - log(x)/a^6 + log(a^3 + x^3)/(3*a^6), x, 3),
 (1/(x^5*(a^3 + x^3)), -(1/(4*a^3*x^4)) + 1/(a^6*x) - atan((a - 2*x)/(sqrt(3)*a))/(sqrt(3)*a^7) - log(a + x)/(3*a^7) + log(a^2 - a*x + x^2)/(6*a^7), x, 8),
-(1/(x^m*(a^3 + x^3)), (x^(1 - m)*hypergeometric2f1(1, (1 - m)/3, (4 - m)/3, -(x^3/a^3)))/(a^3*(1 - m)), x, 1),
+(1/(x^m*(a^3 + x^3)), (x^(1 - m)*_₂F₁(1, (1 - m)/3, (4 - m)/3, -(x^3/a^3)))/(a^3*(1 - m)), x, 1),
 (1/(a^4 - x^4), atan(x/a)/(2*a^3) + atanh(x/a)/(2*a^3), x, 3),
 (x/(a^4 - x^4), atanh(x^2/a^2)/(2*a^2), x, 2),
 (1/(x*(a^4 - x^4)), log(x)/a^4 - log(a^4 - x^4)/(4*a^4), x, 4),
 (1/(x^2*(a^4 - x^4)), -(1/(a^4*x)) - atan(x/a)/(2*a^5) + atanh(x/a)/(2*a^5), x, 4),
 (1/(x^3*(a^4 - x^4)), -(1/(2*a^4*x^2)) + atanh(x^2/a^2)/(2*a^6), x, 3),
 (1/(x^4*(a^4 - x^4)), -(1/(3*a^4*x^3)) + atan(x/a)/(2*a^7) + atanh(x/a)/(2*a^7), x, 4),
-(1/(x^m*(a^4 - x^4)), (x^(1 - m)*hypergeometric2f1(1, (1 - m)/4, (5 - m)/4, x^4/a^4))/(a^4*(1 - m)), x, 1),
+(1/(x^m*(a^4 - x^4)), (x^(1 - m)*_₂F₁(1, (1 - m)/4, (5 - m)/4, x^4/a^4))/(a^4*(1 - m)), x, 1),
 (x/(a^4 + x^4), atan(x^2/a^2)/(2*a^2), x, 2),
 (x^2/(a^4 + x^4), -(atan(1 - (sqrt(2)*x)/a)/(2*sqrt(2)*a)) + atan(1 + (sqrt(2)*x)/a)/(2*sqrt(2)*a) + log(a^2 - sqrt(2)*a*x + x^2)/(4*sqrt(2)*a) - log(a^2 + sqrt(2)*a*x + x^2)/(4*sqrt(2)*a), x, 9),
 (1/(a^5 + x^5), -((sqrt((1//2)*(5 + sqrt(5)))*atan(((1 - sqrt(5))*a - 4*x)/(sqrt(2*(5 + sqrt(5)))*a)))/(5*a^4)) - (sqrt((1//2)*(5 - sqrt(5)))*atan((sqrt((1//10)*(5 + sqrt(5)))*((1 + sqrt(5))*a - 4*x))/(2*a)))/(5*a^4) + log(a + x)/(5*a^4) - ((1 - sqrt(5))*log(a^2 - (1//2)*(1 - sqrt(5))*a*x + x^2))/(20*a^4) - ((1 + sqrt(5))*log(a^2 - (1//2)*(1 + sqrt(5))*a*x + x^2))/(20*a^4), x, 6),
@@ -2603,7 +2109,7 @@ timofeev = [
 (1/(x^2*(a^5 + x^5)), -(1/(a^5*x)) + (sqrt((1//2)*(5 + sqrt(5)))*atan(((1 - sqrt(5))*a - 4*x)/(sqrt(2*(5 + sqrt(5)))*a)))/(5*a^6) + (sqrt((1//2)*(5 - sqrt(5)))*atan((sqrt((1//10)*(5 + sqrt(5)))*((1 + sqrt(5))*a - 4*x))/(2*a)))/(5*a^6) + log(a + x)/(5*a^6) - ((1 - sqrt(5))*log(a^2 - (1//2)*(1 - sqrt(5))*a*x + x^2))/(20*a^6) - ((1 + sqrt(5))*log(a^2 - (1//2)*(1 + sqrt(5))*a*x + x^2))/(20*a^6), x, 7),
 (1/(x^3*(a^5 + x^5)), -(1/(2*a^5*x^2)) - (sqrt((1//2)*(5 - sqrt(5)))*atan(((1 - sqrt(5))*a - 4*x)/(sqrt(2*(5 + sqrt(5)))*a)))/(5*a^7) + (sqrt((1//2)*(5 + sqrt(5)))*atan((sqrt((1//10)*(5 + sqrt(5)))*((1 + sqrt(5))*a - 4*x))/(2*a)))/(5*a^7) - log(a + x)/(5*a^7) + ((1 + sqrt(5))*log(a^2 - (1//2)*(1 - sqrt(5))*a*x + x^2))/(20*a^7) + ((1 - sqrt(5))*log(a^2 - (1//2)*(1 + sqrt(5))*a*x + x^2))/(20*a^7), x, 7),
 (1/(x^4*(a^5 + x^5)), -(1/(3*a^5*x^3)) - (sqrt((1//2)*(5 - sqrt(5)))*atan(((1 - sqrt(5))*a - 4*x)/(sqrt(2*(5 + sqrt(5)))*a)))/(5*a^8) + (sqrt((1//2)*(5 + sqrt(5)))*atan((sqrt((1//10)*(5 + sqrt(5)))*((1 + sqrt(5))*a - 4*x))/(2*a)))/(5*a^8) + log(a + x)/(5*a^8) - ((1 + sqrt(5))*log(a^2 - (1//2)*(1 - sqrt(5))*a*x + x^2))/(20*a^8) - ((1 - sqrt(5))*log(a^2 - (1//2)*(1 + sqrt(5))*a*x + x^2))/(20*a^8), x, 7),
-(1/(x^m*(a^5 + x^5)), (x^(1 - m)*hypergeometric2f1(1, (1 - m)/5, (6 - m)/5, -(x^5/a^5)))/(a^5*(1 - m)), x, 1),
+(1/(x^m*(a^5 + x^5)), (x^(1 - m)*_₂F₁(1, (1 - m)/5, (6 - m)/5, -(x^5/a^5)))/(a^5*(1 - m)), x, 1),
 
 
 # ::Subsection::Closed::
@@ -2703,12 +2209,12 @@ timofeev = [
 ((b1 + c1*x)*(a + 2*b*x + c*x^2)^2, a^2*b1*x + (1//2)*a*(4*b*b1 + a*c1)*x^2 + (2//3)*(2*b^2*b1 + a*b1*c + 2*a*b*c1)*x^3 + (1//2)*(2*b*b1*c + 2*b^2*c1 + a*c*c1)*x^4 + (1//5)*c*(b1*c + 4*b*c1)*x^5 + (1//6)*c^2*c1*x^6, x, 2),
 ((b1 + c1*x)*(a + 2*b*x + c*x^2)^3, a^3*b1*x + (1//2)*a^2*(6*b*b1 + a*c1)*x^2 + a*(4*b^2*b1 + a*b1*c + 2*a*b*c1)*x^3 + (1//4)*(8*b^3*b1 + 12*a*b*b1*c + 12*a*b^2*c1 + 3*a^2*c*c1)*x^4 + (1//5)*(12*b^2*b1*c + 3*a*b1*c^2 + 8*b^3*c1 + 12*a*b*c*c1)*x^5 + (1//2)*c*(2*b*b1*c + 4*b^2*c1 + a*c*c1)*x^6 + (1//7)*c^2*(b1*c + 6*b*c1)*x^7 + (1//8)*c^3*c1*x^8, x, 2),
 ((b1 + c1*x)*(a + 2*b*x + c*x^2)^4, a^4*b1*x + (1//2)*a^3*(8*b*b1 + a*c1)*x^2 + (4//3)*a^2*(6*b^2*b1 + a*b1*c + 2*a*b*c1)*x^3 + a*(8*b^3*b1 + 6*a*b*b1*c + 6*a*b^2*c1 + a^2*c*c1)*x^4 + (2//5)*(8*b^4*b1 + 24*a*b^2*b1*c + 3*a^2*b1*c^2 + 16*a*b^3*c1 + 12*a^2*b*c*c1)*x^5 + (1//3)*(16*b^3*b1*c + 12*a*b*b1*c^2 + 8*b^4*c1 + 24*a*b^2*c*c1 + 3*a^2*c^2*c1)*x^6 + (4//7)*c*(6*b^2*b1*c + a*b1*c^2 + 8*b^3*c1 + 6*a*b*c*c1)*x^7 + (1//2)*c^2*(2*b*b1*c + 6*b^2*c1 + a*c*c1)*x^8 + (1//9)*c^3*(b1*c + 8*b*c1)*x^9 + (1//10)*c^4*c1*x^10, x, 2),
-((b1 + c1*x)*(a + 2*b*x + c*x^2)^n, (c1*(a + 2*b*x + c*x^2)^(n + 1))/(2*c*(n + 1)) - (((b1*c - b*c1)*(a + 2*b*x + c*x^2)^(n + 1))/(2*c*(n + 1)*sqrt(b^2 - a*c)*(-((b + c*x - sqrt(b^2 - a*c))/(2*sqrt(b^2 - a*c))))^(n + 1)))*hypergeometric2f1(-n, 1 + n, 2 + n, (b + c*x + sqrt(b^2 - a*c))/(2*sqrt(b^2 - a*c))), x, 2),
+((b1 + c1*x)*(a + 2*b*x + c*x^2)^n, (c1*(a + 2*b*x + c*x^2)^(n + 1))/(2*c*(n + 1)) - (((b1*c - b*c1)*(a + 2*b*x + c*x^2)^(n + 1))/(2*c*(n + 1)*sqrt(b^2 - a*c)*(-((b + c*x - sqrt(b^2 - a*c))/(2*sqrt(b^2 - a*c))))^(n + 1)))*_₂F₁(-n, 1 + n, 2 + n, (b + c*x + sqrt(b^2 - a*c))/(2*sqrt(b^2 - a*c))), x, 2),
 ((b1 + c1*x)/(a + 2*b*x + c*x^2)^1, -(((b1*c - b*c1)*atanh((b + c*x)/sqrt(b^2 - a*c)))/(c*sqrt(b^2 - a*c))) + (c1*log(a + 2*b*x + c*x^2))/(2*c), x, 4),
 ((b1 + c1*x)/(a + 2*b*x + c*x^2)^2, -((b*b1 - a*c1 + (b1*c - b*c1)*x)/(2*(b^2 - a*c)*(a + 2*b*x + c*x^2))) + ((b1*c - b*c1)*atanh((b + c*x)/sqrt(b^2 - a*c)))/(2*(b^2 - a*c)^(3//2)), x, 3),
 ((b1 + c1*x)/(a + 2*b*x + c*x^2)^3, -((b*b1 - a*c1 + (b1*c - b*c1)*x)/(4*(b^2 - a*c)*(a + 2*b*x + c*x^2)^2)) + (3*(b1*c - b*c1)*(b + c*x))/(8*(b^2 - a*c)^2*(a + 2*b*x + c*x^2)) - (3*c*(b1*c - b*c1)*atanh((b + c*x)/sqrt(b^2 - a*c)))/(8*(b^2 - a*c)^(5//2)), x, 4),
 ((b1 + c1*x)/(a + 2*b*x + c*x^2)^4, -((b*b1 - a*c1 + (b1*c - b*c1)*x)/(6*(b^2 - a*c)*(a + 2*b*x + c*x^2)^3)) + (5*(b1*c - b*c1)*(b + c*x))/(24*(b^2 - a*c)^2*(a + 2*b*x + c*x^2)^2) - (5*c*(b1*c - b*c1)*(b + c*x))/(16*(b^2 - a*c)^3*(a + 2*b*x + c*x^2)) + (5*c^2*(b1*c - b*c1)*atanh((b + c*x)/sqrt(b^2 - a*c)))/(16*(b^2 - a*c)^(7//2)), x, 5),
-((b1 + c1*x)/(a + 2*b*x + c*x^2)^n, (c1*(a + 2*b*x + c*x^2)^(1 - n))/(2*c*(1 - n)) - ((b1*c - b*c1)*(-((b - sqrt(b^2 - a*c) + c*x)/sqrt(b^2 - a*c)))^(-1 + n)*(a + 2*b*x + c*x^2)^(1 - n)*hypergeometric2f1(1 - n, n, 2 - n, (b + sqrt(b^2 - a*c) + c*x)/(2*sqrt(b^2 - a*c))))/(2^n*(c*sqrt(b^2 - a*c)*(1 - n))), x, 2),
+((b1 + c1*x)/(a + 2*b*x + c*x^2)^n, (c1*(a + 2*b*x + c*x^2)^(1 - n))/(2*c*(1 - n)) - ((b1*c - b*c1)*(-((b - sqrt(b^2 - a*c) + c*x)/sqrt(b^2 - a*c)))^(-1 + n)*(a + 2*b*x + c*x^2)^(1 - n)*_₂F₁(1 - n, n, 2 - n, (b + sqrt(b^2 - a*c) + c*x)/(2*sqrt(b^2 - a*c))))/(2^n*(c*sqrt(b^2 - a*c)*(1 - n))), x, 2),
 (x/(3 + 6*x + 2*x^2), (1//4)*(1 - sqrt(3))*log(3 - sqrt(3) + 2*x) + (1//4)*(1 + sqrt(3))*log(3 + sqrt(3) + 2*x), x, 3),
 ((2*x - 3)/(3 + 6*x + 2*x^2)^3, (5 + 4*x)/(4*(3 + 6*x + 2*x^2)^2) - (3 + 2*x)/(2*(3 + 6*x + 2*x^2)) + atanh((3 + 2*x)/sqrt(3))/sqrt(3), x, 4),
 ((x - 1)/(x^2 + 5*x + 4)^2, (7*x + 13)/(9*(x^2 + 5*x + 4)) + (7*log(x + 1))/27 - (7*log(x + 4))/27, x, 4),
@@ -3008,7 +2514,7 @@ timofeev = [
 (sin(x)^4*cos(x)^4, (3*x)/128 + (3//128)*cos(x)*sin(x) + (1//64)*cos(x)^3*sin(x) - (1//16)*cos(x)^5*sin(x) - (1//8)*cos(x)^5*sin(x)^3, x, 5),
 (sin(x)^6*cos(x)^6, (5*x)/1024 + (5*cos(x)*sin(x))/1024 + (5*cos(x)^3*sin(x))/1536 + (1//384)*cos(x)^5*sin(x) - (1//64)*cos(x)^7*sin(x) - (1//24)*cos(x)^7*sin(x)^3 - (1//12)*cos(x)^7*sin(x)^5, x, 7),
 (sin(x)^8*cos(x)^8, (35*x)/32768 + (35*cos(x)*sin(x))/32768 + (35*cos(x)^3*sin(x))/49152 + (7*cos(x)^5*sin(x))/12288 + (cos(x)^7*sin(x))/2048 - (1//256)*cos(x)^9*sin(x) - (5//384)*cos(x)^9*sin(x)^3 - (1//32)*cos(x)^9*sin(x)^5 - (1//16)*cos(x)^9*sin(x)^7, x, 9),
-(sin(x)^(2*m)*cos(x)^(2*m), (cos(x)^(-1 + 2*m)*(cos(x)^2)^(1//2 - m)*hypergeometric2f1((1//2)*(1 - 2*m), (1//2)*(1 + 2*m), (1//2)*(3 + 2*m), sin(x)^2)*sin(x)^(1 + 2*m))/(1 + 2*m), x, 1),
+(sin(x)^(2*m)*cos(x)^(2*m), (cos(x)^(-1 + 2*m)*(cos(x)^2)^(1//2 - m)*_₂F₁((1//2)*(1 - 2*m), (1//2)*(1 + 2*m), (1//2)*(3 + 2*m), sin(x)^2)*sin(x)^(1 + 2*m))/(1 + 2*m), x, 1),
 (1/(sin(π/4 + 2*x)^3*cos(π/4 + 2*x)), (-(1//4))*cot(π/4 + 2*x)^2 + (1//2)*log(tan(π/4 + 2*x)), x, 3),
 
 
@@ -3280,8 +2786,8 @@ timofeev = [
 (x*cos(x)^4/sin(x)^2, -((3*x^2)/4) - cos(x)^2//4 - x*cot(x) + log(sin(x)) - (1//2)*x*cos(x)*sin(x), x, 6),
 (x*sin(x)^3/cos(x)^4, (5//6)*atanh(sin(x)) - x*sec(x) + (1//3)*x*sec(x)^3 - (1//6)*sec(x)*tan(x), x, 5),
 (x*sin(x)/cos(x)^3, (1//2)*x*sec(x)^2 - tan(x)/2, x, 3),
-(x*sin(x)^3/cos(x), x/4 + (I*x^2)/2 - x*log(1 + ℯ^(2*I*x)) + (1//2)*I*PolyLog_reli(2, -ℯ^(2*I*x)) - (1//4)*cos(x)*sin(x) - (1//2)*x*sin(x)^2, x, 8),
-(x*sin(x)^3/cos(x)^3, x/2 - (I*x^2)/2 + x*log(1 + ℯ^(2*I*x)) - (1//2)*I*PolyLog_reli(2, -ℯ^(2*I*x)) - tan(x)/2 + (1//2)*x*tan(x)^2, x, 7),
+(x*sin(x)^3/cos(x), x/4 + (I*x^2)/2 - x*log(1 + ℯ^(2*I*x)) + (1//2)*I*reli(2, -ℯ^(2*I*x)) - (1//4)*cos(x)*sin(x) - (1//2)*x*sin(x)^2, x, 8),
+(x*sin(x)^3/cos(x)^3, x/2 - (I*x^2)/2 + x*log(1 + ℯ^(2*I*x)) - (1//2)*I*reli(2, -ℯ^(2*I*x)) - tan(x)/2 + (1//2)*x*tan(x)^2, x, 7),
 
 
 # ::Subsection::Closed::
@@ -3328,12 +2834,12 @@ timofeev = [
 ((1 + a^(m*x))^2, x + (2*a^(m*x))/(m*log(a)) + a^(2*m*x)/(2*m*log(a)), x, 3),
 ((1 + a^(m*x))^3, x + (3*a^(m*x))/(m*log(a)) + (3*a^(2*m*x))/(2*m*log(a)) + a^(3*m*x)/(3*m*log(a)), x, 3),
 ((1 + a^(m*x))^4, x + (4*a^(m*x))/(m*log(a)) + (3*a^(2*m*x))/(m*log(a)) + (4*a^(3*m*x))/(3*m*log(a)) + a^(4*m*x)/(4*m*log(a)), x, 3),
-((1 + a^(m*x))^n, -(((1 + a^(m*x))^(1 + n)*hypergeometric2f1(1, 1 + n, 2 + n, 1 + a^(m*x)))/(m*(1 + n)*log(a))), x, 2),
+((1 + a^(m*x))^n, -(((1 + a^(m*x))^(1 + n)*_₂F₁(1, 1 + n, 2 + n, 1 + a^(m*x)))/(m*(1 + n)*log(a))), x, 2),
 ((1 - a^(m*x))^1, x - a^(m*x)/(m*log(a)), x, 2),
 ((1 - a^(m*x))^2, x - (2*a^(m*x))/(m*log(a)) + a^(2*m*x)/(2*m*log(a)), x, 3),
 ((1 - a^(m*x))^3, x - (3*a^(m*x))/(m*log(a)) + (3*a^(2*m*x))/(2*m*log(a)) - a^(3*m*x)/(3*m*log(a)), x, 3),
 ((1 - a^(m*x))^4, x - (4*a^(m*x))/(m*log(a)) + (3*a^(2*m*x))/(m*log(a)) - (4*a^(3*m*x))/(3*m*log(a)) + a^(4*m*x)/(4*m*log(a)), x, 3),
-((1 - a^(m*x))^n, -(((1 - a^(m*x))^(1 + n)*hypergeometric2f1(1, 1 + n, 2 + n, 1 - a^(m*x)))/(m*(1 + n)*log(a))), x, 2),
+((1 - a^(m*x))^n, -(((1 - a^(m*x))^(1 + n)*_₂F₁(1, 1 + n, 2 + n, 1 - a^(m*x)))/(m*(1 + n)*log(a))), x, 2),
 (1/(a*ℯ^(n*x) + b), x/b - log(b + a*ℯ^(n*x))/(b*n), x, 4),
 # {E^x/(a*E^(3*x) + b), x, 7, -(ArcTan[(b^(1/3) - 2*a^(1/3)*E^x)/(Sqrt[3]*b^(1/3))]/(Sqrt[3]*a^(1/3)*b^(2/3))) + Log[b^(1/3) + a^(1/3)*E^x]/(2*a^(1/3)*b^(2/3)) - Log[b + a*E^(3*x)]/(6*a^(1/3)*b^(2/3)), -(ArcTan[(b^(1/3) - 2*a^(1/3)*E^x)/(Sqrt[3]*b^(1/3))]/(Sqrt[3]*a^(1/3)*b^(2/3))) + Log[b^(1/3) + a^(1/3)*E^x]/(3*a^(1/3)*b^(2/3)) - Log[b^(2/3) - a^(1/3)*b^(1/3)*E^x + a^(2/3)*E^(2*x)]/(6*a^(1/3)*b^(2/3))}
 ((ℯ^x - 1)/(ℯ^x + 1), -x + 2*log(1 + ℯ^x), x, 3),
@@ -3347,7 +2853,7 @@ timofeev = [
 ((ℯ^(5*x) + ℯ^x)/(ℯ^(3*x) - ℯ^(2*x) + ℯ^x - 1), ℯ^x + ℯ^(2*x)/2 - atan(ℯ^x) + log(1 - ℯ^x) - (1//2)*log(1 + ℯ^(2*x)), x, 6),
 ((a + b*ℯ^(n*x))^(r/s)*ℯ^(n*x), s*(a + b*ℯ^(n*x))^((s + r)/s)/(b*n*(s + r)), x, 2),
 ((1 - 2*ℯ^(x/3))^(1//4), 12*(1 - 2*ℯ^(x/3))^(1//4) - 6*atan((1 - 2*ℯ^(x/3))^(1//4)) - 6*atanh((1 - 2*ℯ^(x/3))^(1//4)), x, 6),
-((a + b*ℯ^(n*x))^(r/s), -(((a + b*ℯ^(n*x))^((r + s)/s)*s*hypergeometric2f1(1, (r + s)/s, 2 + r/s, 1 + (b*ℯ^(n*x))/a))/(a*n*(r + s))), x, 2),
+((a + b*ℯ^(n*x))^(r/s), -(((a + b*ℯ^(n*x))^((r + s)/s)*s*_₂F₁(1, (r + s)/s, 2 + r/s, 1 + (b*ℯ^(n*x))/a))/(a*n*(r + s))), x, 2),
 (ℯ^x/sqrt(ℯ^(2*x) + a^2), atanh(ℯ^x/sqrt(a^2 + ℯ^(2*x))), x, 3),
 (ℯ^x/sqrt(ℯ^(2*x) - a^2), atanh(ℯ^x/sqrt(-a^2 + ℯ^(2*x))), x, 3),
 (ℯ^((3//4)*x)/((ℯ^((3//4)*x) - 2)*sqrt(ℯ^((3//2)*x) + ℯ^((3//4)*x) - 2)), (2//3)*atanh((2 - 5*ℯ^((3*x)/4))/(4*sqrt(-2 + ℯ^((3*x)/4) + ℯ^((3*x)/2)))), x, 3),
@@ -3392,12 +2898,12 @@ timofeev = [
 
 
 # {E^(m*x)*Tan[x]^2, x, 5, -(E^(m*x)/m) + 4*E^((2*I + m)*x)*Hypergeometric2F1[2, 1 - (I*m)/2, 2 - (I*m)/2, -E^(2*I*x)]/(2*I + m), -(E^(m*x)/m) + (4*E^(m*x)*Hypergeometric2F1[1, -((I*m)/2), 1 - (I*m)/2, -E^(2*I*x)])/m - (4*E^(m*x)*Hypergeometric2F1[2, -((I*m)/2), 1 - (I*m)/2, -E^(2*I*x)])/m}
-(ℯ^(m*x)/sin(x)^2, -((4*ℯ^((2*I + m)*x)*hypergeometric2f1(2, 1 - (I*m)/2, 2 - (I*m)/2, ℯ^(2*I*x)))/(2*I + m)), x, 1),
+(ℯ^(m*x)/sin(x)^2, -((4*ℯ^((2*I + m)*x)*_₂F₁(2, 1 - (I*m)/2, 2 - (I*m)/2, ℯ^(2*I*x)))/(2*I + m)), x, 1),
 # {E^(m*x)/Cos[x]^3, x, 2, ((8*E^((3*I + m)*x))/(3*I + m))*Hypergeometric2F1[3, (3 - I*m)/2, (5 - I*m)/2, -E^(2*I*x)], (-E^((I + m)*x))*(I - m)*Hypergeometric2F1[1, (1/2)*(1 - I*m), (1/2)*(3 - I*m), -E^(2*I*x)] - (1/2)*E^(m*x)*m*Sec[x] + (1/2)*E^(m*x)*Sec[x]*Tan[x]}
-(ℯ^x/(1 + cos(x)), (1 - I)*ℯ^((1 + I)*x)*hypergeometric2f1(2, 1 - I, 2 - I, -ℯ^(I*x)), x, 2),
-(ℯ^x/(1 - cos(x)), -(1 - I)*ℯ^((1 + I)*x)*hypergeometric2f1(2, 1 - I, 2 - I, ℯ^(I*x)), x, 2),
-(ℯ^x/(1 + sin(x)), (-1 + I)*ℯ^((1 - I)*x)*hypergeometric2f1(1 + I, 2, 2 + I, -I/ℯ^(I*x)), x, 2),
-(ℯ^x/(1 - sin(x)), (1 + I)*ℯ^((1 + I)*x)*hypergeometric2f1(1 - I, 2, 2 - I, (-I)*ℯ^(I*x)), x, 2),
+(ℯ^x/(1 + cos(x)), (1 - I)*ℯ^((1 + I)*x)*_₂F₁(2, 1 - I, 2 - I, -ℯ^(I*x)), x, 2),
+(ℯ^x/(1 - cos(x)), -(1 - I)*ℯ^((1 + I)*x)*_₂F₁(2, 1 - I, 2 - I, ℯ^(I*x)), x, 2),
+(ℯ^x/(1 + sin(x)), (-1 + I)*ℯ^((1 - I)*x)*_₂F₁(1 + I, 2, 2 + I, -I/ℯ^(I*x)), x, 2),
+(ℯ^x/(1 - sin(x)), (1 + I)*ℯ^((1 + I)*x)*_₂F₁(1 - I, 2, 2 - I, (-I)*ℯ^(I*x)), x, 2),
 
 
 # ::Subsection::Closed::
@@ -3531,7 +3037,7 @@ timofeev = [
 
 
 (1/(x^3*log(x)^4), (-(4//3))*Expinti(-2*log(x)) - 1/(3*x^2*log(x)^3) + 1/(3*x^2*log(x)^2) - 2/(3*x^2*log(x)), x, 5),
-(log(x)/(a + b*x), (log(x)*log(1 + (b*x)/a))/b + PolyLog_reli(2, -((b*x)/a))/b, x, 2),
+(log(x)/(a + b*x), (log(x)*log(1 + (b*x)/a))/b + reli(2, -((b*x)/a))/b, x, 2),
 (log(x)/(a + b*x)^2, (x*log(x))/(a*(a + b*x)) - log(a + b*x)/(a*b), x, 2),
 
 
@@ -3606,7 +3112,7 @@ timofeev = [
 (asin(x)*(1 - x^2)^(3//2), -((5*x^2)/16) + x^4//16 + (3//8)*x*sqrt(1 - x^2)*asin(x) + (1//4)*x*(1 - x^2)^(3//2)*asin(x) + (3*asin(x)^2)/16, x, 6),
 (asin(x)*x*(1 - x^2)^(3//2), x/5 - (2*x^3)/15 + x^5//25 - (1//5)*(1 - x^2)^(5//2)*asin(x), x, 3),
 (acos(x)*x^3*(1 - x^2)^(3//2), (-(1//35))*(2*x) - x^3//105 + (8*x^5)/175 - x^7//49 - (1//5)*(1 - x^2)^(5//2)*acos(x) + (1//7)*(1 - x^2)^(7//2)*acos(x), x, 4),
-((acos(x)*(1 - x^2)^(3//2))/x, (4*x)/3 - x^3//9 + sqrt(1 - x^2)*acos(x) + (1//3)*(1 - x^2)^(3//2)*acos(x) + 2*I*acos(x)*atan(ℯ^(I*acos(x))) - I*PolyLog_reli(2, (-I)*ℯ^(I*acos(x))) + I*PolyLog_reli(2, I*ℯ^(I*acos(x))), x, 10),
+((acos(x)*(1 - x^2)^(3//2))/x, (4*x)/3 - x^3//9 + sqrt(1 - x^2)*acos(x) + (1//3)*(1 - x^2)^(3//2)*acos(x) + 2*I*acos(x)*atan(ℯ^(I*acos(x))) - I*reli(2, (-I)*ℯ^(I*acos(x))) + I*reli(2, I*ℯ^(I*acos(x))), x, 10),
 ((asin(x)*(1 - x^2)^(3//2))/x^6, -(1/(20*x^4)) + 1/(5*x^2) - ((1 - x^2)^(5//2)*asin(x))/(5*x^5) + log(x)/5, x, 4),
 ((asin(x)*x^2)/sqrt(1 - x^2), x^2//4 - (1//2)*x*sqrt(1 - x^2)*asin(x) + asin(x)^2//4, x, 3),
 ((asin(x)*x^4)/sqrt(1 - x^2), (3*x^2)/16 + x^4//16 - (3//8)*x*sqrt(1 - x^2)*asin(x) - (1//4)*x^3*sqrt(1 - x^2)*asin(x) + (3*asin(x)^2)/16, x, 5),
@@ -3620,7 +3126,7 @@ timofeev = [
 # Problems 19 - 22 (p. 401)
 
 
-(asin(x)/(x*(1 - x^2)^(3//2)), asin(x)/sqrt(1 - x^2) - 2*asin(x)*atanh(ℯ^(I*asin(x))) - atanh(x) + I*PolyLog_reli(2, -ℯ^(I*asin(x))) - I*PolyLog_reli(2, ℯ^(I*asin(x))), x, 8),
+(asin(x)/(x*(1 - x^2)^(3//2)), asin(x)/sqrt(1 - x^2) - 2*asin(x)*atanh(ℯ^(I*asin(x))) - atanh(x) + I*reli(2, -ℯ^(I*asin(x))) - I*reli(2, ℯ^(I*asin(x))), x, 8),
 (acos(x)/(x^4*sqrt(1 - x^2)), 1/(6*x^2) - (sqrt(1 - x^2)*acos(x))/(3*x^3) - (2*sqrt(1 - x^2)*acos(x))/(3*x) - (2*log(x))/3, x, 4),
 (acos(x)^2*x*sqrt(1 - x^2), (4*sqrt(1 - x^2))/9 + (2//27)*(1 - x^2)^(3//2) - (2//3)*x*acos(x) + (2//9)*x^3*acos(x) - (1//3)*(1 - x^2)^(3//2)*acos(x)^2, x, 5),
 ((asin(x)^3*x^2)/sqrt(1 - x^2), -((3*x^2)/8) + (3//4)*x*sqrt(1 - x^2)*asin(x) - (3*asin(x)^2)/8 + (3//4)*x^2*asin(x)^2 - (1//2)*x*sqrt(1 - x^2)*asin(x)^3 + asin(x)^4//8, x, 6),
@@ -3633,7 +3139,7 @@ timofeev = [
 ((atan(x)*x)/(1 + x^2)^2, x/(4*(1 + x^2)) + atan(x)/4 - atan(x)/(2*(1 + x^2)), x, 3),
 ((atan(x)*x)/(1 + x^2)^3, x/(16*(1 + x^2)^2) + (3*x)/(32*(1 + x^2)) + (3*atan(x))/32 - atan(x)/(4*(1 + x^2)^2), x, 4),
 ((atan(x)*x^2)/(1 + x^2), x*atan(x) - atan(x)^2//2 - (1//2)*log(1 + x^2), x, 4),
-((atan(x)*x^3)/(1 + x^2), -(x/2) + atan(x)/2 + (1//2)*x^2*atan(x) + (1//2)*I*atan(x)^2 + atan(x)*log(2/(1 + I*x)) + (1//2)*I*PolyLog_reli(2, 1 - 2/(1 + I*x)), x, 8),
+((atan(x)*x^3)/(1 + x^2), -(x/2) + atan(x)/2 + (1//2)*x^2*atan(x) + (1//2)*I*atan(x)^2 + atan(x)*log(2/(1 + I*x)) + (1//2)*I*reli(2, 1 - 2/(1 + I*x)), x, 8),
 
 
 # ::Subsection::Closed::
@@ -3641,11 +3147,11 @@ timofeev = [
 
 
 ((atan(x)*x^2)/(1 + x^2)^2, -(1/(4*(1 + x^2))) - (x*atan(x))/(2*(1 + x^2)) + atan(x)^2//4, x, 2),
-((atan(x)*x^3)/(1 + x^2)^2, -(x/(4*(1 + x^2))) - atan(x)/4 + atan(x)/(2*(1 + x^2)) - (1//2)*I*atan(x)^2 - atan(x)*log(2/(1 + I*x)) - (1//2)*I*PolyLog_reli(2, 1 - 2/(1 + I*x)), x, 8),
-((atan(x)*x^5)/(1 + x^2)^2, -(x/2) + x/(4*(1 + x^2)) + (3*atan(x))/4 + (1//2)*x^2*atan(x) - atan(x)/(2*(1 + x^2)) + I*atan(x)^2 + 2*atan(x)*log(2/(1 + I*x)) + I*PolyLog_reli(2, 1 - 2/(1 + I*x)), x, 17),
+((atan(x)*x^3)/(1 + x^2)^2, -(x/(4*(1 + x^2))) - atan(x)/4 + atan(x)/(2*(1 + x^2)) - (1//2)*I*atan(x)^2 - atan(x)*log(2/(1 + I*x)) - (1//2)*I*reli(2, 1 - 2/(1 + I*x)), x, 8),
+((atan(x)*x^5)/(1 + x^2)^2, -(x/2) + x/(4*(1 + x^2)) + (3*atan(x))/4 + (1//2)*x^2*atan(x) - atan(x)/(2*(1 + x^2)) + I*atan(x)^2 + 2*atan(x)*log(2/(1 + I*x)) + I*reli(2, 1 - 2/(1 + I*x)), x, 17),
 ((atan(x)*(1 + x^2))/x^2, -(atan(x)/x) + x*atan(x) + log(x) - log(1 + x^2), x, 8),
 ((atan(x)*(1 + x^2))/x^5, -(1/(12*x^3)) - 1/(4*x) - ((1 + x^2)^2*atan(x))/(4*x^4), x, 3),
-((atan(x)*(1 + x^2)^2)/x^5, -(1/(12*x^3)) - 3/(4*x) - (3*atan(x))/4 - atan(x)/(4*x^4) - atan(x)/x^2 + (1//2)*I*PolyLog_reli(2, (-I)*x) - (1//2)*I*PolyLog_reli(2, I*x), x, 12),
+((atan(x)*(1 + x^2)^2)/x^5, -(1/(12*x^3)) - 3/(4*x) - (3*atan(x))/4 - atan(x)/(4*x^4) - atan(x)/x^2 + (1//2)*I*reli(2, (-I)*x) - (1//2)*I*reli(2, I*x), x, 12),
 
 
 # ::Subsection::Closed::
@@ -3689,7 +3195,7 @@ timofeev = [
 (asin(sqrt((x - a)/(x + a))), -sqrt(2)*a*sqrt((x - a)/(x + a))/sqrt(a/(x + a)) + (x + a)*asin(sqrt((x - a)/(x + a))), x, -8),
 (atan(sqrt((x - a)/(x + a))), x*atan(sqrt(-((a - x)/(a + x)))) - a*atanh(sqrt(-((a - x)/(a + x)))), x, 4),
 (atan(x)/(1 + x)^3, -(1/(4*(1 + x))) - atan(x)/(2*(1 + x)^2) + (1//4)*log(1 + x) - (1//8)*log(1 + x^2), x, 5),
-(atan(x - a)/(x + a), atan(a - x)*log(2/(1 - I*(a - x))) - atan(a - x)*log(-((2*(a + x))/((I - 2*a)*(1 - I*(a - x))))) - (1//2)*I*PolyLog_reli(2, 1 - 2/(1 - I*(a - x))) + (1//2)*I*PolyLog_reli(2, 1 + (2*(a + x))/((I - 2*a)*(1 - I*(a - x)))), x, 5),
+(atan(x - a)/(x + a), atan(a - x)*log(2/(1 - I*(a - x))) - atan(a - x)*log(-((2*(a + x))/((I - 2*a)*(1 - I*(a - x))))) - (1//2)*I*reli(2, 1 - 2/(1 - I*(a - x))) + (1//2)*I*reli(2, 1 + (2*(a + x))/((I - 2*a)*(1 - I*(a - x)))), x, 5),
 (asin(sqrt(1 - x^2))/sqrt(1 - x^2), -sqrt(x^2)*asin(sqrt(1 - x^2))^2/(2*x), x, 2),
 (atan(sqrt(1 + x^2))*x/sqrt(1 + x^2), sqrt(1 + x^2)*atan(sqrt(1 + x^2)) - (1//2)*log(2 + x^2), x, 2),
 (asin(x)/(1 - x)^(5//2), -(sqrt(1 + x)/(3*(1 - x))) + (2*asin(x))/(3*(1 - x)^(3//2)) - (1/(3*sqrt(2)))*atanh(sqrt(1 + x)/sqrt(2)), x, 5),
@@ -3852,7 +3358,7 @@ welz = [
 # 17 September 2014
 
 
-(x^3*log(2 + x)^3*log(3 + x), -((302177*x)/1152) + (8029*x^2)/2304 - (763*x^3)/3456 + (3*x^4)/256 + (377//64)*(2 + x)^2 - (71//216)*(2 + x)^3 + (3//256)*(2 + x)^4 + (2069//144)*log(2 + x) - (187//64)*x^2*log(2 + x) + (83//288)*x^3*log(2 + x) - (3//128)*x^4*log(2 + x) + (6733//32)*(2 + x)*log(2 + x) - (377//32)*(2 + x)^2*log(2 + x) + (71//72)*(2 + x)^3*log(2 + x) - (3//64)*(2 + x)^4*log(2 + x) - (43//12)*log(2 + x)^2 - (17//48)*x^3*log(2 + x)^2 + (3//64)*x^4*log(2 + x)^2 - (1251//16)*(2 + x)*log(2 + x)^2 + (273//32)*(2 + x)^2*log(2 + x)^2 - (3//4)*(2 + x)^3*log(2 + x)^2 + (3//64)*(2 + x)^4*log(2 + x)^2 + (65//4)*(2 + x)*log(2 + x)^3 - (33//8)*(2 + x)^2*log(2 + x)^3 + (3//4)*(2 + x)^3*log(2 + x)^3 - (1//16)*(2 + x)^4*log(2 + x)^3 + (3891//128)*log(3 + x) - (115//48)*x^2*log(3 + x) + (37//144)*x^3*log(3 + x) - (3//128)*x^4*log(3 + x) + (415//12)*(3 + x)*log(3 + x) - (4083//32)*log(2 + x)*log(3 + x) - 25*x*log(2 + x)*log(3 + x) + (13//4)*x^2*log(2 + x)*log(3 + x) - (7//12)*x^3*log(2 + x)*log(3 + x) + (3//32)*x^4*log(2 + x)*log(3 + x) + (963//16)*log(2 + x)^2*log(3 + x) + 6*x*log(2 + x)^2*log(3 + x) - (3//2)*x^2*log(2 + x)^2*log(3 + x) + (1//2)*x^3*log(2 + x)^2*log(3 + x) - (3//16)*x^4*log(2 + x)^2*log(3 + x) - (81//4)*log(2 + x)^3*log(3 + x) + (1//4)*x^4*log(2 + x)^3*log(3 + x) - (5609//96)*PolyLog_reli(2, -2 - x) + (563//8)*log(2 + x)*PolyLog_reli(2, -2 - x) - (195//4)*log(2 + x)^2*PolyLog_reli(2, -2 - x) - (563//8)*PolyLog_reli(3, -2 - x) + (195//2)*log(2 + x)*PolyLog_reli(3, -2 - x) - (195//2)*PolyLog_reli(4, -2 - x), x, 359),
+(x^3*log(2 + x)^3*log(3 + x), -((302177*x)/1152) + (8029*x^2)/2304 - (763*x^3)/3456 + (3*x^4)/256 + (377//64)*(2 + x)^2 - (71//216)*(2 + x)^3 + (3//256)*(2 + x)^4 + (2069//144)*log(2 + x) - (187//64)*x^2*log(2 + x) + (83//288)*x^3*log(2 + x) - (3//128)*x^4*log(2 + x) + (6733//32)*(2 + x)*log(2 + x) - (377//32)*(2 + x)^2*log(2 + x) + (71//72)*(2 + x)^3*log(2 + x) - (3//64)*(2 + x)^4*log(2 + x) - (43//12)*log(2 + x)^2 - (17//48)*x^3*log(2 + x)^2 + (3//64)*x^4*log(2 + x)^2 - (1251//16)*(2 + x)*log(2 + x)^2 + (273//32)*(2 + x)^2*log(2 + x)^2 - (3//4)*(2 + x)^3*log(2 + x)^2 + (3//64)*(2 + x)^4*log(2 + x)^2 + (65//4)*(2 + x)*log(2 + x)^3 - (33//8)*(2 + x)^2*log(2 + x)^3 + (3//4)*(2 + x)^3*log(2 + x)^3 - (1//16)*(2 + x)^4*log(2 + x)^3 + (3891//128)*log(3 + x) - (115//48)*x^2*log(3 + x) + (37//144)*x^3*log(3 + x) - (3//128)*x^4*log(3 + x) + (415//12)*(3 + x)*log(3 + x) - (4083//32)*log(2 + x)*log(3 + x) - 25*x*log(2 + x)*log(3 + x) + (13//4)*x^2*log(2 + x)*log(3 + x) - (7//12)*x^3*log(2 + x)*log(3 + x) + (3//32)*x^4*log(2 + x)*log(3 + x) + (963//16)*log(2 + x)^2*log(3 + x) + 6*x*log(2 + x)^2*log(3 + x) - (3//2)*x^2*log(2 + x)^2*log(3 + x) + (1//2)*x^3*log(2 + x)^2*log(3 + x) - (3//16)*x^4*log(2 + x)^2*log(3 + x) - (81//4)*log(2 + x)^3*log(3 + x) + (1//4)*x^4*log(2 + x)^3*log(3 + x) - (5609//96)*reli(2, -2 - x) + (563//8)*log(2 + x)*reli(2, -2 - x) - (195//4)*log(2 + x)^2*reli(2, -2 - x) - (563//8)*reli(3, -2 - x) + (195//2)*log(2 + x)*reli(3, -2 - x) - (195//2)*reli(4, -2 - x), x, 359),
 
 
 # ::Section::Closed::
@@ -4111,9 +3617,9 @@ welz = [
 
 
 # Integrands are equal.
-((1 - x^3)^(2//3)/(1 + x + x^2)^2, 1/(1 - x^3)^(1//3) + x/(1 - x^3)^(1//3) - x^2*hypergeometric2f1(2//3, 4//3, 5//3, x^3), x, 5),
-((1 - x)/((1 + x + x^2)*(1 - x^3)^(1//3)), 1/(1 - x^3)^(1//3) + x/(1 - x^3)^(1//3) - x^2*hypergeometric2f1(2//3, 4//3, 5//3, x^3), x, 5),
-((1 - x)^2/(1 - x^3)^(4//3), (1 + (1 - 2*x)*x)/(1 - x^3)^(1//3) + x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3), x, 3),
+((1 - x^3)^(2//3)/(1 + x + x^2)^2, 1/(1 - x^3)^(1//3) + x/(1 - x^3)^(1//3) - x^2*_₂F₁(2//3, 4//3, 5//3, x^3), x, 5),
+((1 - x)/((1 + x + x^2)*(1 - x^3)^(1//3)), 1/(1 - x^3)^(1//3) + x/(1 - x^3)^(1//3) - x^2*_₂F₁(2//3, 4//3, 5//3, x^3), x, 5),
+((1 - x)^2/(1 - x^3)^(4//3), (1 + (1 - 2*x)*x)/(1 - x^3)^(1//3) + x^2*_₂F₁(1//3, 2//3, 5//3, x^3), x, 3),
 
 
 # ::Section::Closed::
@@ -4122,14 +3628,14 @@ welz = [
 
 ((1 - x^3)^(2//3), (1//3)*x*(1 - x^3)^(2//3) - (2*atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3)))/(3*sqrt(3)) + (1//3)*log(x + (1 - x^3)^(1//3)), x, 2),
 ((1 - x^3)^(2//3)/x, (1//2)*(1 - x^3)^(2//3) + atan((1 + 2*(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) - log(x)/2 + (1//2)*log(1 - (1 - x^3)^(1//3)), x, 6),
-((1 - x^3)^(2//3)/(a + b*x), (1 - x^3)^(2//3)/(2*b) - ((a^3 + b^3)*x^2*SymbolicIntegration.appell_f1(2//3, 1//3, 1, 5//3, x^3, -((b^3*x^3)/a^3)))/(2*a^2*b^2) + (a^2*atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3)))/(sqrt(3)*b^3) - ((a^3 + b^3)^(2//3)*atan((1 - (2*(a^3 + b^3)^(1//3)*x)/(a*(1 - x^3)^(1//3)))/sqrt(3)))/(sqrt(3)*b^3) + ((a^3 + b^3)^(2//3)*atan((1 + (2*b*(1 - x^3)^(1//3))/(a^3 + b^3)^(1//3))/sqrt(3)))/(sqrt(3)*b^3) + (a*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3))/(2*b^2) - ((a^3 + b^3)^(2//3)*log(a^3 + b^3*x^3))/(3*b^3) + ((a^3 + b^3)^(2//3)*log(-(((a^3 + b^3)^(1//3)*x)/a) - (1 - x^3)^(1//3)))/(2*b^3) - (a^2*log(x + (1 - x^3)^(1//3)))/(2*b^3) + ((a^3 + b^3)^(2//3)*log((a^3 + b^3)^(1//3) - b*(1 - x^3)^(1//3)))/(2*b^3), x, 13),
+((1 - x^3)^(2//3)/(a + b*x), (1 - x^3)^(2//3)/(2*b) - ((a^3 + b^3)*x^2*SymbolicIntegration.appell_f1(2//3, 1//3, 1, 5//3, x^3, -((b^3*x^3)/a^3)))/(2*a^2*b^2) + (a^2*atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3)))/(sqrt(3)*b^3) - ((a^3 + b^3)^(2//3)*atan((1 - (2*(a^3 + b^3)^(1//3)*x)/(a*(1 - x^3)^(1//3)))/sqrt(3)))/(sqrt(3)*b^3) + ((a^3 + b^3)^(2//3)*atan((1 + (2*b*(1 - x^3)^(1//3))/(a^3 + b^3)^(1//3))/sqrt(3)))/(sqrt(3)*b^3) + (a*x^2*_₂F₁(1//3, 2//3, 5//3, x^3))/(2*b^2) - ((a^3 + b^3)^(2//3)*log(a^3 + b^3*x^3))/(3*b^3) + ((a^3 + b^3)^(2//3)*log(-(((a^3 + b^3)^(1//3)*x)/a) - (1 - x^3)^(1//3)))/(2*b^3) - (a^2*log(x + (1 - x^3)^(1//3)))/(2*b^3) + ((a^3 + b^3)^(2//3)*log((a^3 + b^3)^(1//3) - b*(1 - x^3)^(1//3)))/(2*b^3), x, 13),
 
 
 # ::Section::Closed::
 # 17 October 2018
 
 
-((1 - x^3)^(2//3)/(1 - x + x^2)^2, -((1 - x^3)^(2//3)/(3*(1 + x^3))) + (x*(1 - x^3)^(2//3))/(3*(1 + x^3)) + (2*x^2*(1 - x^3)^(2//3))/(3*(1 + x^3)) - (2^(2//3)*atan((1 - (2*2^(1//3)*x)/(1 - x^3)^(1//3))/sqrt(3)))/(3*sqrt(3)) - (2^(2//3)*atan((1 + 2^(2//3)*(1 - x^3)^(1//3))/sqrt(3)))/(3*sqrt(3)) + (1//3)*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3) - log(2^(1//3) - (1 - x^3)^(1//3))/(3*2^(1//3)) + log(((-2.0)^(1//3))*x - (1 - x^3)^(1//3))/(3*2^(1//3)), x, 13),
+((1 - x^3)^(2//3)/(1 - x + x^2)^2, -((1 - x^3)^(2//3)/(3*(1 + x^3))) + (x*(1 - x^3)^(2//3))/(3*(1 + x^3)) + (2*x^2*(1 - x^3)^(2//3))/(3*(1 + x^3)) - (2^(2//3)*atan((1 - (2*2^(1//3)*x)/(1 - x^3)^(1//3))/sqrt(3)))/(3*sqrt(3)) - (2^(2//3)*atan((1 + 2^(2//3)*(1 - x^3)^(1//3))/sqrt(3)))/(3*sqrt(3)) + (1//3)*x^2*_₂F₁(1//3, 2//3, 5//3, x^3) - log(2^(1//3) - (1 - x^3)^(1//3))/(3*2^(1//3)) + log(((-2.0)^(1//3))*x - (1 - x^3)^(1//3))/(3*2^(1//3)), x, 13),
 
 
 # {(1 - 2*x)*(1 - x^3)^(2/3)/(1 - x + x^2)^2, x, 14, (1 - x^3)^(2/3)/(1 - x + x^2) - (2*ArcTan[(1 - (2*x)/(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + (2^(2/3)*ArcTan[(1 - (2*2^(1/3)*x)/(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + (2^(2/3)*ArcTan[(1 + 2^(2/3)*(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + Log[2^(1/3) - (1 - x^3)^(1/3)]/2^(1/3) - Log[((-2.0)^(1/3))*x - (1 - x^3)^(1/3)]/2^(1/3) + Log[x + (1 - x^3)^(1/3)], (1 - x^3)^(2/3)/(1 + x^3) + (x*(1 - x^3)^(2/3))/(1 + x^3) - (2*ArcTan[(1 - (2*x)/(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + (2^(2/3)*ArcTan[(1 - (2*2^(1/3)*x)/(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + (2^(2/3)*ArcTan[(1 + 2^(2/3)*(1 - x^3)^(1/3))/Sqrt[3]])/Sqrt[3] + Log[2^(1/3) - (1 - x^3)^(1/3)]/2^(1/3) + Log[((-2.0)^(1/3))*x - (1 - x^3)^(1/3)]/(3*2^(1/3)) - (2/3)*2^(2/3)*Log[((-2.0)^(1/3))*x - (1 - x^3)^(1/3)] + Log[x + (1 - x^3)^(1/3)]}
@@ -4139,8 +3645,8 @@ welz = [
 # 22 October 2018
 
 
-((1 - x^3)^(2//3)/(1 + x), (1//2)*(1 - x^3)^(2//3) - (sqrt(3)*atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/2^(1//3) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) + (1//2)*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(2*2^(1//3)) - (1//2)*log(x + (1 - x^3)^(1//3)) + (3*log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3)))/(2*2^(1//3)), x, 5),
-((1 - x + x^2)*(1 - x^3)^(2//3)/(1 + x^3), (1//2)*(1 - x^3)^(2//3) - (sqrt(3)*atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/2^(1//3) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) + (1//2)*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(2*2^(1//3)) - (1//2)*log(x + (1 - x^3)^(1//3)) + (3*log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3)))/(2*2^(1//3)), x, 6),
+((1 - x^3)^(2//3)/(1 + x), (1//2)*(1 - x^3)^(2//3) - (sqrt(3)*atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/2^(1//3) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) + (1//2)*x^2*_₂F₁(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(2*2^(1//3)) - (1//2)*log(x + (1 - x^3)^(1//3)) + (3*log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3)))/(2*2^(1//3)), x, 5),
+((1 - x + x^2)*(1 - x^3)^(2//3)/(1 + x^3), (1//2)*(1 - x^3)^(2//3) - (sqrt(3)*atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/2^(1//3) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) + (1//2)*x^2*_₂F₁(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(2*2^(1//3)) - (1//2)*log(x + (1 - x^3)^(1//3)) + (3*log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3)))/(2*2^(1//3)), x, 6),
 
 
 # ::Section::Closed::
@@ -4150,14 +3656,14 @@ welz = [
 ((1 - x^3)^(2//3)/(1 + x^3), atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) - (2^(2//3)*atan((1 - (2*2^(1//3)*x)/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3) - log(1 + x^3)/(3*2^(1//3)) + log(((-2.0)^(1//3))*x - (1 - x^3)^(1//3))/2^(1//3) - (1//2)*log(x + (1 - x^3)^(1//3)), x, 3),
 
 
-(x*(1 - x^3)^(2//3)/(1 + x^3), (2^(2//3)*atan((1 - (2*2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3) + atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3))/(2^(1//3)*sqrt(3)) - (1//2)*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3) + log((1 - x)*(1 + x)^2)/(6*2^(1//3)) + log(1 + (2^(2//3)*(1 - x)^2)/(1 - x^3)^(2//3) - (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/(3*2^(1//3)) - (1//3)*2^(2//3)*log(1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3)) - log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3))/(2*2^(1//3)), x, 10),
+(x*(1 - x^3)^(2//3)/(1 + x^3), (2^(2//3)*atan((1 - (2*2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3) + atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3))/(2^(1//3)*sqrt(3)) - (1//2)*x^2*_₂F₁(1//3, 2//3, 5//3, x^3) + log((1 - x)*(1 + x)^2)/(6*2^(1//3)) + log(1 + (2^(2//3)*(1 - x)^2)/(1 - x^3)^(2//3) - (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/(3*2^(1//3)) - (1//3)*2^(2//3)*log(1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3)) - log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3))/(2*2^(1//3)), x, 10),
 
 
 # ::Section::Closed::
 # 4 November 2018
 
 
-((1 - x)*(1 - x^3)^(2//3)/(1 + x^3), -((2^(2//3)*atan((1 - (2*2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3)) - atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3))/(2^(1//3)*sqrt(3)) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) - (2^(2//3)*atan((1 - (2*2^(1//3)*x)/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3) + (1//2)*x^2*hypergeometric2f1(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(6*2^(1//3)) - log(1 + x^3)/(3*2^(1//3)) - log(1 + (2^(2//3)*(1 - x)^2)/(1 - x^3)^(2//3) - (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/(3*2^(1//3)) + (1//3)*2^(2//3)*log(1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3)) + log(((-2.0)^(1//3))*x - (1 - x^3)^(1//3))/2^(1//3) - (1//2)*log(x + (1 - x^3)^(1//3)) + log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3))/(2*2^(1//3)), x, -17),
+((1 - x)*(1 - x^3)^(2//3)/(1 + x^3), -((2^(2//3)*atan((1 - (2*2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3)) - atan((1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/sqrt(3))/(2^(1//3)*sqrt(3)) + atan((1 - (2*x)/(1 - x^3)^(1//3))/sqrt(3))/sqrt(3) - (2^(2//3)*atan((1 - (2*2^(1//3)*x)/(1 - x^3)^(1//3))/sqrt(3)))/sqrt(3) + (1//2)*x^2*_₂F₁(1//3, 2//3, 5//3, x^3) - log((1 - x)*(1 + x)^2)/(6*2^(1//3)) - log(1 + x^3)/(3*2^(1//3)) - log(1 + (2^(2//3)*(1 - x)^2)/(1 - x^3)^(2//3) - (2^(1//3)*(1 - x))/(1 - x^3)^(1//3))/(3*2^(1//3)) + (1//3)*2^(2//3)*log(1 + (2^(1//3)*(1 - x))/(1 - x^3)^(1//3)) + log(((-2.0)^(1//3))*x - (1 - x^3)^(1//3))/2^(1//3) - (1//2)*log(x + (1 - x^3)^(1//3)) + log(-1 + x + 2^(2//3)*(1 - x^3)^(1//3))/(2*2^(1//3)), x, -17),
 
 
 # {(1 + x^3)*(1 - x^3)^(2/3)/(1 + x^3 + x^6), x, 0, 0}
@@ -4207,29 +3713,16 @@ wester = [
 ((1//2)*log((-a^2 + x^2)^2), -2*x + 2*a*atanh(x/a) + (1//2)*x*log((-a^2 + x^2)^2), x, 4),
 ]
 
-file_tests = vcat(apostol,
-                  bondarenko,
-                  bronstein,
-                  charlwood,
-                  hearn,
-                  hebisch,
-                  jeffrey,
-                  moses,
-                  stewart,
-                  timofeev,
-                  #welz,
-                  wester
-                 )
-
-
-
-@testset "Testing integration" begin
-    _run_test(r) =  !contains_int(integrate(r[1],r[3]))
-    us = [(i,_run_test(r)) for (i,r) ∈ enumerate(file_tests)]
-    for (i, (f,a,dx,k)) ∈ enumerate(file_tests)
-        out = integrate(f, dx)
-        u =  !contains_int(out)
-        #show i, u
-        #@test u
-    end
-end
+all_problems = vcat(apostol,
+                    bondarenko,
+                    bronstein,
+                    charlwood,
+                    hearn,
+                    hebisch,
+                    jeffrey,
+                    moses,
+                    stewart,
+                    timofeev,
+                    #welz,
+                    wester
+                    )

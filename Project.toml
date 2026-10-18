@@ -1,13 +1,15 @@
 name = "RUBISymbolicIntegration"
 uuid = "442f6feb-61f5-5b3d-b533-e46f4d561939"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["john verzani <jverzani@gmail.com>"]
 
 [workspace]
 projects = ["test", "docs"]
 
 [deps]
-Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+AssociativeCommutativePatternMatching = "1750cefb-754d-4383-8ab7-d9c1d1688458"
+HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
+PolyLog = "85e3b03c-9856-11eb-0374-4dc1f8670e7f"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
 
@@ -22,10 +24,15 @@ RUBISymbolicIntegrationSymEngineExt = "SymEngine"
 RUBISymbolicIntegrationSymbolicsExt = "Symbolics"
 
 [compat]
+AssociativeCommutativePatternMatching = "1.1.1"
 BenchmarkTools = "1.4"
 Combinatorics = "0.7,1,1.1.0"
 Random = "1.10, 1.11.0"
-SimpleExpressions = "1.1"
+SimpleExpressions = "1.4"
+HypergeometricFunctions = "0.3"
+PolyLog = "2"
+Random = "1.11.0"
+SimpleExpressions = "1.4"
 SpecialFunctions = "2.6.1"
 SymEngine = "0.13.2"
 Symbolics = "7"

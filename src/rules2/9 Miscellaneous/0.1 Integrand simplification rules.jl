@@ -1,5 +1,5 @@
 file_rules = [
-("0_1_0", :(∫(+(~~a),~x)) => :(sum(map(f -> ∫(f,~x), arguments(~a)))) )
+("0_1_0", :(∫(+(~~a),~x)) => :(sum(map(f -> ∫(f,~x), (~a)))) )
 
 ("0_1_6",
 :(∫((~!u)*((~!a)*(~v) + (~!b)*(~v) + (~!w))^(~!p),(~x)) ) => :(
@@ -23,8 +23,8 @@ file_rules = [
 ("0_1_12",
 :(∫(*(~~a),~x)) => :(
 let
-    out = prod([contains_var(el,~x) ? 1 : el for el in arguments(~a)])
-    eq(out,1) ? (return nothing) : (return out*∫(prod([contains_var(el,~x) ? el : 1 for el in arguments(~a)]),~x))
+    out = prod([contains_var(el,~x) ? 1 : el for el in (~a)])
+    eq(out,1) ? (return nothing) : (return out*∫(prod([contains_var(el,~x) ? el : 1 for el in (~a)]),~x))
 end
 ))
 

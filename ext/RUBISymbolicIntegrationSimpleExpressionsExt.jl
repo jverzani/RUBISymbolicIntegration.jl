@@ -24,17 +24,14 @@ import RUBISymbolicIntegration:
     ext_iseven, ext_isodd,
     ext_den, ext_num,
     ext_coeff,
-    eq_expr,
     Gamma,
     LogGamma,
     appell_f1,
-    hypergeometric2f1,
     Expinti,
     Erf, Erfi,
     Elliptic_e, Elliptic_f, Elliptic_pi,
     Sinint, Cosint,
-    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelsc,
-    PolyLog_reli,
+    FresnelIntegrals_fresnels, FresnelIntegrals_fresnelc,
     coshintegral, sinhintegral,
     CannotIntegrate, Unintegrable
 
@@ -66,7 +63,10 @@ _substitute(x::SymType, args::Pair...;kwargs...) = begin
     end
     x
 end
-_simplify(x::SymType, args...; kwargs...) = SimpleExpressions.combine(x)
+# with `expand = true` (as the frontend asks when no rule applies), multiply
+# out first, e.g. (x - a)*(b - x) to a quadratic that a rule matches
+_simplify(x::SymType, args...; expand = false, kwargs...) =
+    SimpleExpressions.simplify(expand ? SimpleExpressions.expand(x) : x)
 _expand(x::SymType) = x
 _derivative(f,dx::SymType) = begin
     diff(f, dx)
@@ -97,13 +97,12 @@ ext_den(u::SymType) = ext_numden(u)[2]
 ext_num(u::SymType) = ext_numden(u)[1]
 ext_coeff(u::SymType, x::Number, n) = 0
 function ext_coeff(u::SymType, x::SymType, n)
-    u = S.coefficients(u,x)
+    u = S.polynomial_coefficients(u,x)
     isnothing(u) && return zero(x)
     1 + n <= length(u) ? u[1 + n] : 0
 end
 
 
-eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
 
 # Rule modifications
@@ -111,23 +110,23 @@ eq_expr(a::SymType,  p::Symbol) = Symbol(a) == p
 
 USE_GAMMA = false
 
-# Special Functions
-Gamma(x::SymType, args...; kwargs...) =
-    SymFunction("Gamma")(x, args...; kwargs...)
-LogGamma(x::SymType, args...; kwargs...) =
-    SymFunction("Gamma")(x, args...; kwargs...)
+# Special Functions. Where SpecialFunctions.jl has the function, the term's
+# operation is that function, so the term evaluates to a number.
+import SpecialFunctions as SF
+Gamma(x::SymType) = SymbolicExpression(SF.gamma, (x,))
+Gamma(a::SymType, x) = SymbolicExpression(SF.gamma, (a, x))        # upper incomplete Γ(a, x)
+Gamma(a::Number, x::SymType) = SymbolicExpression(SF.gamma, (a, x))
+LogGamma(x::SymType) = SymbolicExpression(SF.loggamma, (x,))
 
 # HyperGeometric Functions (?)
-appell_f1(args...; kwargs...) =
-    SymFunction("appell_f1")(args...; kwargs...) # ?signature
+appell_f1(a, b, c, d, e, z::SymType) =
+    SymFunction("appell_f1")(a, b, c, d, e, z)
 
-hypergeometric2f1(a,b,c,d::SymType) =
-    SymFunction("hypergeometric2f1")(a,b,c,d)
+# ₂F₁(a, b; c; z) is HypergeometricFunctions.jl's `_₂F₁(a, b, c, z)`, defined
+# for a symbolic argument by SimpleExpressions' own extension
 
 
-# SymbolicUtils.expinti
-Expinti(x::SymType, args...; kwargs...) =
-    SymFunction("Expini")(x, args...; kwargs...)
+Expinti(x::SymType) = SymbolicExpression(SF.expinti, (x,))
 
 # SymbolicUtils.erf[i[
 Erf(x::SymType, args...; kwargs...) =
@@ -150,13 +149,12 @@ Cosint(x::SymType, args...; kwargs...) =
 
 FresnelIntegrals_fresnels(x::SymType, args...; kwargs...) =
     SymFunction("Fresnels")(x, args...; kwargs...)
-FresnelIntegrals_fresnelsc(x::SymType, args...; kwargs...) =
-    SymFunction("Fresnelsc")(x, args...; kwargs...)
+FresnelIntegrals_fresnelc(x::SymType, args...; kwargs...) =
+    SymFunction("Fresnelc")(x, args...; kwargs...)
 
 
-# PolyLog.reli
-PolyLog_reli(a, x::SymType, args...;kwargs...) =
-    SymFunction("PolyLog_reli")(a, x, args...; kwargs...)
+# Liₙ(z) is `PolyLog.reli(n, z)`, defined for a symbolic argument by
+# SimpleExpressions' own PolyLog extension
 
 coshintegral(x::SymType, args...;kwargs...) =
     SymFunction("coshintegral")(x, args...; kwargs...)

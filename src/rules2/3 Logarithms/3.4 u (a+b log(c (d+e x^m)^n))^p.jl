@@ -8,7 +8,7 @@ file_rules = [
 #     rational_function((~u), (~x)) &&
 #     le(RationalFunctionExponents[(~u), (~x))[[2]], exponent_of((~Pq), (~x))] &&
 #     !contains_var(Fullsimplify((~Pq)^(~m)*(1 - (~u))/(~D)[(~u), (~x))), (~x)] ?
-# FullSimplify[(~Pq)^(~m)*(1 - (~u))⨸_derivative((~u), (~x))]*PolyLog_reli(2, 1 - (~u)) : nothing)
+# FullSimplify[(~Pq)^(~m)*(1 - (~u))⨸_derivative((~u), (~x))]*reli(2, 1 - (~u)) : nothing)
 
 ("3_4_2",
 :(∫(log((~!c)*((~d) + (~!e)*(~x)^(~n))^(~!p)),(~x)) ) => :(

@@ -65,14 +65,14 @@ coshintegral(x::Any) = println("hyperbolic cosine integral Chi(z) function (http
 @syms ∫(var1,var2) substitute_after_int(var1, var2, var3)
 =#
 # very big arrays containing rules and their identifiers
-const RULES = Pair{Expr, Expr}[]
+const RULES = Rule[]   # built with `@rule` from the `Expr => Expr` pairs in src/rules2
 const IDENTIFIERS = String[]
 
 # to use or not the gamma function in integration results
 USE_GAMMA = false # TODO make it work with revise and not just with reloading rules
 
-# to print or not the integration steps
-VERBOSE = false
+# to print or not the integration steps; set by `integrate(f, x; verbose)`
+const VERBOSE = Ref(false)
 # global array of rules identifiers to not print the corresponding rule
 # It's needed otherwise rules with subst_and_int would be printed twice
 const SILENCE = String[]

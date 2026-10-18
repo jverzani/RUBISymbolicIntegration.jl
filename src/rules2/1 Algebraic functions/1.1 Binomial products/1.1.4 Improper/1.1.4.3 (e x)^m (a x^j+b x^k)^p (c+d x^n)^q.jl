@@ -6,20 +6,20 @@ file_rules = [
     !contains_var((~a), (~b), (~c), (~d), (~j), (~k), (~m), (~n), (~p), (~q), (~x)) &&
     !(ext_isinteger((~p))) &&
     !eq((~k), (~j)) &&
-    ext_isinteger(simplify((~j)/(~n))) &&
-    ext_isinteger(simplify((~k)/(~n))) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) &&
+    ext_isinteger(_simplify((~j)/(~n))) &&
+    ext_isinteger(_simplify((~k)/(~n))) &&
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) &&
     !eq((~n)^2, 1) ?
-1⨸(~n)*int_and_subst((~x)^(simplify(((~m) + 1)⨸(~n)) - 1)*((~a)*(~x)^simplify((~j)⨸(~n)) + (~b)*(~x)^simplify((~k)⨸(~n)))^(~p)*((~c) + (~d)*(~x))^(~q),  (~x), (~x), (~x)^(~n), "1_1_4_3_1") : nothing))
+1⨸(~n)*int_and_subst((~x)^(_simplify(((~m) + 1)⨸(~n)) - 1)*((~a)*(~x)^_simplify((~j)⨸(~n)) + (~b)*(~x)^_simplify((~k)⨸(~n)))^(~p)*((~c) + (~d)*(~x))^(~q),  (~x), (~x), (~x)^(~n), "1_1_4_3_1") : nothing))
 
 ("1_1_4_3_2",
 :(∫(((~e)*(~x))^(~!m)*((~!a)*(~x)^(~j) + (~!b)*(~x)^(~!k))^(~p)*((~c) + (~!d)*(~x)^(~!n))^(~!q),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~d), (~e), (~j), (~k), (~m), (~n), (~p), (~q), (~x)) &&
     !(ext_isinteger((~p))) &&
     !eq((~k), (~j)) &&
-    ext_isinteger(simplify((~j)/(~n))) &&
-    ext_isinteger(simplify((~k)/(~n))) &&
-    ext_isinteger(simplify(((~m) + 1)/(~n))) &&
+    ext_isinteger(_simplify((~j)/(~n))) &&
+    ext_isinteger(_simplify((~k)/(~n))) &&
+    ext_isinteger(_simplify(((~m) + 1)/(~n))) &&
     !eq((~n)^2, 1) ?
 (~e)^intpart((~m))*((~e)*(~x))^fracpart((~m))⨸(~x)^fracpart((~m))* ∫((~x)^(~m)*((~a)*(~x)^(~j) + (~b)*(~x)^(~k))^(~p)*((~c) + (~d)*(~x)^(~n))^(~q), (~x)) : nothing))
 
@@ -91,22 +91,22 @@ file_rules = [
     !contains_var((~a), (~b), (~c), (~d), (~j), (~k), (~m), (~n), (~p), (~q), (~x)) &&
     !(ext_isinteger((~p))) &&
     !eq((~k), (~j)) &&
-    ext_isinteger(simplify((~j)/(~n))) &&
-    ext_isinteger(simplify((~k)/(~n))) &&
+    ext_isinteger(_simplify((~j)/(~n))) &&
+    ext_isinteger(_simplify((~k)/(~n))) &&
     !eq((~m), -1) &&
-    ext_isinteger(simplify((~n)/((~m) + 1))) &&
+    ext_isinteger(_simplify((~n)/((~m) + 1))) &&
     !(ext_isinteger((~n))) ?
-1⨸((~m) + 1)* int_and_subst(((~a)*(~x)^simplify((~j)⨸((~m) + 1)) + (~b)*(~x)^simplify((~k)⨸((~m) + 1)))^ (~p)*((~c) + (~d)*(~x)^simplify((~n)⨸((~m) + 1)))^(~q),  (~x), (~x), (~x)^((~m) + 1), "1_1_4_3_7") : nothing))
+1⨸((~m) + 1)* int_and_subst(((~a)*(~x)^_simplify((~j)⨸((~m) + 1)) + (~b)*(~x)^_simplify((~k)⨸((~m) + 1)))^ (~p)*((~c) + (~d)*(~x)^_simplify((~n)⨸((~m) + 1)))^(~q),  (~x), (~x), (~x)^((~m) + 1), "1_1_4_3_7") : nothing))
 
 ("1_1_4_3_8",
 :(∫(((~e)*(~x))^(~!m)*((~!a)*(~x)^(~j) + (~!b)*(~x)^(~!k))^(~p)*((~c) + (~!d)*(~x)^(~!n))^(~!q),(~x)) ) => :(
     !contains_var((~a), (~b), (~c), (~d), (~e), (~j), (~k), (~m), (~n), (~p), (~q), (~x)) &&
     !(ext_isinteger((~p))) &&
     !eq((~k), (~j)) &&
-    ext_isinteger(simplify((~j)/(~n))) &&
-    ext_isinteger(simplify((~k)/(~n))) &&
+    ext_isinteger(_simplify((~j)/(~n))) &&
+    ext_isinteger(_simplify((~k)/(~n))) &&
     !eq((~m), -1) &&
-    ext_isinteger(simplify((~n)/((~m) + 1))) &&
+    ext_isinteger(_simplify((~n)/((~m) + 1))) &&
     !(ext_isinteger((~n))) ?
 (~e)^intpart((~m))*((~e)*(~x))^fracpart((~m))⨸(~x)^fracpart((~m))* ∫((~x)^(~m)*((~a)*(~x)^(~j) + (~b)*(~x)^(~k))^(~p)*((~c) + (~d)*(~x)^(~n))^(~q), (~x)) : nothing))
 
