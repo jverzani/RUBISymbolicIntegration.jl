@@ -139,7 +139,7 @@ _isnan(x) = (u = unwrap_const(x); isa(u, Number) && isnan(u))
 # satisfy them.
 function apply_single_rule(rule::Rule, problem, j)
     seen = Any[problem]
-    σs = _eachmatch(rule.lhs, problem)
+    σs = _ceachmatch(rule.lhs, problem)
     for σ ∈ σs
         out = try
             rule.f(σ)

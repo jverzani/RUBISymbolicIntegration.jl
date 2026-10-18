@@ -103,7 +103,7 @@ let start = parse(Int, ARGS[1]), outfile = ARGS[2]
     open(outfile, "a") do io
         println(io, "L\t", T_LOADED - T_START, "\t", start); flush(io)
         start == 1 && for (k, m) in Base.loaded_modules
-            k.name in ("RUBISymbolicIntegration", "CommutativePatternMatching", "SymEngine",
+            k.name in ("RUBISymbolicIntegration", "AssociativeCommutativePatternMatching", "SymEngine",
                        "SymbolicIntegration", "Symbolics", "SymbolicUtils", "SimpleExpressions") || continue
             println(io, "V\t", k.name, "\t", pkgversion(m))
         end

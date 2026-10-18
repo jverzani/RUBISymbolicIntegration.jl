@@ -62,18 +62,6 @@ function anyQ(ex, pred)
     return false
 end
 
-# does a match b syntactically?
-function syntactic_match(a, b)
-    𝑎, 𝑏 = isexpr(a), isexpr(b)
-    𝑎 == 𝑏 || return false
-    !𝑎 && return a == b
-    operation(a) ==  operation(b) || return false
-    as, bs = arguments(a), arguments(b)
-    length(as) == length(bs) || return false
-    all(splat(==), zip(as, bs))
-end
-syntactic_match(a) = Base.Fix1(syntactic_match, a)
-
 function complexfree(expr)
     isa(expr, Complex) && !eq(imag(expr),0) && return true
     return false
@@ -204,7 +192,7 @@ function ext_expand(expr, x)
     ## do guards after match
     # note that m can be a non integer
     case1 = :((~u)*((~a) + (~!b)*$𝑥)^(~m))
-    for σ ∈  _eachmatch(case1, expr) # t stands for tmp
+    for σ ∈  _ceachmatch(case1, expr) # t stands for tmp
         (p(σ[:u]) &&
          f(σ[:a]) &&
          f(σ[:b]) &&
@@ -215,7 +203,7 @@ function ext_expand(expr, x)
 
 
     case1_1 =  :((~u)/(((~a) + (~!b)*$𝑥)^(~m)))
-    for σ ∈  _eachmatch(case1_1, expr) # t stands for tmp
+    for σ ∈  _ceachmatch(case1_1, expr) # t stands for tmp
         (p(σ[:u]) &&
          f(σ[:a]) &&
          f(σ[:b]) &&
@@ -226,7 +214,7 @@ function ext_expand(expr, x)
 
 
     case2, rhs = :((~!a + ~!b*$𝑥)^(~!m)/(~!c + ~!d*$𝑥)) => :((~b*(~a+~b*$𝑥)^(~m-1))⨸~d + ((~a*~d-~b*~c)*(~a+~b*x)^(~m-1))⨸(~d*(~c+~d*$𝑥)))
-    for σ ∈ _eachmatch(case2, expr) # t stands for tmp
+    for σ ∈ _ceachmatch(case2, expr) # t stands for tmp
         (f(σ[:a]) &&
          f(σ[:b]) &&
          ext_isinteger(σ[:m]) &&
@@ -237,7 +225,7 @@ function ext_expand(expr, x)
     #case2 = @rule (~!a::f + ~!b::f*x)^(~!m::ext_isinteger)/(~!c::f + ~!d::f*x) => (~b*(~a+~b*x)^(~m-1))⨸~d + ((~a*~d-~b*~c)*(~a+~b*x)^(~m-1))⨸(~d*(~c+~d*x))
 
     case4, rhs = :($𝑥/(~a + ~b*$𝑥)) => :(1⨸~b - ~a⨸(~b*(~a + ~b*$𝑥)))
-    for σ ∈ _eachmatch(case1, expr) # t stands for tmp
+    for σ ∈ _ceachmatch(case1, expr) # t stands for tmp
         (f(σ[:a]) &&
          f(σ[:b])
          ) || continue
@@ -246,7 +234,7 @@ function ext_expand(expr, x)
     #case4 = @rule x/(~a::f + ~b::f*x) => 1⨸~b - ~a⨸(~b*(~a + ~b*x))
 
     case5, rhs = :((~d + ~!e*$𝑥)/(x*(~a + $𝑥^2))) => :((~d+~e*$𝑥)/($𝑥*~a) - (~d+~e*$𝑥)*$𝑥/(~a*(~a + $𝑥^2)))
-    for σ ∈  _eachmatch(case5, expr) # t stands for tmp
+    for σ ∈  _ceachmatch(case5, expr) # t stands for tmp
         (f(σ[:d]) &&
          f(σ[:e]) &&
          f(σ[:a])
@@ -256,7 +244,7 @@ function ext_expand(expr, x)
     #case5 = @rule (~d::f + ~!e::f*x)/(x*(~a::f + x^2)) => (~d+~e*x)/(x*~a) - (~d+~e*x)*x/(~a*(~a + x^2))
 
     case6, rhs = :((~u)/(~v)) => :(exponent_of(~u,$𝑥)>=exponent_of(~v,$𝑥) ? polynomial_divide(~u,~v,$𝑥) : nothing)
-    for σ ∈ _eachmatch(case6, expr) # t stands for tmp
+    for σ ∈ _ceachmatch(case6, expr) # t stands for tmp
         (p(σ[:u]) &&
          p(σ[:v])) || continue
         (exponent_of(σ[:u],x)>=exponent_of(σ[:v],x)) &&
@@ -313,25 +301,25 @@ function expand_trig_reduce(u, x)
     𝑥 = Symbol(x)
 
     pat1 = :(sin((~!a)*$𝑥)*cos((~!a)*$𝑥))
-    σs = _eachmatch(pat1, u)
+    σs = _ceachmatch(pat1, u)
     for σ ∈ σs
         return sin(σ[:a] * x)
     end
 
     pat2 = :((~!a)*cos((~!b)*$𝑥)^2 - (~!a)*sin((~!b)*$𝑥)^2)
-    σs = _eachmatch(pat2, u)
+    σs = _ceachmatch(pat2, u)
     for σ ∈ σs
         return σ[:a] * cos(2σ[:b]*x)
     end
 
     pat3 = :((~!a)*cos((~!b)*$𝑥)^2 + (~!a)*sin((~!b)*$𝑥)^2)
-    σs = _eachmatch(pat3, u)
+    σs = _ceachmatch(pat3, u)
     for σ ∈ σs
         return one(x)
     end
 
     pat4 = :((~!a)*cos((~!b)*$𝑥)^2)
-    σs = _eachmatch(pat4, u)
+    σs = _ceachmatch(pat4, u)
     for σ ∈ σs
         return σ[:a] * (1 - sin(σ[:b]*x)^2)
     end
@@ -654,7 +642,7 @@ function binomial_degree(u, x)
     # (@rule (~a::f) + (~!b::f)*x^(~!n::f) => ~n)(u)
     𝑥 = Symbol(x)
     pat = :(~a + ~!b*$𝑥^(~!n))
-    σs =  _eachmatch(pat, u)
+    σs =  _ceachmatch(pat, u)
     for σ ∈ σs
         !contains_var(getindex.((σ,), (:a,:b,:n))..., x) && return σ[:n]
     end
@@ -674,7 +662,7 @@ isbinomial(u::Vector,x,n)::Bool = all(isbinomial(e,x,n) for e in u)
 function generalized_binomial_degree(u,x)
     𝑥 = Symbol(x)
     pat = :((~a)*$𝑥^(~!q) + (~!b)*$𝑥^(~!n))
-    σs = _eachmatch(pat, u)
+    σs = _ceachmatch(pat, u)
     for σ ∈ σs
         a,b,q,n = σ[:a], σ[:b], σ[:q], σ[:n]
         !contains_var(a,b,q,n,x) && return σ[:n] - σ[:q]
@@ -695,7 +683,7 @@ end
 function trinomial_degree(u, x)
     f(p) = !contains_var(p, x) # f stands for free of x
     pat, rhs = :((~a::f) + (~!b::f)*x^(~!n::f) + (~!c::f)*x^(~n2::f)) => :(~)
-    for σ ∈ _eachmatch(pat, u)
+    for σ ∈ _ceachmatch(pat, u)
         (f(σ[:a]) &&
          f(σ[:b]) &&
          f(σ[:n]) &&
@@ -723,7 +711,7 @@ function generalized_trinomial_degree(u, x)
     #result===nothing && return nothing
     𝑥 = Symbol(x)
     pat = :((~a)*$𝑥^(~q) + (~!b)*$𝑥^(~!n) + (~!c)*$𝑥^(~n2))
-    for σ ∈ _eachmatch(pat, u)
+    for σ ∈ _ceachmatch(pat, u)
         # TODO all these cases are for oooomm problem
         q, n, n2,a,b = σ[:q], σ[:n], σ[:n2], σ[:a], σ[:b]
         q,n,n2 = unwrap_const.((q,n,n2))
@@ -751,12 +739,12 @@ generalized_trinomial(u::Vector,x) = all(generalized_trinomial(e,x) for e in u)
 function monomial(u, x)
     !is_symbolic(u) && return 0
     𝑥 = Symbol(x)
-    for σ ∈ _eachmatch(:((~!b)*$𝑥^(~!m)), u)
+    for σ ∈ _ceachmatch(:((~!b)*$𝑥^(~!m)), u)
         contains_var(σ[:b], x) && return nothing
         m = σ[:m]
         igt(m,0) && return unwrap_const(m)
     end
-    for σ ∈ _eachmatch(:(((~!b)*$𝑥)^(~!m)), u)
+    for σ ∈ _ceachmatch(:(((~!b)*$𝑥)^(~!m)), u)
         contains_var(σ[:b], x) && return false
         m = σ[:m]
         igt(m, 0) && return unwrap_const(m)
@@ -777,7 +765,7 @@ function quadratic_without_simplify(u,x)
 
     pat = :((~!a) + (~!b)*x + (~!c)*x^2)
     ret = false
-    for σ ∈ _eachmatch(pat, u)
+    for σ ∈ _ceachmatch(pat, u)
         contains_var(getindex.((σ,), (:a,:b,:c))..., x) && continue
         ret = true
         break
@@ -785,7 +773,7 @@ function quadratic_without_simplify(u,x)
 
     ret1 = false
     pat = :((~!a) + (~!c)*x^2)
-    for σ ∈ _eachmatch(pat, u)
+    for σ ∈ _ceachmatch(pat, u)
         contains_var(getindex.((σ,), (:a,:c))..., x) && continue
         ret1 = true
         break
@@ -1127,6 +1115,6 @@ P_le_neg1_x_0(x::Any)       = le(-1, x, 0)::Bool
 ## Extras
 function f11372(pq, x)
     pat = :((~u)*$(Symbol(x))^(~m::$ext_isinteger) )
-    return !isempty(_eachmatch(pat, pq))
-    #return !isnothing(_match(pat, pq))
+    return !isempty(_ceachmatch(pat, pq))
+    #return !isnothing(_cmatch(pat, pq))
 end

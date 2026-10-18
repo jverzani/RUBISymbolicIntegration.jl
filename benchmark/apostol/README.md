@@ -17,13 +17,9 @@ problem. Selecting a problem shows the integrand and each method's answer.
 
 ## Running it
 
-`env_rubi` uses this package from this checkout, and CommutativePatternMatching
-from the local checkout next to it (`../CommutativePatternMatching`, at
-present its `nospecialize` branch, which is not yet on GitHub); its own
-`[sources]` entry overrides the GitHub `main` this package declares.
-SimpleExpressions (for `reli(n, x)` and its HypergeometricFunctions
-extension, not yet released) comes from the `main` branch of its GitHub
-repository. The other packages come from the registry. `results/commits.tsv`
+`env_rubi` uses this package from this checkout and the other packages,
+including AssociativeCommutativePatternMatching (which now holds the matcher
+of CommutativePatternMatching) and SimpleExpressions, from the registry. `results/commits.tsv`
 records which commit of each was used.
 
 ```sh
@@ -48,9 +44,9 @@ julia supervise.jl rubi_symbolicutils env_rubi 120
 julia build.jl
 ```
 
-To pick up newer versions, such as a new `main` of CommutativePatternMatching or
-a newer registered SymbolicIntegration, run `Pkg.update()` in the environment
-first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
+To pick up newer versions, such as a new release of
+AssociativeCommutativePatternMatching or SymbolicIntegration, run
+`Pkg.update()` in the environment first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
 `Manifest.toml` files are not committed, so a fresh checkout resolves to the
 newest compatible versions.
 
@@ -160,6 +156,7 @@ within a run.
 |---|---|---|---|---|---|---|
 | 2026-10-17 | 1.13.0 | only rule-based methods; SymEngine added | 128 (115), 13 not checked | 133 (133) | 128 (125) | 124 (117), 4 wrong |
 | 2026-10-17 | 1.13.0 | CPM `nospecialize` branch (`82ea70a`): the matcher is not specialized on the subject's type. SimpleExpressions integration 456 s → 273 s (wall 564 s → 358 s); the others unchanged | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
+| 2026-10-18 | 1.13.0 | released packages: AssociativeCommutativePatternMatching 1.1.1 (CPM's matcher, with compiled patterns) and SimpleExpressions 1.4.0. Integration time: SimpleExpressions 273 s → 237 s, SymbolicUtils 68 s → 60 s, SymEngine 34 s → 33 s; no answer changed | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
 
 SymbolicIntegration's rule-based method is wrong on problems 23–25 because of
 rule `4_1_10_1_1` (it adds the remaining integral where it should subtract

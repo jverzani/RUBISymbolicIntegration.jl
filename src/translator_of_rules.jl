@@ -105,7 +105,7 @@ applied automatically that rewrites the rule like this:
 ### end
 finally the rule is placed in a tuple (index, rule), and all the
 tuples are put into a array, ready to be included by load_rules.
-`load_rules` turns each pair into a `CommutativePatternMatching.@rule`, so
+`load_rules` turns each pair into an `AssociativeCommutativePatternMatching.@rule`, so
 the right-hand side is ordinary Julia code: a function of the match, which
 returns `nothing` when the conditions fail.
 

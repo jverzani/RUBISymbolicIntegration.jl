@@ -15,7 +15,7 @@
 #
 # * `make_integral(f, dx)`: the unevaluated integral, a term with operation
 #   named `∫` and arguments `f` and `dx`. Rules match `∫(...)` by that name.
-# * `unwrap_const(x)` (CommutativePatternMatching's): a numeric term as a
+# * `unwrap_const(x)` (AssociativeCommutativePatternMatching's): a numeric term as a
 #   Julia number, so a `2` in a pattern equals a `2` in the subject.
 # * `contains_var(expr, x)`: does `expr` contain the variable `x`?
 # * `_simplify(x; kwargs...)`, `_expand(x)`, `_substitute(x, d)` (`d` a
