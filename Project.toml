@@ -1,6 +1,6 @@
 name = "RUBISymbolicIntegration"
 uuid = "442f6feb-61f5-5b3d-b533-e46f4d561939"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["john verzani <jverzani@gmail.com>"]
 
 [workspace]
