@@ -125,8 +125,11 @@ results and edit it before publishing.
 The package README has a badge comparing the number of apostol problems
 verified by `rubi_symbolicutils` and `si_rules` (SymbolicIntegration's
 `RuleBasedMethod`, Symbolics), and a sentence that also gives the other two
-term types. The badge links to the page through htmlpreview.github.io,
-from `main`. It is a static badge: after a run that changes these numbers,
+term types. The badge links to the page through
+rawcdn.githack.com at a commit hash (githack caches each URL permanently, so a
+branch name would keep showing the first version it saw). After a run, commit and
+push the page, then put that commit's hash in the link.
+It is a static badge: after a run that changes these numbers,
 update them in the badge URL, its alt text and that sentence.
 
 The page was also published as a claude.ai artifact:
