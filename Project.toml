@@ -16,11 +16,13 @@ TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
 [weakdeps]
 SimpleExpressions = "deba94f7-f32a-40ad-b45e-be020a5ded2f"
 SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
+SymJ = "73a6d648-42a5-483e-b8b5-fc71c1696ef5"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
 [extensions]
 RUBISymbolicIntegrationSimpleExpressionsExt = "SimpleExpressions"
 RUBISymbolicIntegrationSymEngineExt = "SymEngine"
+RUBISymbolicIntegrationSymJExt = "SymJ"
 RUBISymbolicIntegrationSymbolicsExt = "Symbolics"
 
 [compat]

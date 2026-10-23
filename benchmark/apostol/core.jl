@@ -104,7 +104,7 @@ let start = parse(Int, ARGS[1]), outfile = ARGS[2]
         println(io, "L\t", T_LOADED - T_START, "\t", start); flush(io)
         start == 1 && for (k, m) in Base.loaded_modules
             k.name in ("RUBISymbolicIntegration", "AssociativeCommutativePatternMatching", "SymEngine",
-                       "SymbolicIntegration", "Symbolics", "SymbolicUtils", "SimpleExpressions") || continue
+                       "SymbolicIntegration", "Symbolics", "SymbolicUtils", "SymJ") || continue
             println(io, "V\t", k.name, "\t", pkgversion(m))
         end
         foreach(i -> run_one(io, i), start:length(PROBLEMS))
