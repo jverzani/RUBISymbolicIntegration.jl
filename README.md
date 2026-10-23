@@ -13,7 +13,7 @@ This is part of [SymbolicIntegration.jl](https://github.com/JuliaSymbolics/Symbo
 
 The main function is `integrate(f, dx)` where `f` is the expression to integrate and `dx` the variable to integrate with respect to.
 
-The apostol badge compares this package, with [SymbolicUtils] terms, to the rule-based method of SymbolicIntegration.jl, with [Symbolics] terms: the number of the 175 problems from Apostol's *Calculus* each integrates with an answer that checks out numerically. The [comparison](https://htmlpreview.github.io/?https://github.com/jverzani/RUBISymbolicIntegration.jl/blob/main/benchmark/apostol/results/apostol_comparison.html) also has this package with [SymEngine] terms (115 verified) and with [SymJ] terms (130 verified); see `benchmark/apostol/README.md` to rerun it.
+The apostol badge compares this package, with [SymbolicUtils] terms, to the rule-based method of SymbolicIntegration.jl, with [Symbolics] terms: the number of the 175 problems from Apostol's *Calculus* each integrates with an answer that checks out numerically. The [comparison](https://rawcdn.githack.com/jverzani/RUBISymbolicIntegration.jl/d0c426640fce692e609288640c54efdd418c742c/benchmark/apostol/results/apostol_comparison.html) also has this package with [SymEngine] terms (115 verified) and with [SimpleExpressions] terms (133 verified); see `benchmark/apostol/README.md` to rerun it.
 
 [TermInterface.jl]: https://github.com/JuliaSymbolics/TermInterface.jl
 [SymEngine]: https://github.com/symengine/SymEngine.jl
