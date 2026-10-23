@@ -2,7 +2,7 @@
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://jverzani.github.io/RUBISymbolicIntegration.jl/stable)
 [![Development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://jverzani.github.io/RUBISymbolicIntegration.jl/dev)
-[![Apostol, verified of 175: this package 125, SymbolicIntegration rules 117](https://img.shields.io/badge/apostol%2C%20verified%20of%20175-this%20package%20125%20%C2%B7%20SymbolicIntegration%20rules%20117-2f8a4c)](https://rawcdn.githack.com/jverzani/RUBISymbolicIntegration.jl/d0c426640fce692e609288640c54efdd418c742c/benchmark/apostol/results/apostol_comparison.html)
+[![Apostol, verified of 175: this package 125, SymbolicIntegration rules 117](https://img.shields.io/badge/apostol%2C%20verified%20of%20175-this%20package%20125%20%C2%B7%20SymbolicIntegration%20rules%20117-2f8a4c)](https://rawcdn.githack.com/jverzani/RUBISymbolicIntegration.jl/4d25d410ef6f93a2b202a1cfc9216462ecdfa89c/benchmark/apostol/results/apostol_comparison.html)
 
 This is part of [SymbolicIntegration.jl](https://github.com/JuliaSymbolics/SymbolicIntegration.jl/) repackaged to allow symbolic packages that conform with the [TermInterface.jl] contract, like [SymEngine], to utilize the rules-based integration approach.
 

@@ -128,13 +128,11 @@ results and edit it before publishing.
 The package README has a badge comparing the number of apostol problems
 verified by `rubi_symbolicutils` and `si_rules` (SymbolicIntegration's
 `RuleBasedMethod`, Symbolics), and a sentence that also gives the other two
-term types. The badge links to the page through htmlpreview.github.io,
-from `main`. It is a static badge: after a run that changes these numbers,
-update them in the badge URL, its alt text and that sentence.
-
-The page was also published as a claude.ai artifact:
-https://claude.ai/artifact/5xFfniAuWyEt1REQHVKDTg. To update it, ask Claude
-Code to republish `results/apostol_comparison.html` to that URL.
+term types. The badge links to the page at a fixed commit through
+rawcdn.githack.com, and the sentence links to it on `main` through
+htmlpreview.github.io. It is a static badge: after a run, update the commit
+in its link (one that has the new page and is on GitHub) and, if the numbers
+changed, them in the badge URL, its alt text and that sentence.
 
 ## Things learned along the way
 
