@@ -12,7 +12,7 @@ The main function is `integrate(f, x)`, which returns an antiderivative of `f`
 with respect to `x`. The rules are those of [Rubi](https://rulebasedintegration.org/).
 Any symbolic type implementing [TermInterface.jl](https://github.com/JuliaSymbolics/TermInterface.jl)
 can be used once an extension for it is loaded; extensions are included for
-SymEngine, SymbolicUtils (through Symbolics) and SimpleExpressions.
+SymEngine, SymbolicUtils (through Symbolics), SimpleExpressions and SymJ.
 
 ## Examples with SymEngine
 
@@ -117,7 +117,7 @@ integrate(log(1 + x) / x, x)
 ```
 
 With SymEngine these stay unevaluated functions, such as `Sinint` and
-`reli` (PolyLog.jl's ``\operatorname{Li}_n``). With SimpleExpressions or
+`reli` (PolyLog.jl's ``\operatorname{Li}_n``). With SimpleExpressions, SymJ or
 Symbolics they are the functions of SpecialFunctions.jl, PolyLog.jl and
 HypergeometricFunctions.jl, so such an answer can be evaluated numerically.
 

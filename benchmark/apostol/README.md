@@ -7,7 +7,7 @@ rule-based method of SymbolicIntegration.jl.
 | Method | Package | Terms |
 |---|---|---|
 | `rubi_symengine` | RUBISymbolicIntegration (this package), RUBI rules | [SymEngine](https://github.com/symengine/SymEngine.jl) |
-| `rubi_simpleexpressions` | RUBISymbolicIntegration | [SimpleExpressions](https://github.com/jverzani/SimpleExpressions.jl) |
+| `rubi_symj` | RUBISymbolicIntegration | [SymJ](https://github.com/jverzani/SymJ.jl) |
 | `rubi_symbolicutils` | RUBISymbolicIntegration | [SymbolicUtils](https://github.com/JuliaSymbolics/SymbolicUtils.jl) |
 | `si_rules` | [SymbolicIntegration](https://github.com/JuliaSymbolics/SymbolicIntegration.jl), `RuleBasedMethod()` | [Symbolics](https://github.com/JuliaSymbolics/Symbolics.jl) |
 
@@ -19,8 +19,11 @@ problem. Selecting a problem shows the integrand and each method's answer.
 
 `env_rubi` uses this package from this checkout and the other packages,
 including AssociativeCommutativePatternMatching (which now holds the matcher
-of CommutativePatternMatching) and SimpleExpressions, from the registry. `results/commits.tsv`
-records which commit of each was used.
+of CommutativePatternMatching), from the registry. SymJ is not registered
+yet, so it comes from the `main` branch of
+https://github.com/jverzani/SymJ.jl (a `[sources]` entry in
+`env_rubi/Project.toml`). `results/commits.tsv` records which commit of each
+was used.
 
 ```sh
 cd benchmark/apostol
@@ -30,8 +33,7 @@ julia run_all.jl            # or `julia run_all.jl 60` for a 60 s limit per prob
 ```
 
 `run_all.jl` runs the methods one after another, so they do not compete for
-the CPU, and then builds the page. The whole run takes about 10 minutes, most of
-it SimpleExpressions compiling.
+the CPU, and then builds the page.
 
 After adding a package to an environment's `Project.toml`, run
 `Pkg.resolve()` in that environment before `Pkg.instantiate()`.
@@ -45,7 +47,8 @@ julia build.jl
 ```
 
 To pick up newer versions, such as a new release of
-AssociativeCommutativePatternMatching or SymbolicIntegration, run
+AssociativeCommutativePatternMatching or SymbolicIntegration, or a new commit
+to SymJ's `main`, run
 `Pkg.update()` in the environment first, e.g. `julia --project=env_rubi -e 'using Pkg; Pkg.update()'`. The
 `Manifest.toml` files are not committed, so a fresh checkout resolves to the
 newest compatible versions.
@@ -59,11 +62,11 @@ newest compatible versions.
 | `core.jl` | shared by the workers: builds each integrand with the worker's variables, integrates, checks, writes a line per problem |
 | `supervise.jl` | runs a worker; if one problem takes longer than the limit, kills the process, records a timeout and restarts at the next problem |
 | `build.jl`, `template.html` | turn the results into the page |
-| `env_rubi`, `env_si` | the two environments: `env_rubi` for this package (with SymEngine, SimpleExpressions and SymbolicUtils), `env_si` for SymbolicIntegration |
+| `env_rubi`, `env_si` | the two environments: `env_rubi` for this package (with SymEngine, SymJ and SymbolicUtils), `env_si` for SymbolicIntegration |
 
 Each integrand is built from its expression with the worker's own variables:
 SymEngine `@vars x ...` for `rubi_symengine`,
-`SimpleExpressions.@symbolic_variables` for `rubi_simpleexpressions`,
+SymJ `@syms x ...` for `rubi_symj`,
 SymbolicUtils `@syms x::Real ...` for `rubi_symbolicutils`, and Symbolics
 `@variables x ...` for `si_rules`. The problems use this package's `⨸` operator
 (e.g. `1 ⨸ 2`); each worker defines it as `//` for integers and `/` otherwise, so
@@ -112,7 +115,7 @@ must set `T_START`, load the packages, and define
   or `EVAL(ex, vals)`, the value of `ex` with each variable `v` replaced by the
   number `vals[v]` (a `Dict{Symbol,Number}`), or `nothing` if it does not
   evaluate to a number. `worker_rubi_symengine.jl` and
-  `worker_rubi_simpleexpressions.jl` define `EVAL`.
+  `worker_rubi_symj.jl` define `EVAL`.
 
 Then add it to the loop in `run_all.jl` and to `METHODS` in `build.jl`.
 
@@ -157,6 +160,13 @@ within a run.
 | 2026-10-17 | 1.13.0 | only rule-based methods; SymEngine added | 128 (115), 13 not checked | 133 (133) | 128 (125) | 124 (117), 4 wrong |
 | 2026-10-17 | 1.13.0 | CPM `nospecialize` branch (`82ea70a`): the matcher is not specialized on the subject's type. SimpleExpressions integration 456 s → 273 s (wall 564 s → 358 s); the others unchanged | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
 | 2026-10-18 | 1.13.0 | released packages: AssociativeCommutativePatternMatching 1.1.1 (CPM's matcher, with compiled patterns) and SimpleExpressions 1.4.0. Integration time: SimpleExpressions 273 s → 237 s, SymbolicUtils 68 s → 60 s, SymEngine 34 s → 33 s; no answer changed | 128 (115) | 133 (133) | 128 (125) | 124 (117) |
+
+From 2026-10-23 SymJ (unregistered, `main` of
+https://github.com/jverzani/SymJ.jl) replaces SimpleExpressions:
+
+| Date | Julia | Change | rubi_symengine | rubi_symj | rubi_symbolicutils | si_rules |
+|---|---|---|---|---|---|---|
+| 2026-10-23 | 1.13.0 | SymJ extension added (SymJ `787277f`); SimpleExpressions no longer run. Integration time: SymJ 35.5 s, SymEngine 32.8 s, SymbolicUtils 60.3 s, SymbolicIntegration 28.1 s. SymJ's one "differs", problem 88, is a correct answer whose complex `asin` is checked across its branch cut | 128 (115) | 131 (130), 1 differs | 128 (125) | 124 (117), 4 wrong |
 
 SymbolicIntegration's rule-based method is wrong on problems 23–25 because of
 rule `4_1_10_1_1` (it adds the remaining integral where it should subtract

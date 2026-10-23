@@ -42,12 +42,12 @@ end
 
 commits = [("RUBISymbolicIntegration", local_commit(joinpath(HERE, "..", ".."))),
            ("AssociativeCommutativePatternMatching", package_commit("AssociativeCommutativePatternMatching")),
-           ("SimpleExpressions", package_commit("SimpleExpressions"))]
+           ("SymJ", package_commit("SymJ"))]
 open(joinpath(HERE, "results", "commits.tsv"), "w") do io
     foreach(((name, c),) -> println(io, name, "\t", c), commits)
 end
 
-for (name, env) in (("rubi_symengine", "env_rubi"), ("rubi_simpleexpressions", "env_rubi"),
+for (name, env) in (("rubi_symengine", "env_rubi"), ("rubi_symj", "env_rubi"),
                     ("rubi_symbolicutils", "env_rubi"), ("si_rules", "env_si"))
     @info "running $name"
     run(`julia $(joinpath(HERE, "supervise.jl")) $name $env $LIMIT`)

@@ -4,7 +4,7 @@ const HERE = @__DIR__
 const RESULTS = joinpath(HERE, "results")
 const METHODS = [
     ("rubi_symengine", "RUBISymbolicIntegration", "rules (RUBI)", "SymEngine"),
-    ("rubi_simpleexpressions", "RUBISymbolicIntegration", "rules (RUBI)", "SimpleExpressions"),
+    ("rubi_symj", "RUBISymbolicIntegration", "rules (RUBI)", "SymJ"),
     ("rubi_symbolicutils", "RUBISymbolicIntegration", "rules (RUBI)", "SymbolicUtils"),
     ("si_rules", "SymbolicIntegration", "rules (RuleBasedMethod)", "Symbolics"),
 ]
